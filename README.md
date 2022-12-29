@@ -4,6 +4,6 @@ The WarriorBots, FRC team 6421, are excited to present our code for the 2023 com
 ## Other helpful links:
 Chief Delphi 2023 Open Alliance Build Thread:
 
-2023 Open Alliance Discord:
+2023 Open Alliance Discord: https://discord.com/channels/906202343178137711/1057688409503707197
 
 Team Website: https://warriorbots6421.com/

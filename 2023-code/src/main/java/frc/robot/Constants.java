@@ -36,14 +36,25 @@ public final class Constants {
 
     public static final double GEAR_RATIO_MOTOR_TO_WHEEL = 6.75;
 
-    public static final int COUNTS_PER_ROTATION = 2048;
-
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
-    public static final double S_VOLTS = 0;
-    public static final double V_VOLT_SECONDS_PER_METER = 0;
-    public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0;
+    public static final int COUNTS_PER_ROTATION = 2048;
+    public static final int STEER_ENCODER_COUNTS_PER_ROTATION = 4096;
+    
+    public static final double DISTANCE_PER_ENCODER_COUNT = WHEEL_CIRCUMFERENCE / (COUNTS_PER_ROTATION * GEAR_RATIO_MOTOR_TO_WHEEL);
+
+    // Formula for calculating theoretical max velocity:
+    // Motor free speed RPM / 60 * Drive reduction * Wheel diameter meters * pi
+    public static final double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 47.0); // Constant for SDS MK4i Modules
+    public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0) * DRIVE_REDUCTION * DriveConstants.WHEEL_CIRCUMFERENCE;
+    public static final double MAX_VOLTAGE = 8.0; //TODO update with correct voltage
+    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2);
+    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO update if necessary
+
+    public static final double S_VOLTS = 0.60043;
+    public static final double V_VOLT_SECONDS_PER_METER = 2.2591;
+    public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.17289;
   }
 
   public static class ModuleConstants {
@@ -67,21 +78,13 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_ENCODER_CAN_ID = 15;
     public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -Math.toRadians(352.5);
 
-    public static final double MODULE_DRIVE_P = 0; //TODO update with correct values
+    public static final double MODULE_DRIVE_P = 0.003; //TODO update with correct values
     public static final double MODULE_DRIVE_I = 0; //TODO update with correct values
     public static final double MODULE_DRIVE_D = 0; //TODO update with correct values
 
-    public static final double MODULE_STEER_P = 0; //TODO update with correct values
+    public static final double MODULE_STEER_P = 0.015; //TODO update with correct values
     public static final double MODULE_STEER_I = 0; //TODO update with correct values
     public static final double MODULE_STEER_D = 0; //TODO update with correct values
-
-    // Formula for calculating theoretical max velocity:
-    // Motor free speed RPM / 60 * Drive reduction * Wheel diameter meters * pi
-    public static final double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 47.0); // Constant for SDS MK4i Modules
-    public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0) * DRIVE_REDUCTION * DriveConstants.WHEEL_CIRCUMFERENCE;
-    public static final double MAX_VOLTAGE = 8.0; //TODO update with correct RPM
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2);
-    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO update if necessary
   }
 
   public static class OperatorConstants {

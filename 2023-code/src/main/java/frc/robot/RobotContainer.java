@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -29,6 +30,10 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem();
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+
+    SmartDashboard.putNumber("LeftY", driverController.getLeftY());
+    SmartDashboard.putNumber("LeftX", driverController.getLeftX());
+    SmartDashboard.putNumber("RightX", driverController.getRightX());
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(

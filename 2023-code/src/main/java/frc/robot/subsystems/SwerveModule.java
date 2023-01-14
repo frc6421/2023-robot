@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
@@ -172,12 +173,14 @@ public class SwerveModule extends SubsystemBase {
     final double driveOutput = drivePIDController.calculate(getDriveEncoderVelocity(), state.speedMetersPerSecond);
 
     // Calculate steer motor output from turning PID controller
-    final double steerOutput = steeringPIDController.calculate(getSteerEncoderDistance(), state.angle.getRadians());
+    final double steerOutput = steeringPIDController.calculate(Math.toRadians(getSteerEncoderDistance()), state.angle.getRadians());
 
     // Apply PID outputs
     driveMotor.set(driveOutput);
     steerMotor.set(steerOutput);
 
+    // driveMotor.set(TalonFXControlMode.Velocity, driveOutput / 1000 / DriveConstants.DISTANCE_PER_ENCODER_COUNT);
+    // steerMotor.set(TalonFXControlMode.Position, steerOutput / 1000 / DriveConstants.DISTANCE_PER_ENCODER_COUNT);
     SmartDashboard.putNumber("driveOutput", driveOutput);
     SmartDashboard.putNumber("steerOutput", steerOutput);
   }

@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -70,6 +71,8 @@ public class DriveSubsystem extends SubsystemBase {
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
       backRight.getModulePosition()});
+
+      SmartDashboard.putNumber("gyro", getGyroRotation().getDegrees());
   }
 
   /**
@@ -159,6 +162,15 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("BackLeftSet", backLeft.getDriveEncoderVelocity());
     SmartDashboard.putNumber("BackRightSet", backRight.getDriveEncoderVelocity());
 
+    SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getReferenceAngleRadians()));
+    SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getReferenceAngleRadians()));
+    SmartDashboard.putNumber("BackLeftCANcoderAngle", Math.toDegrees(backLeft.getReferenceAngleRadians()));
+    SmartDashboard.putNumber("BackRightCANcoderAngle", Math.toDegrees(backRight.getReferenceAngleRadians()));
+
+    SmartDashboard.putNumber("FrontLeftMotorEncoderAngle", frontLeft.getSteerMotorEncoderAngle());
+    SmartDashboard.putNumber("FrontRightMotorEncoderAngle", frontRight.getSteerMotorEncoderAngle());
+    SmartDashboard.putNumber("BackLeftMotorEncoderAngle", backLeft.getSteerMotorEncoderAngle());
+    SmartDashboard.putNumber("BackRightMotorEncoderAngle", backRight.getSteerMotorEncoderAngle());
   }
 
   /**

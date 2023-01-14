@@ -31,6 +31,8 @@ public class SwerveModule extends SubsystemBase {
 
   private final CANCoder steerEncoder;
 
+  private final double angleOffset;
+
   private final PIDController drivePIDController = new PIDController(ModuleConstants.MODULE_DRIVE_P, ModuleConstants.MODULE_DRIVE_I, ModuleConstants.MODULE_DRIVE_D);
 
   private final ProfiledPIDController steeringPIDController = new ProfiledPIDController(
@@ -53,6 +55,8 @@ public class SwerveModule extends SubsystemBase {
 
     steerEncoder = new WPI_CANCoder(steerEncoderID);
 
+    this.angleOffset = angleOffset;
+
     driveMotor.configFactoryDefault();
     steerMotor.configFactoryDefault();
 
@@ -69,11 +73,11 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.config_kI(0, ModuleConstants.MODULE_DRIVE_I);
     driveMotor.config_kD(0, ModuleConstants.MODULE_DRIVE_D);
 
-    driveMotor.config_kP(0, ModuleConstants.MODULE_STEER_P);
-    driveMotor.config_kI(0, ModuleConstants.MODULE_STEER_I);
-    driveMotor.config_kD(0, ModuleConstants.MODULE_STEER_D);
+    steerMotor.config_kP(0, ModuleConstants.MODULE_STEER_P);
+    steerMotor.config_kI(0, ModuleConstants.MODULE_STEER_I);
+    steerMotor.config_kD(0, ModuleConstants.MODULE_STEER_D);
 
-    steerEncoder.configFactoryDefault();
+    steerMotor.configAllowableClosedloopError(0, 0.5 * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE);
 
     steerEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     steerEncoder.configSensorDirection(true); // Clockwise
@@ -85,6 +89,8 @@ public class SwerveModule extends SubsystemBase {
 
     driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 0, 1)); //TODO verify current limit for drive and steer motors
     steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 0, 1));
+
+    setSteerMotorToAbsolute();
 
     steeringPIDController.enableContinuousInput(0, 2 * Math.PI);
 
@@ -140,7 +146,7 @@ public class SwerveModule extends SubsystemBase {
   public void setReferenceAngle(double targetAngle) {
     referenceAngle = Math.toRadians(targetAngle);
 
-    steerMotor.setVoltage(steeringPIDController.calculate(getReferenceAngle(), referenceAngle));
+    steerMotor.setVoltage(steeringPIDController.calculate(getReferenceAngleRadians(), referenceAngle));
   }
 
   /**
@@ -148,7 +154,7 @@ public class SwerveModule extends SubsystemBase {
    * 
    * @return wheel angle in radians
    */
-  public double getReferenceAngle() {
+  public double getReferenceAngleRadians() {
     return Math.toRadians(steerEncoder.getAbsolutePosition());
   }
 
@@ -171,13 +177,23 @@ public class SwerveModule extends SubsystemBase {
   }
 
   /**
+   * Sets the of the steer motor encoder to the value of the CANcoder
+   * 
+   */
+  public void setSteerMotorToAbsolute() {
+    double currentAngle = steerEncoder.getAbsolutePosition();
+    double absolutePosition = currentAngle * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
+    steerMotor.setSelectedSensorPosition(absolutePosition);
+  }
+
+  /**
    * Gets the module position based on distance traveled in meters for drive motor and degrees for steering motor
    * Used for odometry
    * 
    * @return current SwerveModulePosition
    */
   public SwerveModulePosition getModulePosition() {
-    return new SwerveModulePosition(getDriveMotorDistance(), new Rotation2d(getReferenceAngle()));
+    return new SwerveModulePosition(getDriveMotorDistance(), new Rotation2d(getReferenceAngleRadians()));
   }
 
   /**
@@ -187,17 +203,21 @@ public class SwerveModule extends SubsystemBase {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the desired state to avoid spinning modules more than 90 degrees
-    SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getReferenceAngle()));
+    SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getReferenceAngleRadians()));
 
     // Calculate percent of max drive velocity
     double driveOutput = state.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
     // Calculate steer motor output from turning PID controller
-    final double steerOutput = steeringPIDController.calculate(getReferenceAngle(), state.angle.getRadians());
+    double steerPositionOutput = state.angle.getDegrees() * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
 
     // Apply PID outputs
     driveMotor.set(ControlMode.PercentOutput, driveOutput);
-    steerMotor.set(steerOutput);
+    steerMotor.set(ControlMode.Position, steerPositionOutput);
+  }
+
+  public double getSteerMotorEncoderAngle() {
+    return steerMotor.getSelectedSensorPosition() / DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
   }
 
   public void resetEncoders() {

@@ -35,12 +35,14 @@ public final class Constants {
     public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(15.75); //TODO update with actual robot size
 
     public static final double GEAR_RATIO_MOTOR_TO_WHEEL = 6.75;
+    public static final double STEER_GEAR_RATIO = 21.43;
 
     public static final double WHEEL_DIAMETER = Units.inchesToMeters(4);
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
 
     public static final int COUNTS_PER_ROTATION = 2048;
-    public static final int STEER_ENCODER_COUNTS_PER_ROTATION = 4096;
+
+    public static final double STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE = (STEER_GEAR_RATIO * 2048) / 360;
     
     public static final double DISTANCE_PER_ENCODER_COUNT = WHEEL_CIRCUMFERENCE / (COUNTS_PER_ROTATION * GEAR_RATIO_MOTOR_TO_WHEEL);
 
@@ -62,28 +64,28 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
     public static final int FRONT_LEFT_MODULE_STEER_CAN_ID = 13;
     public static final int FRONT_LEFT_MODULE_ENCODER_CAN_ID = 13;
-    public static final double FRONT_LEFT_MODULE_ANGLE_OFFSET = -Math.toRadians(171.6);
+    public static final double FRONT_LEFT_MODULE_ANGLE_OFFSET = -171.6;
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_CAN_ID = 10;
     public static final int FRONT_RIGHT_MODULE_STEER_CAN_ID = 11;
     public static final int FRONT_RIGHT_MODULE_ENCODER_CAN_ID = 11;
-    public static final double FRONT_RIGHT_MODULE_ANGLE_OFFSET = -Math.toRadians(137.0);
+    public static final double FRONT_RIGHT_MODULE_ANGLE_OFFSET = -137.0;
 
     public static final int BACK_LEFT_MODULE_DRIVE_CAN_ID = 16;
     public static final int BACK_LEFT_MODULE_STEER_CAN_ID = 17;
     public static final int BACK_LEFT_MODULE_ENCODER_CAN_ID = 17;
-    public static final double BACK_LEFT_MODULE_ANGLE_OFFSET = -Math.toRadians(192.5);
+    public static final double BACK_LEFT_MODULE_ANGLE_OFFSET = -192.5;
 
     public static final int BACK_RIGHT_MODULE_DRIVE_CAN_ID = 14;
     public static final int BACK_RIGHT_MODULE_STEER_CAN_ID = 15;
     public static final int BACK_RIGHT_MODULE_ENCODER_CAN_ID = 15;
-    public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -Math.toRadians(352.5);
+    public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -352.5;
 
     public static final double MODULE_DRIVE_P = 0.208; //TODO update with correct values
     public static final double MODULE_DRIVE_I = 0; //TODO update with correct values
     public static final double MODULE_DRIVE_D = 0; //TODO update with correct values
 
-    public static final double MODULE_STEER_P = 0.015; //TODO update with correct values
+    public static final double MODULE_STEER_P = 0.0587; //TODO update with correct values .015
     public static final double MODULE_STEER_I = 0; //TODO update with correct values
     public static final double MODULE_STEER_D = 0; //TODO update with correct values
   }

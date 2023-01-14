@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -142,6 +143,10 @@ public class DriveSubsystem extends SubsystemBase {
       frontRight.setDesiredState(swerveModuleStates[1]);
       backLeft.setDesiredState(swerveModuleStates[2]);
       backRight.setDesiredState(swerveModuleStates[3]);
+
+      SmartDashboard.putNumber("xSpeed", xSpeed.getAsDouble());
+      SmartDashboard.putNumber("ySpeed", ySpeed.getAsDouble());
+      SmartDashboard.putNumber("rotation", rotation.getAsDouble());
   }
 
   /**

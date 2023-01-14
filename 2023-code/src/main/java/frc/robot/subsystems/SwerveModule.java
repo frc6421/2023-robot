@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
@@ -17,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -43,7 +45,6 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModule(int driveMotorID, int steerMotorID, int steerEncoderID, double angleOffset) {
     driveMotor = new WPI_TalonFX(driveMotorID);
     steerMotor = new WPI_TalonFX(steerMotorID);
-
     steerEncoder = new WPI_CANCoder(steerEncoderID);
 
     driveMotor.configFactoryDefault();
@@ -57,6 +58,8 @@ public class SwerveModule extends SubsystemBase {
 
     driveMotor.setNeutralMode(NeutralMode.Brake);
     steerMotor.setNeutralMode(NeutralMode.Brake);
+
+    driveMotor.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, 0);
 
     steerEncoder.configFactoryDefault();
 
@@ -174,6 +177,9 @@ public class SwerveModule extends SubsystemBase {
     // Apply PID outputs
     driveMotor.set(driveOutput);
     steerMotor.set(steerOutput);
+
+    SmartDashboard.putNumber("driveOutput", driveOutput);
+    SmartDashboard.putNumber("steerOutput", steerOutput);
   }
 
   public void resetEncoders() {

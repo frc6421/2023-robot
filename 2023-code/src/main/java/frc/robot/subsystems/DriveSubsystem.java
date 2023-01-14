@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -128,10 +130,11 @@ public class DriveSubsystem extends SubsystemBase {
    * @param ySpeed speed in meters per second in the y direction (forward and backward)
    * @param rotation rotational speed in radians per second
    */
-  public void drive(double xSpeed, double ySpeed, double rotation) {
+  public void drive(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier rotation) {
     // Sets field relative speeds
     var swerveModuleStates = 
-      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation()));
+      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
+        xSpeed.getAsDouble(), ySpeed.getAsDouble(), rotation.getAsDouble(), getGyroRotation()));
       // Ensures all wheels obey max speed
       SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
       // Sets the swerve modules to their desired states using optimization method

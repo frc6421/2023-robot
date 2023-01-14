@@ -16,7 +16,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
@@ -75,6 +74,8 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("gyro", getGyroRotation().getDegrees());
   }
 
+  // GYRO METHODS \\
+
   /**
    * Get gyro rotation using fused headings if available, standard rotation if unavailable
    * 
@@ -101,6 +102,8 @@ public class DriveSubsystem extends SubsystemBase {
     return -navx.getRate();
   }
 
+  // ODOMETRY METHODS \\
+
   /**
    * Returns estimated current robot pose in meters
    * 
@@ -124,6 +127,29 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
+   * Sets the swerve module states
+   * 
+   * @param desiredStates the desired swerve module states
+   */
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    // Ensures all wheels obey max speed
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+    // Sets the swerve modules to their desired states using optimization method
+    frontLeft.setDesiredState(desiredStates[0]);
+    frontRight.setDesiredState(desiredStates[1]);
+    backLeft.setDesiredState(desiredStates[2]);
+    backRight.setDesiredState(desiredStates[3]);
+  }
+
+  //TODO not currently used
+  public void resetEncoders() {
+    frontLeft.resetEncoders();
+    frontRight.resetEncoders();
+    backLeft.resetEncoders();
+    backRight.resetEncoders();
+  }
+
+   /**
    * Sets up our drive method
    * 
    * @param xSpeed speed in meters per second in the x direction (left and right)
@@ -143,9 +169,9 @@ public class DriveSubsystem extends SubsystemBase {
       SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
       // Sets the swerve modules to their desired states using optimization method
       frontLeft.setDesiredState(swerveModuleStates[0]);
-      frontRight.setDesiredState(swerveModuleStates[1]);
-      backLeft.setDesiredState(swerveModuleStates[2]);
-      backRight.setDesiredState(swerveModuleStates[3]);
+      // frontRight.setDesiredState(swerveModuleStates[1]);
+      // backLeft.setDesiredState(swerveModuleStates[2]);
+      // backRight.setDesiredState(swerveModuleStates[3]);
 
     SmartDashboard.putNumber("FrontLeftDriveVelocity", swerveModuleStates[0].speedMetersPerSecond);
     SmartDashboard.putNumber("FrontRightDriveVelocity", swerveModuleStates[1].speedMetersPerSecond);
@@ -157,42 +183,20 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("BackLeftAngle", swerveModuleStates[2].angle.getDegrees());
     SmartDashboard.putNumber("BackRightAngle", swerveModuleStates[3].angle.getDegrees());
 
-    SmartDashboard.putNumber("FrontLeftSet", frontLeft.getDriveEncoderVelocity());
-    SmartDashboard.putNumber("FrontRightSet", frontRight.getDriveEncoderVelocity());
-    SmartDashboard.putNumber("BackLeftSet", backLeft.getDriveEncoderVelocity());
-    SmartDashboard.putNumber("BackRightSet", backRight.getDriveEncoderVelocity());
+    SmartDashboard.putNumber("FrontLeftSet", frontLeft.getDriveMotorEncoderVelocity());
+    SmartDashboard.putNumber("FrontRightSet", frontRight.getDriveMotorEncoderVelocity());
+    SmartDashboard.putNumber("BackLeftSet", backLeft.getDriveMotorEncoderVelocity());
+    SmartDashboard.putNumber("BackRightSet", backRight.getDriveMotorEncoderVelocity());
 
-    SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getReferenceAngleRadians()));
-    SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getReferenceAngleRadians()));
-    SmartDashboard.putNumber("BackLeftCANcoderAngle", Math.toDegrees(backLeft.getReferenceAngleRadians()));
-    SmartDashboard.putNumber("BackRightCANcoderAngle", Math.toDegrees(backRight.getReferenceAngleRadians()));
+    SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getCANcoderRadians()));
+    SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getCANcoderRadians()));
+    SmartDashboard.putNumber("BackLeftCANcoderAngle", Math.toDegrees(backLeft.getCANcoderRadians()));
+    SmartDashboard.putNumber("BackRightCANcoderAngle", Math.toDegrees(backRight.getCANcoderRadians()));
 
     SmartDashboard.putNumber("FrontLeftMotorEncoderAngle", frontLeft.getSteerMotorEncoderAngle());
     SmartDashboard.putNumber("FrontRightMotorEncoderAngle", frontRight.getSteerMotorEncoderAngle());
     SmartDashboard.putNumber("BackLeftMotorEncoderAngle", backLeft.getSteerMotorEncoderAngle());
     SmartDashboard.putNumber("BackRightMotorEncoderAngle", backRight.getSteerMotorEncoderAngle());
-  }
-
-  /**
-   * Sets the swerve module states
-   * 
-   * @param desiredStates the desired swerve module states
-   */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    // Ensures all wheels obey max speed
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
-    // Sets the swerve modules to their desired states using optimization method
-    frontLeft.setDesiredState(desiredStates[0]);
-    frontRight.setDesiredState(desiredStates[1]);
-    backLeft.setDesiredState(desiredStates[2]);
-    backRight.setDesiredState(desiredStates[3]);
-  }
-
-  public void resetEncoders() {
-    frontLeft.resetEncoders();
-    frontRight.resetEncoders();
-    backLeft.resetEncoders();
-    backRight.resetEncoders();
   }
 
 }

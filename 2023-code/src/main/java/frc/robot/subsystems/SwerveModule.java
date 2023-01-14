@@ -4,15 +4,19 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -36,6 +40,9 @@ public class SwerveModule extends SubsystemBase {
     new TrapezoidProfile.Constraints(DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
     DriveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED));
 
+  private SimpleMotorFeedforward driveFeedforward;
+  private SimpleMotorFeedforward steerFeedforward;
+
   private double referenceVoltage = 0;
   private double referenceAngle = 0;
 
@@ -58,17 +65,33 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.setNeutralMode(NeutralMode.Brake);
     steerMotor.setNeutralMode(NeutralMode.Brake);
 
+    driveMotor.config_kP(0, ModuleConstants.MODULE_DRIVE_P);
+    driveMotor.config_kI(0, ModuleConstants.MODULE_DRIVE_I);
+    driveMotor.config_kD(0, ModuleConstants.MODULE_DRIVE_D);
+
+    driveMotor.config_kP(0, ModuleConstants.MODULE_STEER_P);
+    driveMotor.config_kI(0, ModuleConstants.MODULE_STEER_I);
+    driveMotor.config_kD(0, ModuleConstants.MODULE_STEER_D);
+
     steerEncoder.configFactoryDefault();
 
     steerEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
     steerEncoder.configSensorDirection(true); // Clockwise
     steerEncoder.configMagnetOffset(angleOffset); //TODO check method, may not be correct
+    steerEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 
     driveMotor.configNeutralDeadband(0.02); //TODO determine experimentally
     steerMotor.configNeutralDeadband(0.02);
 
     driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 0, 1)); //TODO verify current limit for drive and steer motors
     steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 0, 1));
+
+    steeringPIDController.enableContinuousInput(0, 2 * Math.PI);
+
+    driveFeedforward = new SimpleMotorFeedforward(
+      DriveConstants.S_VOLTS,
+      DriveConstants.V_VOLT_SECONDS_PER_METER,
+      DriveConstants.A_VOLT_SECONDS_SQUARED_PER_METER);
   }
 
   @Override
@@ -129,12 +152,13 @@ public class SwerveModule extends SubsystemBase {
     return Math.toRadians(steerEncoder.getAbsolutePosition());
   }
 
+  /**
+   * Returns the drive motor distance using calculation for distance per encoder count
+   * 
+   * @return drive motor distance in meters
+   */
   public double getDriveMotorDistance() {
     return driveMotor.getSelectedSensorPosition() * DriveConstants.DISTANCE_PER_ENCODER_COUNT;
-  }
-
-  public double getSteerEncoderDistance() {
-    return steerEncoder.getPosition();
   }
 
   /**
@@ -143,7 +167,7 @@ public class SwerveModule extends SubsystemBase {
    * @return drive encoder velocity in meters per second
    */
   public double getDriveEncoderVelocity() {
-    return driveMotor.getSelectedSensorVelocity() * 1000 * DriveConstants.DISTANCE_PER_ENCODER_COUNT;
+    return driveMotor.getSelectedSensorVelocity() * 10 * DriveConstants.DISTANCE_PER_ENCODER_COUNT;
   }
 
   /**
@@ -153,7 +177,7 @@ public class SwerveModule extends SubsystemBase {
    * @return current SwerveModulePosition
    */
   public SwerveModulePosition getModulePosition() {
-    return new SwerveModulePosition(getDriveMotorDistance(), new Rotation2d(getSteerEncoderDistance()));
+    return new SwerveModulePosition(getDriveMotorDistance(), new Rotation2d(getReferenceAngle()));
   }
 
   /**
@@ -163,16 +187,16 @@ public class SwerveModule extends SubsystemBase {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the desired state to avoid spinning modules more than 90 degrees
-    SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getSteerEncoderDistance()));
+    SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getReferenceAngle()));
 
-    // Calculate drive output from drive PID controller
-    final double driveOutput = drivePIDController.calculate(getDriveEncoderVelocity(), state.speedMetersPerSecond);
+    // Calculate percent of max drive velocity
+    double driveOutput = state.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
     // Calculate steer motor output from turning PID controller
-    final double steerOutput = steeringPIDController.calculate(getSteerEncoderDistance(), state.angle.getRadians());
+    final double steerOutput = steeringPIDController.calculate(getReferenceAngle(), state.angle.getRadians());
 
     // Apply PID outputs
-    driveMotor.set(driveOutput);
+    driveMotor.set(ControlMode.PercentOutput, driveOutput);
     steerMotor.set(steerOutput);
   }
 

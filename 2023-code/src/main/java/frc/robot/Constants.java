@@ -58,6 +58,7 @@ public final class Constants {
   }
 
   public static class ModuleConstants {
+    //TODO update on competition robot
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
     public static final int FRONT_LEFT_MODULE_STEER_CAN_ID = 13;
     public static final int FRONT_LEFT_MODULE_ENCODER_CAN_ID = 13;
@@ -78,7 +79,7 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_ENCODER_CAN_ID = 15;
     public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -Math.toRadians(352.5);
 
-    public static final double MODULE_DRIVE_P = 0.003; //TODO update with correct values
+    public static final double MODULE_DRIVE_P = 0.208; //TODO update with correct values
     public static final double MODULE_DRIVE_I = 0; //TODO update with correct values
     public static final double MODULE_DRIVE_D = 0; //TODO update with correct values
 

@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -33,8 +34,6 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDriveOdometry odometry;
 
   private ChassisSpeeds chassisSpeeds;
-
-  private SimpleMotorFeedforward feedforward;
   
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -128,7 +127,12 @@ public class DriveSubsystem extends SubsystemBase {
    * @param ySpeed speed in meters per second in the y direction (forward and backward)
    * @param rotation rotational speed in radians per second
    */
-  public void drive(double xSpeed, double ySpeed, double rotation) {
+  public void drive(double xSpeedInput, double ySpeedInput, double rotationInput) {
+    // Set speed as a percentage of our max velocity
+    double xSpeed = xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
     // Sets field relative speeds
     var swerveModuleStates = 
       swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation()));
@@ -139,6 +143,22 @@ public class DriveSubsystem extends SubsystemBase {
       frontRight.setDesiredState(swerveModuleStates[1]);
       backLeft.setDesiredState(swerveModuleStates[2]);
       backRight.setDesiredState(swerveModuleStates[3]);
+
+    SmartDashboard.putNumber("FrontLeftDriveVelocity", swerveModuleStates[0].speedMetersPerSecond);
+    SmartDashboard.putNumber("FrontRightDriveVelocity", swerveModuleStates[1].speedMetersPerSecond);
+    SmartDashboard.putNumber("BackLeftDriveVelocity", swerveModuleStates[2].speedMetersPerSecond);
+    SmartDashboard.putNumber("BackRightDriveVelocity", swerveModuleStates[3].speedMetersPerSecond);
+
+    SmartDashboard.putNumber("FrontLeftAngle", swerveModuleStates[0].angle.getDegrees());
+    SmartDashboard.putNumber("FrontRightAngle", swerveModuleStates[1].angle.getDegrees());
+    SmartDashboard.putNumber("BackLeftAngle", swerveModuleStates[2].angle.getDegrees());
+    SmartDashboard.putNumber("BackRightAngle", swerveModuleStates[3].angle.getDegrees());
+
+    SmartDashboard.putNumber("FrontLeftSet", frontLeft.getDriveEncoderVelocity());
+    SmartDashboard.putNumber("FrontRightSet", frontRight.getDriveEncoderVelocity());
+    SmartDashboard.putNumber("BackLeftSet", backLeft.getDriveEncoderVelocity());
+    SmartDashboard.putNumber("BackRightSet", backRight.getDriveEncoderVelocity());
+
   }
 
   /**

@@ -56,7 +56,7 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.configFactoryDefault();
     steerMotor.configFactoryDefault();
 
-    driveMotor.setInverted(true);
+    driveMotor.setInverted(false);
     steerMotor.setInverted(true);
 
     driveMotor.setNeutralMode(NeutralMode.Brake);

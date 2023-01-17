@@ -85,7 +85,7 @@ public final class Constants {
     public static final double MODULE_DRIVE_I = 0; //TODO update with correct values
     public static final double MODULE_DRIVE_D = 0; //TODO update with correct values
 
-    public static final double MODULE_STEER_P = 0.0587; //TODO update with correct values .015
+    public static final double MODULE_STEER_P = 0.0387; //TODO update with correct values .015
     public static final double MODULE_STEER_I = 0; //TODO update with correct values
     public static final double MODULE_STEER_D = 0; //TODO update with correct values
   }

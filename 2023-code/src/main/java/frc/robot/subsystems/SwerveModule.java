@@ -33,15 +33,15 @@ public class SwerveModule extends SubsystemBase {
   private final CANCoder steerEncoder;
 
   private final ProfiledPIDController steeringPIDController = new ProfiledPIDController(
-    ModuleConstants.MODULE_STEER_P,
-    ModuleConstants.MODULE_STEER_I,
-    ModuleConstants.MODULE_STEER_D,
-    new TrapezoidProfile.Constraints(DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND, 
-    DriveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED));
+      ModuleConstants.MODULE_STEER_P,
+      ModuleConstants.MODULE_STEER_I,
+      ModuleConstants.MODULE_STEER_D,
+      new TrapezoidProfile.Constraints(DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
+          DriveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED));
 
-  //TODO Add FeedForward for steer and drive motors
+  // TODO Add FeedForward for steer and drive motors
 
-  //TODO Maybe used for testing
+  // TODO Maybe used for testing
   private double referenceVoltage = 0;
   private double referenceAngle = 0;
 
@@ -64,12 +64,12 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-    //For velocity control
+    // For velocity control
     driveMotor.config_kP(0, ModuleConstants.MODULE_DRIVE_P);
     driveMotor.config_kI(0, ModuleConstants.MODULE_DRIVE_I);
     driveMotor.config_kD(0, ModuleConstants.MODULE_DRIVE_D);
 
-    //For position control
+    // For position control
     steerMotor.config_kP(0, ModuleConstants.MODULE_STEER_P);
     steerMotor.config_kI(0, ModuleConstants.MODULE_STEER_I);
     steerMotor.config_kD(0, ModuleConstants.MODULE_STEER_D);
@@ -81,16 +81,16 @@ public class SwerveModule extends SubsystemBase {
     steerEncoder.configMagnetOffset(angleOffset);
     steerEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 
-    driveMotor.configNeutralDeadband(0.02); //TODO determine experimentally
+    driveMotor.configNeutralDeadband(0.02); // TODO determine experimentally
     steerMotor.configNeutralDeadband(0.02);
 
-    driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 0, 1)); //TODO verify current limit for drive and steer motors
+    driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 0, 1)); // TODO verify current
     steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 0, 1));
 
     setSteerMotorToAbsolute();
 
-    //TODO remove if not using
-    steeringPIDController.enableContinuousInput(0, 2 * Math.PI); 
+    // TODO remove if not using
+    steeringPIDController.enableContinuousInput(0, 2 * Math.PI);
   }
 
   @Override
@@ -106,8 +106,8 @@ public class SwerveModule extends SubsystemBase {
    * @return drive motor velocity in meters per second
    */
   public double getDriveMotorVelocity() {
-    return ((driveMotor.getSelectedSensorVelocity() / DriveConstants.GEAR_RATIO_MOTOR_TO_WHEEL) * 
-      (10.0 / DriveConstants.COUNTS_PER_ROTATION) * DriveConstants.WHEEL_CIRCUMFERENCE);
+    return ((driveMotor.getSelectedSensorVelocity() / DriveConstants.GEAR_RATIO_MOTOR_TO_WHEEL) *
+        (10.0 / DriveConstants.COUNTS_PER_ROTATION) * DriveConstants.WHEEL_CIRCUMFERENCE);
   }
 
   /**
@@ -120,7 +120,8 @@ public class SwerveModule extends SubsystemBase {
   }
 
   /**
-   * Returns the drive motor distance using calculation for distance per encoder count
+   * Returns the drive motor distance using calculation for distance per encoder
+   * count
    * 
    * @return drive motor distance in meters
    */
@@ -129,7 +130,8 @@ public class SwerveModule extends SubsystemBase {
   }
 
   /**
-   * Converts the drive encoder velocity from counts per 100 ms to meters per second
+   * Converts the drive encoder velocity from counts per 100 ms to meters per
+   * second
    * 
    * @return drive encoder velocity in meters per second
    */
@@ -153,7 +155,7 @@ public class SwerveModule extends SubsystemBase {
     return steerMotor.getSelectedSensorPosition() / DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
   }
 
-  // CANCODER METHODS \\ 
+  // CANCODER METHODS \\
 
   /**
    * Returns the angle measured on the CANcoder (steering encoder)
@@ -165,7 +167,8 @@ public class SwerveModule extends SubsystemBase {
   }
 
   /**
-   * Gets the module position based on distance traveled in meters for drive motor and degrees for steering motor
+   * Gets the module position based on distance traveled in meters for drive motor
+   * and degrees for steering motor
    * Used for odometry
    * 
    * @return current SwerveModulePosition
@@ -175,23 +178,23 @@ public class SwerveModule extends SubsystemBase {
   }
 
   /**
-   * Optimizes the swerve module outputs and applies the drive and steer PIDs
+   * Optimizes the swerve module outputs and applies the drive percent output and steer position
    * 
-   * @param desiredState 
+   * @param desiredState
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the desired state to avoid spinning modules more than 90 degrees
-    SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getCANcoderRadians()));
+    SwerveModuleState state = customOptimize(desiredState, new Rotation2d(getCANcoderRadians()));
+
     // Calculate percent of max drive velocity
     double driveOutput = state.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
-    // Calculate steer motor output from turning PID controller
-    double steerPositionOutput = MathUtil.inputModulus(state.angle.getDegrees(), 0.0, 360.0) * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
+    // Calculate steer motor output
+    double steerPositionOutput = state.angle.getDegrees() * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
 
     // Apply PID outputs
     driveMotor.set(ControlMode.PercentOutput, driveOutput);
-    
-    double steerError = (desiredState.angle.getDegrees() - getSteerMotorEncoderAngle());
+    steerMotor.set(ControlMode.Position, steerPositionOutput);
   }
 
   public void resetEncoders() {
@@ -199,4 +202,58 @@ public class SwerveModule extends SubsystemBase {
     steerEncoder.setPosition(0);
   }
 
+  /**
+   * From team 364
+   * 
+   * Minimize the change in heading the desired swerve module state would require
+   * by potentially
+   * reversing the direction the wheel spins. Customized from WPILib's version to
+   * include placing
+   * in appropriate scope for CTRE onboard control.
+   *
+   * @param desiredState The desired state.
+   * @param currentAngle The current module angle.
+   */
+  public static SwerveModuleState customOptimize(SwerveModuleState desiredState, Rotation2d currentAngle) {
+    double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(), desiredState.angle.getDegrees());
+    double targetSpeed = desiredState.speedMetersPerSecond;
+    double delta = targetAngle - currentAngle.getDegrees();
+    if (Math.abs(delta) > 90) {
+      targetSpeed = -targetSpeed;
+      targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
+    }
+    return new SwerveModuleState(targetSpeed, Rotation2d.fromDegrees(targetAngle));
+  }
+
+  /**
+   * From team 364
+   * 
+   * @param initialAngle Current Angle
+   * @param targetAngle     Target Angle
+   * @return Closest angle within scope
+   */
+  private static double placeInAppropriate0To360Scope(double initialAngle, double targetAngle) {
+    double lowerBound;
+    double upperBound;
+    double lowerOffset = initialAngle % 360;
+    if (lowerOffset >= 0) {
+      lowerBound = initialAngle - lowerOffset;
+      upperBound = initialAngle + (360 - lowerOffset);
+    } else {
+      upperBound = initialAngle - lowerOffset;
+      lowerBound = initialAngle - (360 + lowerOffset);
+    }
+    while (targetAngle < lowerBound) {
+      targetAngle += 360;
+    }
+    while (targetAngle > upperBound) {
+      targetAngle -= 360;
+    }
+    if (targetAngle - initialAngle > 180) {
+      targetAngle -= 360;
+    } else if (targetAngle - initialAngle < -180) {
+      targetAngle += 360;
+    }
+    return targetAngle;
+  }
 }

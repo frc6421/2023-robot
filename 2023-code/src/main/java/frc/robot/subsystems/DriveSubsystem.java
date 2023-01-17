@@ -169,9 +169,9 @@ public class DriveSubsystem extends SubsystemBase {
       SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
       // Sets the swerve modules to their desired states using optimization method
       frontLeft.setDesiredState(swerveModuleStates[0]);
-      // frontRight.setDesiredState(swerveModuleStates[1]);
-      // backLeft.setDesiredState(swerveModuleStates[2]);
-      // backRight.setDesiredState(swerveModuleStates[3]);
+      frontRight.setDesiredState(swerveModuleStates[1]);
+      backLeft.setDesiredState(swerveModuleStates[2]);
+      backRight.setDesiredState(swerveModuleStates[3]);
 
     SmartDashboard.putNumber("FrontLeftDriveVelocity", swerveModuleStates[0].speedMetersPerSecond);
     SmartDashboard.putNumber("FrontRightDriveVelocity", swerveModuleStates[1].speedMetersPerSecond);

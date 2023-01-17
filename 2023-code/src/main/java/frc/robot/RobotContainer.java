@@ -34,7 +34,7 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
         -driverController.getLeftY(),
-        driverController.getLeftX(),
+        -driverController.getLeftX(),
         driverController.getRightX()), driveSubsystem));
 
     // Configure the trigger bindings

@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -56,7 +57,7 @@ public class SwerveModule extends SubsystemBase {
     steerMotor.configFactoryDefault();
 
     driveMotor.setInverted(true);
-    steerMotor.setInverted(false);
+    steerMotor.setInverted(true);
 
     driveMotor.setNeutralMode(NeutralMode.Brake);
     steerMotor.setNeutralMode(NeutralMode.Brake);
@@ -77,7 +78,7 @@ public class SwerveModule extends SubsystemBase {
     steerMotor.configAllowableClosedloopError(0, 0.5 * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE);
 
     steerEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
-    steerEncoder.configSensorDirection(true); // Clockwise
+    steerEncoder.configSensorDirection(false); // Counter Clockwise
     steerEncoder.configMagnetOffset(angleOffset);
     steerEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 
@@ -184,7 +185,7 @@ public class SwerveModule extends SubsystemBase {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the desired state to avoid spinning modules more than 90 degrees
-    SwerveModuleState state = customOptimize(desiredState, new Rotation2d(getCANcoderRadians()));
+    SwerveModuleState state = customOptimize(desiredState, new Rotation2d(Math.toRadians(getSteerMotorEncoderAngle())));
 
     // Calculate percent of max drive velocity
     double driveOutput = state.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
@@ -255,5 +256,13 @@ public class SwerveModule extends SubsystemBase {
       targetAngle += 360;
     }
     return targetAngle;
+  }
+
+  private Rotation2d getAngle(){
+    return Rotation2d.fromDegrees(falconToDegrees(steerMotor.getSelectedSensorPosition(), DriveConstants.STEER_GEAR_RATIO));
+  }
+
+  public static double falconToDegrees(double positionCounts, double gearRatio) {
+    return positionCounts * (360.0 / (gearRatio * 2048.0));
   }
 }

@@ -60,6 +60,9 @@ public final class Constants {
   }
 
   public static class ModuleConstants {
+    //TODO update for CANivore
+    public static final String CANIVORE_NAME = "rio";
+    
     //TODO update on competition robot
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
     public static final int FRONT_LEFT_MODULE_STEER_CAN_ID = 13;

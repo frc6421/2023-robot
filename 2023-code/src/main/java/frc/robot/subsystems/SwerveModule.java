@@ -48,10 +48,10 @@ public class SwerveModule extends SubsystemBase {
 
   /** Creates a new ModuleSubsystem. */
   public SwerveModule(int driveMotorID, int steerMotorID, int steerEncoderID, double angleOffset) {
-    driveMotor = new WPI_TalonFX(driveMotorID);
-    steerMotor = new WPI_TalonFX(steerMotorID);
+    driveMotor = new WPI_TalonFX(driveMotorID, ModuleConstants.CANIVORE_NAME);
+    steerMotor = new WPI_TalonFX(steerMotorID, ModuleConstants.CANIVORE_NAME);
 
-    steerEncoder = new WPI_CANCoder(steerEncoderID);
+    steerEncoder = new WPI_CANCoder(steerEncoderID, ModuleConstants.CANIVORE_NAME);
 
     driveMotor.configFactoryDefault();
     steerMotor.configFactoryDefault();
@@ -103,6 +103,7 @@ public class SwerveModule extends SubsystemBase {
 
   /**
    * Returns the drive motor velocity using encoder counts
+   * Not currently used
    * 
    * @return drive motor velocity in meters per second
    */
@@ -113,6 +114,7 @@ public class SwerveModule extends SubsystemBase {
 
   /**
    * Returns the motor voltage applied to the drive motor in volts
+   * Not currently used
    * 
    * @return applied motor voltage in volts
    */
@@ -256,13 +258,5 @@ public class SwerveModule extends SubsystemBase {
       targetAngle += 360;
     }
     return targetAngle;
-  }
-
-  private Rotation2d getAngle(){
-    return Rotation2d.fromDegrees(falconToDegrees(steerMotor.getSelectedSensorPosition(), DriveConstants.STEER_GEAR_RATIO));
-  }
-
-  public static double falconToDegrees(double positionCounts, double gearRatio) {
-    return positionCounts * (360.0 / (gearRatio * 2048.0));
   }
 }

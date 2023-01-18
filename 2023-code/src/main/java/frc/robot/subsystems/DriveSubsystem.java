@@ -4,11 +4,8 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
-
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -34,8 +31,6 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDriveKinematics swerveKinematics;
 
   private final SwerveDriveOdometry odometry;
-
-  private ChassisSpeeds chassisSpeeds;
   
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {

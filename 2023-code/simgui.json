@@ -1,0 +1,31 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "CANCoder[11]": {
+        "header": {
+          "open": true
+        }
+      },
+      "CANCoder[13]": {
+        "header": {
+          "open": true
+        }
+      },
+      "CANCoder[15]": {
+        "header": {
+          "open": true
+        }
+      },
+      "CANCoder[17]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo"
+    }
+  }
+}

@@ -97,4 +97,19 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
   }
 
+  public static class ArmConstants 
+  {
+    public static final int ARM_CAN_ID = 40; //TODO: Find arm CANID
+
+    public static final int ARM_FF = 0; //TODO: Find Feed Forward value
+    
+    public static final double ARM_P = 0;//TODO: Find P value
+    public static final double ARM_I = 0;
+    public static final double ARM_D = 0;
+
+    public static final float ARM_SOFT_LIMIT = 0.0f;
+
+    public static final double DEGREES_PER_MOTOR_ROTATION = 1.0; //TODO: Find how many degrees the arm rotates per motor rotation
+  }
+
 }

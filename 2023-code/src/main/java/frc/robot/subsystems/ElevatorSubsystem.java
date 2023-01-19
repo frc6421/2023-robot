@@ -11,6 +11,8 @@ import frc.robot.Constants.ElevatorConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
+    
+    //TODO IMPORTANT: SPARK MAX POSITION IN ROTATIONS
 
     private CANSparkMax elevatorMotor;
     private SparkMaxPIDController elevatorPIDController;
@@ -27,11 +29,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorMotor.restoreFactoryDefaults();
 
         elevatorEncoder = elevatorMotor.getEncoder();
-        elevatorEncoder.setPosition(0);
+        elevatorEncoder.setPosition(0); //TODO Verify start position
     
         elevatorMotor.setIdleMode(IdleMode.kBrake); 
-
-        elevatorPIDController = elevatorMotor.getPIDController();
   
         elevatorPIDController.setFeedbackDevice(elevatorEncoder);
 
@@ -42,8 +42,11 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         elevatorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
+        // PID \\
         positionMaxOutput = 1; 
         positionMinOutput = -1;
+
+        elevatorPIDController = elevatorMotor.getPIDController();
 
         elevatorPIDController.setP(ElevatorConstants.ELEVATOR_P);
         elevatorPIDController.setI(ElevatorConstants.ELEVATOR_I);
@@ -51,11 +54,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPIDController.setFF(ElevatorConstants.ELEVATOR_FF);
         elevatorPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
     }
+
     @Override
     public void periodic()
     {
         // May be used later
     }
+
+    // MOTOR PID \\
     public void setPosition() 
     {
         elevatorPIDController.setReference(0, CANSparkMax.ControlType.kPosition);
@@ -70,6 +76,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
 
+    // ENCODER \\
     public static double getElevatorEncoderPosition()
     {
         return elevatorEncoder.getPosition();

@@ -102,6 +102,8 @@ public final class Constants {
     public static final double ELEVATOR_FF = 0; //TODO update with correct values
 
     public static final float ELEVATOR_SOFT_LIMIT = 0f; //TODO update with correct values
+
+    public static final double ELEVATOR_GEAR_RATIO = 15;
   }
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;

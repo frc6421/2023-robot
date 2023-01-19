@@ -109,7 +109,19 @@ public final class Constants {
 
     public static final float ARM_SOFT_LIMIT = 0.0f;
 
-    public static final double DEGREES_PER_MOTOR_ROTATION = 1.0; //TODO: Find how many degrees the arm rotates per motor rotation
+
+    public static final double ARM_GEAR_RATIO = 120.0;
+
+    /**
+     * Calculated degrees arm moves per motor rotation from 360 / gear ratio
+     */
+    public static final double DEGREES_PER_MOTOR_ROTATION = (360 / ARM_GEAR_RATIO);
+
+    public static final float ARM_BOTTOM_SOFT_LIMIT = 0;
+
+    public static final int ARM_TOP_SOFT_LIMIT = 0;
+
+    public static final double ARM_MAX_TEST_PERCENT_OUTPUT = 0.15;
   }
 
 }

@@ -5,7 +5,9 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -25,11 +27,19 @@ public class RobotContainer {
   // Set up controller with CommandXboxController
   private final CommandXboxController driverController;
 
+  private final ArmSubsystem armSubsystem;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driveSubsystem = new DriveSubsystem();
 
+    armSubsystem = new ArmSubsystem();
+
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+
+    
+
+
 
     SmartDashboard.putNumber("LeftY", driverController.getLeftY());
     SmartDashboard.putNumber("LeftX", driverController.getLeftX());
@@ -41,6 +51,8 @@ public class RobotContainer {
         driverController.getLeftX(),
         driverController.getRightX()), driveSubsystem));
 
+    //TODO: Testing purposes only
+    armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(driverController.getRightY()), armSubsystem));
     // Configure the trigger bindings
     configureBindings();
   }

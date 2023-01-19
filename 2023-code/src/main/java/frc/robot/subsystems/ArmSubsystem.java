@@ -7,11 +7,15 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 
-public class ArmSubsystem extends SubsystemBase{
-    
+public class ArmSubsystem extends SubsystemBase
+{
+
+    //TODO: !IMPORTANT! SPARKMAX POSITION IN ROTATIONS
+
     private CANSparkMax armMotor;
     private SparkMaxPIDController armPIDController;
     public static RelativeEncoder armEncoder;
@@ -29,24 +33,29 @@ public class ArmSubsystem extends SubsystemBase{
         armMotor.restoreFactoryDefaults();
 
         armEncoder = armMotor.getEncoder();
-        armEncoder.setPosition(0);
+        armEncoder.setPositionConversionFactor(ArmConstants.DEGREES_PER_MOTOR_ROTATION); //TODO: Verify this is not totally wrong
+        armEncoder.setPosition(0); //TODO: Verify start position
 
     
         armMotor.setIdleMode(IdleMode.kBrake);
 
-        armPIDController = armMotor.getPIDController();
   
         armPIDController.setFeedbackDevice(armEncoder);
 
-        armMotor.setSoftLimit(SoftLimitDirection.kForward, ArmConstants.ARM_SOFT_LIMIT);
-        armMotor.setSoftLimit(SoftLimitDirection.kReverse, -ArmConstants.ARM_SOFT_LIMIT);
+
+        armMotor.setSoftLimit(SoftLimitDirection.kForward, ArmConstants.ARM_TOP_SOFT_LIMIT);
+        armMotor.setSoftLimit(SoftLimitDirection.kReverse, ArmConstants.ARM_BOTTOM_SOFT_LIMIT);
     
         armMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         armMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
+
         //// PID ////
-        positionMaxOutput = 1; 
         positionMinOutput = -1;
+        positionMaxOutput = 1; 
+        
+
+        armPIDController = armMotor.getPIDController();
 
         armPIDController.setP(ArmConstants.ARM_P);
         armPIDController.setI(ArmConstants.ARM_I);
@@ -61,6 +70,10 @@ public class ArmSubsystem extends SubsystemBase{
     {
         // Might be needed to update FF based on angle
     }
+
+
+    ////MOTOR AND PID METHODS////
+    
     /**
     * Sets motor position to zero
     */
@@ -78,13 +91,42 @@ public class ArmSubsystem extends SubsystemBase{
         armPIDController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
 
+    /**
+     * Sets the arm to a specified angle
+     * @param angle The angle in degrees to set the arm to
+     */
     public void setArmAngle(double angle) 
     {
-        armPIDController.setReference(angle / ArmConstants.DEGREES_PER_MOTOR_ROTATION, CANSparkMax.ControlType.kPosition);
+        armPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
     }
 
-    public static double getArmEncoderPosition()
+    /**
+     * Sets the arm to a specified percent output based on controller input
+     * Currently has a max of 15% arm power
+     * @param controllerValue The value passed in by a controller joystick
+     */
+    public void setPercentArmPower(double controllerValue)
+    {
+        armPIDController.setReference(controllerValue * ArmConstants.ARM_MAX_TEST_PERCENT_OUTPUT, CANSparkMax.ControlType.kVelocity);
+    
+        SmartDashboard.putNumber("SetPoint", controllerValue);
+        SmartDashboard.putNumber("ProcessVariable", armEncoder.getVelocity());
+    }
+
+    
+    ////ENCODER METHODS////
+
+    /**
+     * Returns the position of the arm in degrees
+     * @return Arm position in degrees
+     */
+    public static double getArmDegreePosition()
     {
         return armEncoder.getPosition();
     }
+
+
+    ////TEST METHODS////
+
+    
 }

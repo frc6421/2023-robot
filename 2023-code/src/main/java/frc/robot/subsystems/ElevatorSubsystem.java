@@ -40,8 +40,6 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorEncoder.setPosition(0); //TODO Verify start position
     
         elevatorMotor.setIdleMode(IdleMode.kBrake); 
-  
-        elevatorPIDController.setFeedbackDevice(elevatorEncoder);
 
         // Set soft limits
         elevatorMotor.setSoftLimit(SoftLimitDirection.kForward, ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS);
@@ -55,6 +53,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         positionMinOutput = -1;
 
         elevatorPIDController = elevatorMotor.getPIDController();
+
+        elevatorPIDController.setFeedbackDevice(elevatorEncoder);
 
         elevatorPIDController.setP(ElevatorConstants.ELEVATOR_P);
         elevatorPIDController.setI(ElevatorConstants.ELEVATOR_I);

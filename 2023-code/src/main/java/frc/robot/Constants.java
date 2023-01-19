@@ -102,11 +102,15 @@ public final class Constants {
 
     public static final double ELEVATOR_FF = 0; //TODO update with correct values
 
-    public static final float ELEVATOR_SOFT_LIMIT = 0f; //TODO update with correct values
-
     public static final double ELEVATOR_GEAR_RATIO = 15;
 
     public static final double ELEVATOR_MAX_PRECENT = 0.15; //TODO update as needed
+
+    public static final double ELEVATOR_MAX_POS_IN = 20.5;
+    public static final double ELEVATOR_MIN_POS_IN = 0;
+
+    public static final float ELEVATOR_FORWARD_SOFT_LIMIT_METERS = (float)Units.inchesToMeters(ELEVATOR_MAX_POS_IN); //TODO update with correct values
+    public static final float ELEVATOR_REVERSE_SOFT_LIMIT = 0f; //TODO update with correct values
 
     /**
      *  In meters

@@ -2,12 +2,13 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.ElevatorConstants;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,6 +25,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     
     private double elevatorPositionInMeters;
 
+    private ShuffleboardTab elevatorTab;
+
       /** Creates a new ElevatorSubsystem. */
     public ElevatorSubsystem()
     {
@@ -33,7 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         elevatorEncoder = elevatorMotor.getEncoder();
         // Degrees per motor rotation
-        //elevatorEncoder.setPositionConversionFactor(360/ElevatorConstants.ELEVATOR_GEAR_RATIO);
+        elevatorEncoder.setPositionConversionFactor(ElevatorConstants.ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE / ElevatorConstants.ELEVATOR_GEAR_RATIO);
         elevatorEncoder.setPosition(0); //TODO Verify start position
     
         elevatorMotor.setIdleMode(IdleMode.kBrake); 
@@ -41,8 +44,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPIDController.setFeedbackDevice(elevatorEncoder);
 
         // Set soft limits
-        elevatorMotor.setSoftLimit(SoftLimitDirection.kForward, ElevatorConstants.ELEVATOR_SOFT_LIMIT);
-        elevatorMotor.setSoftLimit(SoftLimitDirection.kReverse, -ElevatorConstants.ELEVATOR_SOFT_LIMIT);
+        elevatorMotor.setSoftLimit(SoftLimitDirection.kForward, ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS);
+        elevatorMotor.setSoftLimit(SoftLimitDirection.kReverse, ElevatorConstants.ELEVATOR_REVERSE_SOFT_LIMIT);
 
         elevatorMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         elevatorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
@@ -58,6 +61,9 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPIDController.setD(ElevatorConstants.ELEVATOR_D);
         elevatorPIDController.setFF(ElevatorConstants.ELEVATOR_FF);
         elevatorPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
+
+        elevatorTab = Shuffleboard.getTab("Elevator Tab");
+        elevatorTab.add("Encoder Position: ", elevatorEncoder.getPosition());
     }
 
     @Override
@@ -67,7 +73,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     // MOTOR PID \\
-    public void setPosition() 
+    public void setElevatorPosition() 
     {
         elevatorPIDController.setReference(0, CANSparkMax.ControlType.kPosition);
     }
@@ -76,7 +82,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      * Sets position to given input
      * @param position the position to set motor to
      */
-    public void setPosition(double position)
+    public void setElevatorPosition(double position)
     {
         elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
@@ -88,23 +94,15 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
     public void setElevatorWithPercent(double controlerValue)
     {
-        elevatorPIDController.setReference(controlerValue * ElevatorConstants.ELEVATOR_MAX_PRECENT, CANSparkMax.ControlType.kVelocity);
-    
-        SmartDashboard.putNumber("SetPoint", controlerValue);
-        SmartDashboard.putNumber("ProcessVariable", elevatorEncoder.getVelocity());
+        elevatorMotor.set(controlerValue * ElevatorConstants.ELEVATOR_MAX_PRECENT);
     } 
 
     // ENCODER \\
     public double getElelvatorPositionInMeters()
     {
         elevatorPositionInMeters = getElevatorEncoderPosition()*ElevatorConstants.ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE;
+        
         return elevatorPositionInMeters;
-    }
-
-    public void setElevatorPositionInMeters(double meterPos)
-    {
-        //elevatorPositionInMeters = getElevatorEncoderPosition()*ElevatorConstants.ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE;
-        elevatorPIDController.setReference((meterPos * ElevatorConstants.ELEVATOR_GEAR_RATIO) / ElevatorConstants.ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE, CANSparkMax.ControlType.kPosition);
     }
 
     public static double getElevatorEncoderPosition()

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -106,6 +107,11 @@ public final class Constants {
     public static final double ELEVATOR_GEAR_RATIO = 15;
 
     public static final double ELEVATOR_MAX_PRECENT = 0.15; //TODO update as needed
+
+    /**
+     *  In meters
+     */
+    public static final double ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE = (Units.inchesToMeters(1.7567)*Math.PI);
   }
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;

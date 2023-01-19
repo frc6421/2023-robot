@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -19,7 +20,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     public static RelativeEncoder elevatorEncoder;
 
     private double positionMaxOutput; 
-    private double positionMinOutput;  
+    private double positionMinOutput;
+    
+    private double elevatorPositionInMeters;
 
       /** Creates a new ElevatorSubsystem. */
     public ElevatorSubsystem()
@@ -29,6 +32,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorMotor.restoreFactoryDefaults();
 
         elevatorEncoder = elevatorMotor.getEncoder();
+        // Degrees per motor rotation
+        //elevatorEncoder.setPositionConversionFactor(360/ElevatorConstants.ELEVATOR_GEAR_RATIO);
         elevatorEncoder.setPosition(0); //TODO Verify start position
     
         elevatorMotor.setIdleMode(IdleMode.kBrake); 
@@ -90,6 +95,18 @@ public class ElevatorSubsystem extends SubsystemBase {
     } 
 
     // ENCODER \\
+    public double getElelvatorPositionInMeters()
+    {
+        elevatorPositionInMeters = getElevatorEncoderPosition()*ElevatorConstants.ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE;
+        return elevatorPositionInMeters;
+    }
+
+    public void setElevatorPositionInMeters(double meterPos)
+    {
+        //elevatorPositionInMeters = getElevatorEncoderPosition()*ElevatorConstants.ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE;
+        elevatorPIDController.setReference((meterPos * ElevatorConstants.ELEVATOR_GEAR_RATIO) / ElevatorConstants.ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE, CANSparkMax.ControlType.kPosition);
+    }
+
     public static double getElevatorEncoderPosition()
     {
         return elevatorEncoder.getPosition();

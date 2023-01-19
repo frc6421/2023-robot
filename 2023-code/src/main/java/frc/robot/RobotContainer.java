@@ -47,7 +47,7 @@ public class RobotContainer {
         driverController.getRightX()), driveSubsystem));
     
     elevatorSubsystem.setDefaultCommand(new RunCommand(() -> 
-      elevatorSubsystem.setElevatorPosition(driverController.getRightY()))
+      elevatorSubsystem.setElevatorPosition(driverController.getRightY()), elevatorSubsystem)
     );
 
     // Configure the trigger bindings

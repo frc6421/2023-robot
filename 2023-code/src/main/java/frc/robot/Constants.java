@@ -93,7 +93,7 @@ public final class Constants {
     public static final double MODULE_STEER_D = 0; //TODO update with correct values
   }
   public static class ElevatorConstants{
-    public static final int ELEVATOR_MOTOR_CAN_ID = 50; //TODO Update to value between 50-59
+    public static final int ELEVATOR_MOTOR_CAN_ID = 50; 
 
     public static final double ELEVATOR_P = 0; //TODO update with correct values
     public static final double ELEVATOR_I = 0; //TODO update with correct values
@@ -104,6 +104,8 @@ public final class Constants {
     public static final float ELEVATOR_SOFT_LIMIT = 0f; //TODO update with correct values
 
     public static final double ELEVATOR_GEAR_RATIO = 15;
+
+    public static final double ELEVATOR_MAX_PRECENT = 0.15; //TODO update as needed
   }
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;

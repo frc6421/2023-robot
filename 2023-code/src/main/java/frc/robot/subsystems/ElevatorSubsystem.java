@@ -7,7 +7,7 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.ElevatorConstants;
-
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -75,6 +75,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     {
         elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
+
+    /**
+     * Sets the controler to move with a certin max percentage
+     * Current max is 15%
+     * @param controlerValue
+     */
+    public void setElevatorWithPercent(double controlerValue)
+    {
+        elevatorPIDController.setReference(controlerValue * ElevatorConstants.ELEVATOR_MAX_PRECENT, CANSparkMax.ControlType.kVelocity);
+    
+        SmartDashboard.putNumber("SetPoint", controlerValue);
+        SmartDashboard.putNumber("ProcessVariable", elevatorEncoder.getVelocity());
+    } 
 
     // ENCODER \\
     public static double getElevatorEncoderPosition()

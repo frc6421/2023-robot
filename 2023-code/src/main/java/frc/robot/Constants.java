@@ -97,4 +97,15 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
   }
 
+  public static class IntakeConstants {
+    public static final int leftIntakeMotorID = 20;
+    public static final int rightIntakeMotorID = 21; 
+
+    //TODO confer with other programmers for CAN and pneumatics
+    public static final int leftPistonForwardChannel = 0;
+    public static final int leftPistonReverseChannel = 1;
+    public static final int rightPistonForwardChannel = 2;
+    public static final int rightPistonReverseChannel = 3;
+  }
+
 }

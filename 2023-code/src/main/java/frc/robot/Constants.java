@@ -98,19 +98,19 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int leftIntakeMotorID = 20;
-    public static final int rightIntakeMotorID = 21; 
+    public static final int LEFT_INTAKE_MOTOR_ID = 20;
+    public static final int RIGHT_INTAKE_MOTOR_ID = 21; 
 
     //TODO confer with other programmers for CAN and pneumatics
-    public static final int leftPistonForwardChannel = 0;
-    public static final int leftPistonReverseChannel = 1;
-    public static final int rightPistonForwardChannel = 2;
-    public static final int rightPistonReverseChannel = 3;
+    public static final int LEFT_PISTON_FORWARD_CHANNEL = 0;
+    public static final int LEFT_PISTON_REVERSE_CHANNEL = 1;
+    public static final int RIGHT_PISTON_FORWARD_CHANNEL = 2;
+    public static final int RIGHT_PISTON_REVERSE_CHANNEL = 3;
   }
 
   public static class GrabberConstants {
-    public static final int forwardChannel = 4;
-    public static final int reverseChannel = 5;
+    public static final int FORWARD_CHANNEL = 4;
+    public static final int REVERSE_CHANNEL = 5;
   }
 
 }

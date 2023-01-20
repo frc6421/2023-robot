@@ -7,8 +7,11 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.ElevatorConstants;
+import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -26,6 +29,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double elevatorPositionInMeters;
 
     private ShuffleboardTab elevatorTab;
+    private GenericEntry elevatorPositionEntry;
+    private GenericEntry elevatorFFEntry;
+
+    private SendableChooser FFTest;
 
       /** Creates a new ElevatorSubsystem. */
     public ElevatorSubsystem()
@@ -33,6 +40,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorMotor = new CANSparkMax(ElevatorConstants.ELEVATOR_MOTOR_CAN_ID, MotorType.kBrushless);
 
         elevatorMotor.restoreFactoryDefaults();
+
+        elevatorMotor.setInverted(true);
 
         elevatorEncoder = elevatorMotor.getEncoder();
         // Degrees per motor rotation
@@ -63,13 +72,18 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
 
         elevatorTab = Shuffleboard.getTab("Elevator Tab");
-        elevatorTab.add("Encoder Position: ", elevatorEncoder.getPosition());
+        elevatorPositionEntry = elevatorTab.add("Encoder Position: ", 0) 
+            .getEntry();
+        elevatorFFEntry = elevatorTab.add("Feed forward: ", 0)
+            .getEntry();
+        
     }
 
     @Override
     public void periodic()
     {
         // May be used later
+        elevatorPositionEntry.setDouble(getElevatorEncoderPosition());
     }
 
     // MOTOR PID \\
@@ -84,7 +98,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
     public void setElevatorPosition(double position)
     {
-        elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition);
+        elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition, 0, .02375);
     }
 
     /**

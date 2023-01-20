@@ -57,6 +57,8 @@ public final class Constants {
     public static final double S_VOLTS = 0.60043;
     public static final double V_VOLT_SECONDS_PER_METER = 2.2591;
     public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.17289;
+
+    public static final double DRIVE_SLEW_RATE = 5;
   }
 
   public static class ModuleConstants {

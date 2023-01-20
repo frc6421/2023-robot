@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -25,11 +28,19 @@ public class RobotContainer {
   // Set up controller with CommandXboxController
   private final CommandXboxController driverController;
 
+  // Creates a sendable chooser on smartdashboard to select the desired control system
+  private SendableChooser<String> controlSystem;
+
+  // Creates the slew rate to slowly accelerate controler inputs
+  private SlewRateLimiter driveSlewRate;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driveSubsystem = new DriveSubsystem();
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+
+    driveSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
 
     SmartDashboard.putNumber("LeftY", driverController.getLeftY());
     SmartDashboard.putNumber("LeftX", driverController.getLeftX());
@@ -37,10 +48,16 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
-        driverController.getLeftY(),
-        driverController.getLeftX(),
-        driverController.getRightX()), driveSubsystem));
+        driveSlewRate.calculate(driverController.getLeftY()),
+        driveSlewRate.calculate(driverController.getLeftX()),
+        driveSlewRate.calculate(driverController.getRightX())), driveSubsystem));
 
+    controlSystem = new SendableChooser<>();
+
+    //Sendable chooser to set driver controls
+    //TODO finish and implement last
+    controlSystem.setDefaultOption("Lizzy Controls", "lizzyDriving");
+    controlSystem.addOption("Ian Controls", "ianDriving");
     // Configure the trigger bindings
     configureBindings();
   }

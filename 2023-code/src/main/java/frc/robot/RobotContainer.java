@@ -33,7 +33,6 @@ public class RobotContainer {
 
   // Creates the slew rate to slowly accelerate controler inputs
   private SlewRateLimiter driveSlewRate;
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driveSubsystem = new DriveSubsystem();
@@ -48,9 +47,10 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
-        driveSlewRate.calculate(driverController.getLeftY()),
-        driveSlewRate.calculate(driverController.getLeftX()),
-        driveSlewRate.calculate(driverController.getRightX())), driveSubsystem));
+        driverController.getLeftY(),
+        driverController.getLeftX(),
+        driverController.getRightX(), 
+        driveSlewRate.calculate(driverController.getLeftTriggerAxis())), driveSubsystem));
 
     controlSystem = new SendableChooser<>();
 

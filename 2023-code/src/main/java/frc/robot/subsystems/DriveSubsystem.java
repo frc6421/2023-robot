@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -149,14 +150,15 @@ public class DriveSubsystem extends SubsystemBase {
    /**
    * Sets up our drive method
    * 
-   * @param xSpeed speed in meters per second in the x direction (left and right)
-   * @param ySpeed speed in meters per second in the y direction (forward and backward)
-   * @param rotation rotational speed in radians per second
+   * @param xSpeedInput value from -1.0 to 1.0 to convert to x-direction meters per second
+   * @param ySpeedInput value from -1.0 to 1.0 to convert to y-direction meters per second
+   * @param rotationInput value from -1.0 to 1.0 to convert to rotational speed in radians per second
+   * @param magnitude value from 0-1 returned by the trigger to set the magnitude of x and y speeds (not rotational)
    */
-  public void drive(double xSpeedInput, double ySpeedInput, double rotationInput) {
+  public void drive(double xSpeedInput, double ySpeedInput, double rotationInput, double magnitude) {
     // Set speed as a percentage of our max velocity
-    double xSpeed = xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double xSpeed = Math.signum(xSpeedInput) * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double ySpeed = Math.signum(ySpeedInput) * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     // Sets field relative speeds

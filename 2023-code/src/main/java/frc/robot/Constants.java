@@ -108,4 +108,9 @@ public final class Constants {
     public static final int rightPistonReverseChannel = 3;
   }
 
+  public static class GrabberConstants {
+    public static final int forwardChannel = 4;
+    public static final int reverseChannel = 5;
+  }
+
 }

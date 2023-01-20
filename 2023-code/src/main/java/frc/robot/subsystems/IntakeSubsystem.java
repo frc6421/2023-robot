@@ -22,6 +22,8 @@ public class IntakeSubsystem extends SubsystemBase {
   private final DoubleSolenoid leftPiston;
   private final DoubleSolenoid rightPiston;
 
+  private boolean intakeToggled;
+
   //TODO Maybe an encoder here later
 
   /** Creates a new IntakeSubsystem. */
@@ -39,6 +41,8 @@ public class IntakeSubsystem extends SubsystemBase {
     rightMotor.restoreFactoryDefaults();
     rightMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     rightMotor.setInverted(false);
+
+    intakeToggled = false;
   }
 
   @Override
@@ -47,11 +51,20 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   /**
+   * Returns the status of the intake's toggle
+   * @return true if the intake is toggled (closed) false if not toggled (open)
+   */
+  public boolean isToggled(){
+    return intakeToggled;
+  }
+
+  /**
    * Brings the intake pistons inside the robot
    */
   public void intakeIn() {
     leftPiston.set(Value.kForward);
     rightPiston.set(Value.kForward);
+    intakeToggled = false;
   }
 
   /**
@@ -60,6 +73,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void intakeOut() {
     leftPiston.set(Value.kReverse);
     rightPiston.set(Value.kReverse);
+    intakeToggled = true;
   }
 
   /**
@@ -78,5 +92,22 @@ public class IntakeSubsystem extends SubsystemBase {
   public void stopIntakeMotors(){
     leftMotor.stopMotor();
     rightMotor.stopMotor();
+  }
+
+
+  /**
+   * Toggles the intake pistons
+   */
+  public void toggleIntake(){
+    if(isToggled()){
+      leftPiston.set(Value.kForward);
+      rightPiston.set(Value.kForward);
+      intakeToggled = false;
+    }
+    else{
+      leftPiston.set(Value.kReverse);
+      rightPiston.set(Value.kReverse);
+      intakeToggled = true;
+    }
   }
 }

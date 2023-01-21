@@ -171,15 +171,15 @@ public class DriveSubsystem extends SubsystemBase {
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
       //Keep the robot from rotating when there is no rotation input
-      if(Math.abs(rotation) < ModuleConstants.PERCENT_DEADBAND){
-        if(Math.abs(getGyroRate()) < 1.0){
-          currentAngle = getGyroRotation().getDegrees();
-          rotation = angleController.calculate(currentAngle, targetAngle);
-        }
-        else{
-          targetAngle = getGyroRotation().getDegrees();
-        }
-      }
+      // if(Math.abs(rotation) < ModuleConstants.PERCENT_DEADBAND){
+      //   if(Math.abs(getGyroRate()) < 1.0){
+      //     currentAngle = getGyroRotation().getDegrees();
+      //     rotation = angleController.calculate(currentAngle, targetAngle);
+      //   }
+      //   else{
+      //     targetAngle = getGyroRotation().getDegrees();
+      //   }
+      // }
 
     // Sets field relative speeds
     var swerveModuleStates = 

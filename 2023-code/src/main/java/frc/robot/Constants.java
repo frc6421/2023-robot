@@ -59,11 +59,15 @@ public final class Constants {
     public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.17289;
 
     public static final double DRIVE_SLEW_RATE = 5;
+
+    public static final double ANGLE_CONTROLLER_KP = .014;
   }
 
   public static class ModuleConstants {
     //TODO update for CANivore
     public static final String CANIVORE_NAME = "rio";
+
+    public static final double PERCENT_DEADBAND = .02;
     
     //TODO update on competition robot
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;

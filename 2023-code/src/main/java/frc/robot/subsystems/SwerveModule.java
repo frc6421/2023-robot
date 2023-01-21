@@ -78,8 +78,8 @@ public class SwerveModule extends SubsystemBase {
     steerEncoder.configMagnetOffset(angleOffset);
     steerEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 
-    driveMotor.configNeutralDeadband(0.02); // TODO determine experimentally
-    steerMotor.configNeutralDeadband(0.02);
+    driveMotor.configNeutralDeadband(ModuleConstants.PERCENT_DEADBAND); // TODO determine experimentally
+    steerMotor.configNeutralDeadband(ModuleConstants.PERCENT_DEADBAND);
 
     driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 0, 1)); // TODO verify current
     steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 0, 1));

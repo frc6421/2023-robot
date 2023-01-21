@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -32,6 +33,11 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDriveKinematics swerveKinematics;
 
   private final SwerveDriveOdometry odometry;
+
+  private final PIDController angleController;
+
+  private double currentAngle;
+  private double targetAngle;
   
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -58,6 +64,9 @@ public class DriveSubsystem extends SubsystemBase {
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
       backRight.getModulePosition()});
+
+      //PID controller for the rotation of the robot
+      angleController = new PIDController(DriveConstants.ANGLE_CONTROLLER_KP, 0, 0);
     }
 
   @Override
@@ -160,6 +169,17 @@ public class DriveSubsystem extends SubsystemBase {
     double xSpeed = Math.signum(xSpeedInput) * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     double ySpeed = Math.signum(ySpeedInput) * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
+      //Keep the robot from rotating when there is no rotation input
+      if(Math.abs(rotation) < ModuleConstants.PERCENT_DEADBAND){
+        if(Math.abs(getGyroRate()) < 1.0){
+          currentAngle = getGyroRotation().getDegrees();
+          rotation = angleController.calculate(currentAngle, targetAngle);
+        }
+        else{
+          targetAngle = getGyroRotation().getDegrees();
+        }
+      }
 
     // Sets field relative speeds
     var swerveModuleStates = 

@@ -8,14 +8,12 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -35,7 +33,7 @@ public class RobotContainer {
 
   private ShuffleboardTab elevatorTab;
   private GenericEntry elevatorFFTestingEntry;
-  private GenericEntry elevatorPositionTestEntry;
+  // private GenericEntry elevatorPositionTestEntry;
   private GenericEntry elevatorPTestingEntry;
   
 
@@ -69,13 +67,10 @@ public class RobotContainer {
     elevatorFFTestingEntry = elevatorTab.add("Set Elevator Pos: ", 0)
       .getEntry();
     
-    //Feed forward tuning
-    //driverController.x().onTrue(new RunCommand(() -> elevatorSubsystem.setElevatorWithPercent(.02375), elevatorSubsystem));
-    //driverController.x().onFalse(new RunCommand(() -> elevatorSubsystem.setElevatorWithPercent(0), elevatorSubsystem));
-
     driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorWithPercent(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
     driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
     driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(.51), elevatorSubsystem));
+   
     // Configure the trigger bindings
     configureBindings();
   }

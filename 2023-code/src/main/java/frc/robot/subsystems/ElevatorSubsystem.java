@@ -8,11 +8,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.ElevatorConstants;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -93,6 +90,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     {
         elevatorPIDController.setReference(0, CANSparkMax.ControlType.kPosition);
     }
+    
+    public void setP(double value)
+    {
+        elevatorPIDController.setP(value, 0);
+    }
 
     /**
      * Sets position to given input
@@ -124,10 +126,5 @@ public class ElevatorSubsystem extends SubsystemBase {
     public static double getElevatorEncoderPosition()
     {
         return elevatorEncoder.getPosition();
-    }
-
-    public void setP(double value)
-    {
-        elevatorPIDController.setP(value, 0);
     }
 }

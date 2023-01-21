@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -100,7 +99,7 @@ public final class Constants {
     public static final double ELEVATOR_I = 0; //TODO update with correct values
     public static final double ELEVATOR_D = 0; //TODO update with correct values
 
-    public static final double ELEVATOR_FF = 0.02375; // 1/19/23
+    public static final double ELEVATOR_FF = 0.02375; // 1/19/23 tuned with no arm wheight
 
     public static final double ELEVATOR_GEAR_RATIO = 15;
 

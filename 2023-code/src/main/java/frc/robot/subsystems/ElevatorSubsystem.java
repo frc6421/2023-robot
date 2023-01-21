@@ -30,9 +30,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private ShuffleboardTab elevatorTab;
     private GenericEntry elevatorPositionEntry;
-    private GenericEntry elevatorFFEntry;
-
-    private SendableChooser FFTest;
+    private GenericEntry elevatorVolatgeEntry;
+    private GenericEntry elevatorPEntry;
 
       /** Creates a new ElevatorSubsystem. */
     public ElevatorSubsystem()
@@ -65,16 +64,18 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         elevatorPIDController.setFeedbackDevice(elevatorEncoder);
 
-        elevatorPIDController.setP(ElevatorConstants.ELEVATOR_P);
-        elevatorPIDController.setI(ElevatorConstants.ELEVATOR_I);
-        elevatorPIDController.setD(ElevatorConstants.ELEVATOR_D);
-        elevatorPIDController.setFF(ElevatorConstants.ELEVATOR_FF);
-        elevatorPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
+        elevatorPIDController.setP(ElevatorConstants.ELEVATOR_P, 0);
+        elevatorPIDController.setI(ElevatorConstants.ELEVATOR_I, 0);
+        elevatorPIDController.setD(ElevatorConstants.ELEVATOR_D, 0);
+        elevatorPIDController.setFF(ElevatorConstants.ELEVATOR_FF, 0);
+        elevatorPIDController.setOutputRange(positionMinOutput, positionMaxOutput, 0);
 
         elevatorTab = Shuffleboard.getTab("Elevator Tab");
         elevatorPositionEntry = elevatorTab.add("Encoder Position: ", 0) 
             .getEntry();
-        elevatorFFEntry = elevatorTab.add("Feed forward: ", 0)
+        elevatorVolatgeEntry = elevatorTab.add("Elevator Voltage: ", 0)
+            .getEntry();
+        elevatorPEntry = elevatorTab.add("Elevator P: ", 0)
             .getEntry();
         
     }
@@ -82,8 +83,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic()
     {
-        // May be used later
         elevatorPositionEntry.setDouble(getElevatorEncoderPosition());
+        elevatorVolatgeEntry.setDouble(elevatorMotor.getBusVoltage());
+        elevatorPEntry.setDouble(elevatorPIDController.getP());
     }
 
     // MOTOR PID \\
@@ -98,7 +100,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
     public void setElevatorPosition(double position)
     {
-        elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition, 0, .02375);
+        elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition, 0, 0.02375, SparkMaxPIDController.ArbFFUnits.kPercentOut);
     }
 
     /**
@@ -122,5 +124,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     public static double getElevatorEncoderPosition()
     {
         return elevatorEncoder.getPosition();
+    }
+
+    public void setP(double value)
+    {
+        elevatorPIDController.setP(value, 0);
     }
 }

@@ -96,7 +96,7 @@ public final class Constants {
   public static class ElevatorConstants{
     public static final int ELEVATOR_MOTOR_CAN_ID = 50; 
 
-    public static final double ELEVATOR_P = 0; //TODO update with correct values
+    public static final double ELEVATOR_P = 60; // 1/21/23 tuned with no arm weight
     public static final double ELEVATOR_I = 0; //TODO update with correct values
     public static final double ELEVATOR_D = 0; //TODO update with correct values
 
@@ -104,7 +104,7 @@ public final class Constants {
 
     public static final double ELEVATOR_GEAR_RATIO = 15;
 
-    public static final double ELEVATOR_MAX_PRECENT = 0.5; //TODO update as needed
+    public static final double ELEVATOR_MAX_PRECENT = 0.15; //TODO update as needed
 
     public static final double ELEVATOR_MAX_POS_IN = 20.375;
     public static final double ELEVATOR_MIN_POS_IN = 0;

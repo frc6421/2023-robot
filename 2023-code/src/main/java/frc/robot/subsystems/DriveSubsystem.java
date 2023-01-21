@@ -19,14 +19,18 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.OperatorConstants;
 
 public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule frontLeft;
   private final SwerveModule frontRight;
   private final SwerveModule backLeft;
   private final SwerveModule backRight;
+
+  private final CommandXboxController driver;
 
   private final AHRS navx;
 
@@ -38,6 +42,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private double currentAngle;
   private double targetAngle;
+
+  private boolean isRotating;
   
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -45,6 +51,8 @@ public class DriveSubsystem extends SubsystemBase {
     frontRight = new SwerveModule(ModuleConstants.FRONT_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_ANGLE_OFFSET);
     backLeft = new SwerveModule(ModuleConstants.BACK_LEFT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ANGLE_OFFSET);
     backRight = new SwerveModule(ModuleConstants.BACK_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ANGLE_OFFSET);
+
+    driver = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
     navx = new AHRS(SPI.Port.kMXP, (byte) 200);
     
@@ -67,6 +75,11 @@ public class DriveSubsystem extends SubsystemBase {
 
       //PID controller for the rotation of the robot
       angleController = new PIDController(DriveConstants.ANGLE_CONTROLLER_KP, 0, 0);
+      angleController.enableContinuousInput(-180, 180);
+
+      targetAngle = getGyroRotation().getDegrees();
+
+      isRotating = false;
     }
 
   @Override
@@ -166,20 +179,51 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(double xSpeedInput, double ySpeedInput, double rotationInput, double magnitude) {
     // Set speed as a percentage of our max velocity
-    double xSpeed = Math.signum(xSpeedInput) * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double ySpeed = Math.signum(ySpeedInput) * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
+
+    double xSpeed = speeds.getSin() * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double ySpeed = speeds.getCos() * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
+    //Keeps the robot from moving with no joystick inputs
+    if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
+      ySpeed = 0;
+    }
+
+    currentAngle = getGyroRotation().getDegrees();
+
+    //Makes the robot turn to all 90 degree orientations based on y,x,a,b buttons on Xbox controller
+    //CURRENTLY NON-FUNCTIONAL
+    if(driver.y().getAsBoolean()){
+      targetAngle = currentAngle - (currentAngle % 360);
+      rotation = angleController.calculate(currentAngle, targetAngle);
+    }
+
+    else if(driver.x().getAsBoolean()){
+      targetAngle = currentAngle - (currentAngle % 360) + 90;
+      rotation = angleController.calculate(currentAngle, targetAngle);
+    }
+
+    else if(driver.a().getAsBoolean()){
+      targetAngle = currentAngle - (currentAngle % 360) + 180;
+      rotation = angleController.calculate(currentAngle, targetAngle);
+    }
+
+    else if(driver.b().getAsBoolean()){
+      targetAngle = currentAngle - (currentAngle % 360) + 270;
+      rotation = angleController.calculate(currentAngle, targetAngle);
+    }
       //Keep the robot from rotating when there is no rotation input
-      // if(Math.abs(rotation) < ModuleConstants.PERCENT_DEADBAND){
-      //   if(Math.abs(getGyroRate()) < 1.0){
-      //     currentAngle = getGyroRotation().getDegrees();
-      //     rotation = angleController.calculate(currentAngle, targetAngle);
-      //   }
-      //   else{
-      //     targetAngle = getGyroRotation().getDegrees();
-      //   }
-      // }
+    else if(Math.abs(rotation) < ModuleConstants.PERCENT_DEADBAND){
+      if(isRotating){
+        targetAngle = currentAngle;
+        isRotating = false;
+      }
+      rotation = angleController.calculate(currentAngle, targetAngle);
+    }
+    else{
+      isRotating = true;
+    }
 
     // Sets field relative speeds
     var swerveModuleStates = 

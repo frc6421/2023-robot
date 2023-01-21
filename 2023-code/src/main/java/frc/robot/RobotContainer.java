@@ -45,6 +45,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("LeftX", driverController.getLeftX());
     SmartDashboard.putNumber("RightX", driverController.getRightX());
 
+    SmartDashboard.putNumber("Arm Degree Position: ", armSubsystem.getArmDegreePosition());
+    SmartDashboard.putNumber("Arm Feed Forward: ", armSubsystem.getFeedForward());
+
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
         driverController.getLeftY(),

@@ -28,18 +28,11 @@ public class RobotContainer {
   // Set up controller with CommandXboxController
   private final CommandXboxController driverController;
 
-  // Creates a sendable chooser on smartdashboard to select the desired control system
-  private SendableChooser<String> controlSystem;
-
-  // Creates the slew rate to slowly accelerate controler inputs
-  private SlewRateLimiter driveSlewRate;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driveSubsystem = new DriveSubsystem();
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
-
-    driveSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
 
     SmartDashboard.putNumber("LeftY", driverController.getLeftY());
     SmartDashboard.putNumber("LeftX", driverController.getLeftX());
@@ -50,14 +43,10 @@ public class RobotContainer {
         driverController.getLeftY(),
         driverController.getLeftX(),
         driverController.getRightX(), 
-        driveSlewRate.calculate(driverController.getLeftTriggerAxis())), driveSubsystem));
-
-    controlSystem = new SendableChooser<>();
+        driverController.getLeftTriggerAxis()), driveSubsystem));
 
     //Sendable chooser to set driver controls
     //TODO finish and implement last
-    controlSystem.setDefaultOption("Lizzy Controls", "lizzyDriving");
-    controlSystem.addOption("Ian Controls", "ianDriving");
     // Configure the trigger bindings
     configureBindings();
   }

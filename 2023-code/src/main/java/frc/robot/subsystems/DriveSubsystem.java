@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -44,6 +46,14 @@ public class DriveSubsystem extends SubsystemBase {
   private double targetAngle;
 
   private boolean isRotating;
+
+  // Creates a sendable chooser on smartdashboard to select the desired control system
+  private SendableChooser<String> controlSystem;
+
+  // Creates the slew rates to slowly accelerate controller inputs
+  private SlewRateLimiter magnitudeSlewRate;
+  private SlewRateLimiter xDriveSlew;
+  private SlewRateLimiter yDriveSlew;
   
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -80,6 +90,16 @@ public class DriveSubsystem extends SubsystemBase {
       targetAngle = getGyroRotation().getDegrees();
 
       isRotating = false;
+
+      //Sets up the sendable chooser on SmartDashboard to select control system
+      controlSystem = new SendableChooser<>();
+      controlSystem.setDefaultOption("Lizzy Controls", "lizzyDriving");
+      controlSystem.addOption("Ian Controls", "ianDriving");
+      SmartDashboard.putData("Control system", controlSystem);
+
+      magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
+      xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
+      yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
     }
 
   @Override
@@ -178,11 +198,22 @@ public class DriveSubsystem extends SubsystemBase {
    * @param magnitude value from 0-1 returned by the trigger to set the magnitude of x and y speeds (not rotational)
    */
   public void drive(double xSpeedInput, double ySpeedInput, double rotationInput, double magnitude) {
-    // Set speed as a percentage of our max velocity
     Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
+    double xSpeed;
+    double ySpeed;
+    magnitude = magnitudeSlewRate.calculate(magnitude);
 
-    double xSpeed = speeds.getSin() * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double ySpeed = speeds.getCos() * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    // Set speed as a percentage of our max velocity driving by trigger
+    if(controlSystem.getSelected().equals("lizzyDriving")){
+      xSpeed = speeds.getSin() * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      ySpeed = speeds.getCos() * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    }
+
+    // Set speed as a percentage of our max velocity driving by joystick
+    else{
+      xSpeed = xDriveSlew.calculate(xSpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      ySpeed = yDriveSlew.calculate(ySpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    }
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     //Keeps the robot from moving with no joystick inputs

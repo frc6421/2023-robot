@@ -245,6 +245,10 @@ public class DriveSubsystem extends SubsystemBase {
       rotation = angleController.calculate(currentAngle, targetAngle);
     }
       //Keep the robot from rotating when there is no rotation input
+      //TODO fix target angle rotations (infinite rotation)
+      //TODO fix/tune PID 
+      //TODO fix rotations while no rotation input
+      //TODO fix wheels going to incorrect positions when not moving
     else if(Math.abs(rotation) < ModuleConstants.PERCENT_DEADBAND){
       if(isRotating){
         targetAngle = currentAngle;

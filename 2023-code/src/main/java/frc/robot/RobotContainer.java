@@ -69,6 +69,7 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
+    driverController.back().whileTrue(new RunCommand(() -> driveSubsystem.zeroGyro()));
   }
 
   /**

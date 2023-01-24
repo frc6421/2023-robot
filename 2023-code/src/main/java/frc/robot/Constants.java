@@ -60,7 +60,7 @@ public final class Constants {
 
     public static final double DRIVE_SLEW_RATE = 5;
 
-    public static final double ANGLE_CONTROLLER_KP = .014;
+    public static final double ANGLE_CONTROLLER_KP = .0014;
   }
 
   public static class ModuleConstants {

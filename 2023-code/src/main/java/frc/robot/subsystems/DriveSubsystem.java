@@ -41,9 +41,11 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDriveOdometry odometry;
 
   private final PIDController angleController;
+  private final PIDController driftCorrector;
 
   private double currentAngle;
   private double targetAngle;
+  private double pXY;
 
   private boolean isRotating;
 
@@ -54,6 +56,7 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter magnitudeSlewRate;
   private SlewRateLimiter xDriveSlew;
   private SlewRateLimiter yDriveSlew;
+
   
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -87,7 +90,11 @@ public class DriveSubsystem extends SubsystemBase {
       angleController = new PIDController(DriveConstants.ANGLE_CONTROLLER_KP, 0, 0);
       angleController.enableContinuousInput(-180, 180);
 
+      driftCorrector = new PIDController(.07, 0, .004);
+
       targetAngle = getGyroRotation().getDegrees();
+
+      pXY = 0;
 
       isRotating = false;
 
@@ -223,48 +230,23 @@ public class DriveSubsystem extends SubsystemBase {
 
     currentAngle = getGyroRotation().getDegrees();
 
-    //Makes the robot turn to all 90 degree orientations based on y,x,a,b buttons on Xbox controller
-    //CURRENTLY NON-FUNCTIONAL
-    if(driver.y().getAsBoolean()){
-      targetAngle = currentAngle - (currentAngle % 360);
-      rotation = angleController.calculate(currentAngle, targetAngle);
-    }
+    //Corrects the natural rotational drift of the swerve
 
-    else if(driver.x().getAsBoolean()){
-      targetAngle = currentAngle - (currentAngle % 360) + 90;
-      rotation = angleController.calculate(currentAngle, targetAngle);
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation());
+    double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
+    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0){ // || pXY <= 0
+      targetAngle = getGyroRotation().getDegrees();
     }
-
-    else if(driver.a().getAsBoolean()){
-      targetAngle = currentAngle - (currentAngle % 360) + 180;
-      rotation = angleController.calculate(currentAngle, targetAngle);
+    else if(xy > 0){
+      chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), targetAngle);
     }
-
-    else if(driver.b().getAsBoolean()){
-      targetAngle = currentAngle - (currentAngle % 360) + 270;
-      rotation = angleController.calculate(currentAngle, targetAngle);
-    }
-      //Keep the robot from rotating when there is no rotation input
-      //TODO fix target angle rotations (infinite rotation)
-      //TODO fix/tune PID 
-      //TODO fix rotations while no rotation input
-      //TODO fix wheels going to incorrect positions when not moving
-    else if(Math.abs(rotation) < ModuleConstants.PERCENT_DEADBAND){
-      if(isRotating){
-        targetAngle = currentAngle;
-        isRotating = false;
-      }
-      rotation = angleController.calculate(currentAngle, targetAngle);
-    }
-    else{
-      isRotating = true;
-    }
-
+    pXY = xy;
     // Sets field relative speeds
     var swerveModuleStates = 
       swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation()));
       // Ensures all wheels obey max speed
       SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
       // Sets the swerve modules to their desired states using optimization method
       frontLeft.setDesiredState(swerveModuleStates[0]);
       frontRight.setDesiredState(swerveModuleStates[1]);

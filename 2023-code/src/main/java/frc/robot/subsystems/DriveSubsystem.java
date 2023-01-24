@@ -196,6 +196,13 @@ public class DriveSubsystem extends SubsystemBase {
     backRight.resetEncoders();
   }
 
+  public void setSteerMotorsToAbsolute(){
+    frontRight.setSteerMotorToAbsolute();
+    frontLeft.setSteerMotorToAbsolute();
+    backLeft.setSteerMotorToAbsolute();
+    backRight.setSteerMotorToAbsolute();
+  }
+
    /**
    * Sets up our drive method
    * 

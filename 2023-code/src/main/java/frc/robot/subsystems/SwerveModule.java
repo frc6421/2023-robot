@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -84,6 +85,7 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 0, 1)); // TODO verify current
     steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 0, 1));
 
+    Timer.delay(1.0);
     setSteerMotorToAbsolute();
 
     // TODO remove if not using

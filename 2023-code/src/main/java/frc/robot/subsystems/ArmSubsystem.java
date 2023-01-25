@@ -113,6 +113,11 @@ public class ArmSubsystem extends SubsystemBase
         SmartDashboard.putNumber("ProcessVariable", armEncoder.getVelocity());
     }
 
+    public void setGravityOffset()
+    {
+       armMotor.set(ArmConstants.MAX_ARM_GRAVITY_FF * Math.cos(Math.toRadians(getArmDegreePosition())));
+    }
+
     
     ////ENCODER METHODS////
 

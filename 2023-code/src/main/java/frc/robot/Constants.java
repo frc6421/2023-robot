@@ -122,6 +122,10 @@ public final class Constants {
     public static final int ARM_TOP_SOFT_LIMIT = 0;
 
     public static final double ARM_MAX_TEST_PERCENT_OUTPUT = 0.15;
+
+    // public static final int ARM_POS_HORIZONTAL = 840; // TODO update with correct value(May use later)
+
+    public static final double MAX_ARM_GRAVITY_FF = 0.07; // TODO update with correct value
   }
 
 }

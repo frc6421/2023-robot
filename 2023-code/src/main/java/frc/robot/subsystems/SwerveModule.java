@@ -152,6 +152,10 @@ public class SwerveModule extends SubsystemBase {
     steerMotor.setSelectedSensorPosition(absolutePosition);
   }
 
+  /**
+   * Gets the steer motor's current angle in degrees
+   * @return steer motor's angle in degrees
+   */
   public double getSteerMotorEncoderAngle() {
     return steerMotor.getSelectedSensorPosition() / DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
   }

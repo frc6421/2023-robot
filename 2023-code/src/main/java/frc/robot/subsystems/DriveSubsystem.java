@@ -136,6 +136,9 @@ public class DriveSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(360 - navx.getAngle());
   }
 
+  /**
+   * Zeros the gyroscope of the robot to the current rotated angle
+   */
   public void zeroGyro() {
     navx.zeroYaw();
   }
@@ -196,6 +199,9 @@ public class DriveSubsystem extends SubsystemBase {
     backRight.resetEncoders();
   }
 
+  /**
+   * Sets the steer motors to the absolute encoder positions
+   */
   public void setSteerMotorsToAbsolute(){
     frontRight.setSteerMotorToAbsolute();
     frontLeft.setSteerMotorToAbsolute();
@@ -204,7 +210,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
    /**
-   * Sets up our drive method
+   * Sets up the drive method
    * 
    * @param xSpeedInput value from -1.0 to 1.0 to convert to x-direction meters per second
    * @param ySpeedInput value from -1.0 to 1.0 to convert to y-direction meters per second

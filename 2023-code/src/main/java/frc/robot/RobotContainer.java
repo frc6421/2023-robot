@@ -33,7 +33,7 @@ public class RobotContainer {
 
   private ShuffleboardTab elevatorTab;
   private GenericEntry elevatorFFTestingEntry;
-  // private GenericEntry elevatorPositionTestEntry;
+  private GenericEntry elevatorPositionTestEntry;
   private GenericEntry elevatorPTestingEntry;
   
 
@@ -64,12 +64,12 @@ public class RobotContainer {
       .getEntry();
     elevatorPTestingEntry = elevatorTab.add("Set Elevator P: ", 0)
       .getEntry();
-    elevatorFFTestingEntry = elevatorTab.add("Set Elevator Pos: ", 0)
+    elevatorPositionTestEntry = elevatorTab.add("Set Elevator Pos: ", 0)
       .getEntry();
     
     driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorWithPercent(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
     driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
-    driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(.51), elevatorSubsystem));
+    driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
    
     // Configure the trigger bindings
     configureBindings();

@@ -7,7 +7,10 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -28,6 +31,11 @@ public class RobotContainer {
   private final CommandXboxController driverController;
 
   private final ArmSubsystem armSubsystem;
+
+  private GenericEntry armSetFFTestEntry;
+  private GenericEntry armSetPosTestEntry;
+
+  private ShuffleboardTab armTab;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -53,11 +61,23 @@ public class RobotContainer {
         driverController.getLeftY(),
         driverController.getLeftX(),
         driverController.getRightX()), driveSubsystem));
+    
+    
+    
+    armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(driverController.getRightY()), armSubsystem));
+    
+    armTab = Shuffleboard.getTab("Arm Tab");
+    
+    armSetFFTestEntry = armTab.add("Set Arm FF: ", 0) 
+            .getEntry();
+
+    armSetPosTestEntry = armTab.add("Set Arm Position: ", 0) 
+            .getEntry();
 
     //TODO: Testing purposes only
-    armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(driverController.getRightY()), armSubsystem));
+    driverController.a().whileTrue(new RunCommand(()-> armSubsystem.setGravityOffsetTest(), armSubsystem));
+    driverController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleAndFF(armSetPosTestEntry.getDouble(0), armSetFFTestEntry.getDouble(0)), armSubsystem));
 
-    //driverController.a().onTrue(new RunCommand(()-> armSubsystem.setGravityOffsetTest(), armSubsystem));
     // Configure the trigger bindings
     configureBindings();
   }

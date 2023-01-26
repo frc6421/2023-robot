@@ -103,7 +103,7 @@ public final class Constants {
 
     public static final int ARM_DEFAULT_FF = 0; //TODO: Find Feed Forward value
     
-    public static final double ARM_P = 0;//TODO: Find P value
+    public static final double ARM_P = 0.03;//TODO: Find P value
     public static final double ARM_I = 0;
     public static final double ARM_D = 0;
 

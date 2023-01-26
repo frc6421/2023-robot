@@ -48,7 +48,8 @@ public class ArmSubsystem extends SubsystemBase
     
         armMotor.setIdleMode(IdleMode.kBrake);
 
-  
+        armPIDController = armMotor.getPIDController();
+
         armPIDController.setFeedbackDevice(armEncoder);
 
 
@@ -62,9 +63,6 @@ public class ArmSubsystem extends SubsystemBase
         //// PID ////
         positionMinOutput = -1;
         positionMaxOutput = 1; 
-        
-
-        armPIDController = armMotor.getPIDController();
 
         armPIDController.setP(ArmConstants.ARM_P);
         armPIDController.setI(ArmConstants.ARM_I);
@@ -74,6 +72,7 @@ public class ArmSubsystem extends SubsystemBase
         armPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
 
         armTab = Shuffleboard.getTab("Arm Tab");
+        
         armAngleEntry = armTab.add("Arm Encoder Position: ", 0) 
             .getEntry();
 
@@ -112,9 +111,15 @@ public class ArmSubsystem extends SubsystemBase
      * Sets the arm to a specified angle
      * @param angle The angle in degrees to set the arm to
      */
-    public void setArmAngle(double angle) 
+    public void setArmAngleWithGrav(double angle) 
     {
         setGravityOffset();
+        armPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
+    }
+
+    public void setArmAngleAndFF(double angle, double newFF) 
+    {
+        armPIDController.setFF(newFF);
         armPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
     }
 

@@ -19,6 +19,7 @@ public class GrabberSubsystem extends SubsystemBase {
   /** Creates a new GrabberSubsystem. */
   public GrabberSubsystem() {
     
+    //Constructs the double solenoid for the grabber
     grabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.FORWARD_CHANNEL, GrabberConstants.REVERSE_CHANNEL);
     grabberToggled = false;
   }

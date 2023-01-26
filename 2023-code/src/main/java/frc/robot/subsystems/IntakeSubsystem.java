@@ -29,6 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
 
+    //Constructs and sets up intake motor controllers and solenoids
     leftMotor = new CANSparkMax(IntakeConstants.LEFT_INTAKE_MOTOR_ID, MotorType.kBrushless);
     rightMotor = new CANSparkMax(IntakeConstants.RIGHT_INTAKE_MOTOR_ID, MotorType.kBrushless);
     leftPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, IntakeConstants.LEFT_PISTON_FORWARD_CHANNEL, IntakeConstants.LEFT_PISTON_REVERSE_CHANNEL);
@@ -37,10 +38,12 @@ public class IntakeSubsystem extends SubsystemBase {
     leftMotor.restoreFactoryDefaults();
     leftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     leftMotor.setInverted(false);
+    leftMotor.setSmartCurrentLimit(40);
     
     rightMotor.restoreFactoryDefaults();
     rightMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
     rightMotor.setInverted(false);
+    rightMotor.setSmartCurrentLimit(40); 
 
     intakeToggled = false;
   }

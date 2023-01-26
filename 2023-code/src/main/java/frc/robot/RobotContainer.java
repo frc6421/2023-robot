@@ -56,6 +56,8 @@ public class RobotContainer {
 
     //TODO: Testing purposes only
     armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(driverController.getRightY()), armSubsystem));
+
+    //driverController.a().onTrue(new RunCommand(()-> armSubsystem.setGravityOffsetTest(), armSubsystem));
     // Configure the trigger bindings
     configureBindings();
   }

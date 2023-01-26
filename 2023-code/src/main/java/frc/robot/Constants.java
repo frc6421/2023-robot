@@ -101,7 +101,7 @@ public final class Constants {
   {
     public static final int ARM_CAN_ID = 40; //TODO: Find arm CANID
 
-    public static final int ARM_FF = 0; //TODO: Find Feed Forward value
+    public static final int ARM_DEFAULT_FF = 0; //TODO: Find Feed Forward value
     
     public static final double ARM_P = 0;//TODO: Find P value
     public static final double ARM_I = 0;

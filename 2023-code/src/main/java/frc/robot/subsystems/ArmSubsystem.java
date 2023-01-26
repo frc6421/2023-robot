@@ -27,6 +27,8 @@ public class ArmSubsystem extends SubsystemBase
     private double positionMaxOutput; 
     private double positionMinOutput;
 
+    private double armDynamicFF;
+
     private ShuffleboardTab armTab;
     private GenericEntry armAngleEntry;
     private GenericEntry armFFEntry;
@@ -67,7 +69,7 @@ public class ArmSubsystem extends SubsystemBase
         armPIDController.setP(ArmConstants.ARM_P);
         armPIDController.setI(ArmConstants.ARM_I);
         armPIDController.setD(ArmConstants.ARM_D);
-        armPIDController.setFF(ArmConstants.ARM_FF);
+        armPIDController.setFF(ArmConstants.ARM_DEFAULT_FF);
         
         armPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
 
@@ -112,6 +114,7 @@ public class ArmSubsystem extends SubsystemBase
      */
     public void setArmAngle(double angle) 
     {
+        setGravityOffset();
         armPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
     }
 
@@ -128,14 +131,23 @@ public class ArmSubsystem extends SubsystemBase
         SmartDashboard.putNumber("ProcessVariable", armEncoder.getVelocity());
     }
 
+    //TODO: Get rid of, for testing purposes
+    public void setGravityOffsetTest()
+    {
+        //TODO: Might need some transformation on getArmDegreePosition
+       armMotor.set(ArmConstants.MAX_ARM_GRAVITY_FF * Math.cos(Math.toRadians(getArmDegreePosition())));
+    }
+
     public void setGravityOffset()
     {
-       armMotor.set(ArmConstants.MAX_ARM_GRAVITY_FF * Math.cos(Math.toRadians(getArmDegreePosition())));
+        //TODO: Might need some transformation on getArmDegreePosition
+        armDynamicFF = (ArmConstants.MAX_ARM_GRAVITY_FF * Math.cos(Math.toRadians(getArmDegreePosition())));
+        armPIDController.setFF(armDynamicFF);
     }
 
     public double getFeedForward()
     {
-        return ArmConstants.ARM_FF; 
+        return ArmConstants.ARM_DEFAULT_FF; 
     }
 
     

@@ -103,6 +103,7 @@ public class DriveSubsystem extends SubsystemBase {
       controlSystem = new SendableChooser<>();
       controlSystem.setDefaultOption("Lizzy Controls", "lizzyDriving");
       controlSystem.addOption("Ian Controls", "ianDriving");
+      controlSystem.addOption("RightTrigger", "rightTrigger");
       SmartDashboard.putData("Control system", controlSystem);
 
       magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
@@ -218,16 +219,25 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rotationInput value from -1.0 to 1.0 to convert to rotational speed in radians per second
    * @param magnitude value from 0 to 1 returned by the trigger to set the magnitude of x and y speeds (not rotational)
    */
-  public void drive(double xSpeedInput, double ySpeedInput, double rotationInput, double magnitude) {
+  public void drive(double xSpeedInput, double ySpeedInput, double rotationInput, double leftMagnitude, double rightMagnitude) {
     Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
     double xSpeed;
     double ySpeed;
-    magnitude = magnitudeSlewRate.calculate(magnitude);
 
-    // Set speed as a percentage of our max velocity driving by trigger
+    // Set speed as a percentage of our max velocity driving by left trigger
     if(controlSystem.getSelected().equals("lizzyDriving")){
-      xSpeed = speeds.getSin() * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-      ySpeed = speeds.getCos() * magnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      leftMagnitude = magnitudeSlewRate.calculate(leftMagnitude);
+
+      xSpeed = speeds.getSin() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      ySpeed = speeds.getCos() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    }
+
+    // Set speed as a percentage of our max velocity drivinig by right trigger
+    else if(controlSystem.getSelected().equals("rightTrigger")){
+      rightMagnitude = magnitudeSlewRate.calculate(rightMagnitude);
+      
+      xSpeed = speeds.getSin() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      ySpeed = speeds.getCos() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     }
 
     // Set speed as a percentage of our max velocity driving by joystick

@@ -24,11 +24,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
-public class SwerveModule extends SubsystemBase {
+public class SwerveModule{
   private final WPI_TalonFX driveMotor;
   private final WPI_TalonFX steerMotor;
 
-  private final CANCoder steerEncoder;
+  private final WPI_CANCoder steerEncoder;
 
   private final ProfiledPIDController steeringPIDController = new ProfiledPIDController(
       ModuleConstants.MODULE_STEER_P,
@@ -57,7 +57,7 @@ public class SwerveModule extends SubsystemBase {
     steerMotor.setInverted(true);
 
     driveMotor.setNeutralMode(NeutralMode.Brake);
-    steerMotor.setNeutralMode(NeutralMode.Brake);
+    steerMotor.setNeutralMode(NeutralMode.Coast);
 
     driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -82,8 +82,8 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.configNeutralDeadband(ModuleConstants.PERCENT_DEADBAND); // TODO determine experimentally
     steerMotor.configNeutralDeadband(ModuleConstants.PERCENT_DEADBAND);
 
-    driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 0, 1)); // TODO verify current
-    steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 0, 1));
+    driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1)); // TODO verify current
+    steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 25, 40, 0.1));
 
     Timer.delay(1.0);
     setSteerMotorToAbsolute();
@@ -92,10 +92,10 @@ public class SwerveModule extends SubsystemBase {
     steeringPIDController.enableContinuousInput(0, 2 * Math.PI);
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  // @Override
+  // public void periodic() {
+  //   // This method will be called once per scheduler run
+  // }
 
   // DRIVE MOTOR METHODS \\
 

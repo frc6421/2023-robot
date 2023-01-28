@@ -68,6 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
     driver = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
     navx = new AHRS(SPI.Port.kMXP, (byte) 200);
+    zeroGyro();
     
     swerveKinematics = new SwerveDriveKinematics(
       // Front left
@@ -130,7 +131,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Rotation2d getGyroRotation() {
     if (navx.isMagnetometerCalibrated()) {
-      return Rotation2d.fromDegrees(navx.getFusedHeading());
+      return Rotation2d.fromDegrees(360 - navx.getFusedHeading());
     }
     // Invert gyro angle so counterclockwise is positive
     return Rotation2d.fromDegrees(360 - navx.getAngle());
@@ -215,7 +216,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param xSpeedInput value from -1.0 to 1.0 to convert to x-direction meters per second
    * @param ySpeedInput value from -1.0 to 1.0 to convert to y-direction meters per second
    * @param rotationInput value from -1.0 to 1.0 to convert to rotational speed in radians per second
-   * @param magnitude value from 0-1 returned by the trigger to set the magnitude of x and y speeds (not rotational)
+   * @param magnitude value from 0 to 1 returned by the trigger to set the magnitude of x and y speeds (not rotational)
    */
   public void drive(double xSpeedInput, double ySpeedInput, double rotationInput, double magnitude) {
     Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
@@ -244,10 +245,9 @@ public class DriveSubsystem extends SubsystemBase {
     currentAngle = getGyroRotation().getDegrees();
 
     //Corrects the natural rotational drift of the swerve
-
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation());
     double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
-    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0){ // || pXY <= 0
+    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){ // || pXY <= 0
       targetAngle = getGyroRotation().getDegrees();
     }
     else if(xy > 0){

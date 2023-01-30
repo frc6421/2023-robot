@@ -101,7 +101,7 @@ public final class Constants {
   {
     public static final int ARM_CAN_ID = 40; //TODO: Find arm CANID
 
-    public static final int ARM_DEFAULT_FF = 0; //TODO: Find Feed Forward value
+    public static final double ARM_DEFAULT_FF = 0; //TODO: Find Feed Forward value
     
     public static final double ARM_P = 0.03;//TODO: Find P value
     public static final double ARM_I = 0;
@@ -126,6 +126,36 @@ public final class Constants {
     // public static final int ARM_POS_HORIZONTAL = 840; // TODO update with correct value(May use later)
 
     public static final double MAX_ARM_GRAVITY_FF = 0.07; // TODO update with correct value
+
+    public static final double FLOOR_MIN_INCH_DISTANCE = 12.1;
+
+    public static final double FLOOR_MAX_INCH_DISTANCE = 20.6;
+
+    public static class ArmAngleConstants
+    {
+      public static final double CONE_HIGH_MIN_ANGLE = 155.0;
+      public static final double CONE_HIGH_MAX_ANGLE = 142.3;
+      public static final double CONE_HIGH_TOP_ANGLE = 150.5;
+      
+      public static final double CONE_MID_MIN_ANGLE = 153.5;
+      public static final double CONE_MID_MAX_ANGLE = 141.8;
+      public static final double CONE_MID_TOP_ANGLE = 150.9;
+
+
+      public static final double CUBE_HIGH_MIN_ANGLE = 181.9;
+      public static final double CUBE_HIGH_MAX_ANGLE = 155.3;
+      public static final double CUBE_HIGH_OPTIMAL_ANGLE = 166.5;
+
+      public static final double CUBE_MID_MIN_ANGLE = 182.7;
+      public static final double CUBE_MID_MAX_ANGLE = 155.3;
+      public static final double CUBE_MID_OPTIMAL_ANGLE = 167.0;
+      
+      
+      //TODO: Not final angle
+      public static final double GRAB_FROM_INTAKE_ANGLE = -26.9;
+
+      public static final double FLOOR_ANGLE = 210.7;
+    }
   }
 
 }

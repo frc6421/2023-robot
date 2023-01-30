@@ -114,13 +114,12 @@ public class ArmSubsystem extends SubsystemBase
     public void setArmAngleWithGrav(double angle) 
     {
         setGravityOffset();
-        armPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
+        armPIDController.setReference(angle, CANSparkMax.ControlType.kPosition, 0, armDynamicFF, SparkMaxPIDController.ArbFFUnits.kPercentOut);
     }
 
     public void setArmAngleAndFF(double angle, double newFF) 
     {
-        armPIDController.setFF(newFF);
-        armPIDController.setReference(angle, CANSparkMax.ControlType.kPosition);
+        armPIDController.setReference(angle, CANSparkMax.ControlType.kPosition, 0 , armDynamicFF, SparkMaxPIDController.ArbFFUnits.kPercentOut);
     }
 
     /**
@@ -147,7 +146,6 @@ public class ArmSubsystem extends SubsystemBase
     {
         //TODO: Might need some transformation on getArmDegreePosition
         armDynamicFF = (ArmConstants.MAX_ARM_GRAVITY_FF * Math.cos(Math.toRadians(getArmDegreePosition())));
-        armPIDController.setFF(armDynamicFF);
     }
 
     public double getFeedForward()

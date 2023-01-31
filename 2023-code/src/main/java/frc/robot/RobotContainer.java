@@ -62,16 +62,22 @@ public class RobotContainer {
     elevatorSubsystem.setDefaultCommand(new RunCommand(() -> 
       elevatorSubsystem.setElevatorWithPercent(-driverController.getRightY()), elevatorSubsystem)
     );
+
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
+
     elevatorFFTestingEntry = elevatorTab.add("Set Elevator FF: ", 0)
       .getEntry();
+
     elevatorPTestingEntry = elevatorTab.add("Set Elevator P: ", 0)
       .getEntry();
+
     elevatorPositionTestEntry = elevatorTab.add("Set Elevator Pos: ", 0)
       .getEntry();
     
     driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorWithPercent(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
+    
     driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
+    
     driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
    
     // Configure the trigger bindings
@@ -96,7 +102,7 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 //TODO turn to angle buttons
-    driverController.y().onTrue(new InstantCommand(() -> driveSubsystem.zeroGyro())); 
+    driverController.back().onTrue(new InstantCommand(() -> driveSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
   }
 

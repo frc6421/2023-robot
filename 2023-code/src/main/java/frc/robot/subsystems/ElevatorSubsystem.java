@@ -30,7 +30,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private GenericEntry elevatorVolatgeEntry;
     private GenericEntry elevatorPEntry;
 
-      /** Creates a new ElevatorSubsystem. */
+    /** Creates a new ElevatorSubsystem. */
     public ElevatorSubsystem()
     {
         elevatorMotor = new CANSparkMax(ElevatorConstants.ELEVATOR_MOTOR_CAN_ID, MotorType.kBrushless);
@@ -40,6 +40,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorMotor.setInverted(true);
 
         elevatorEncoder = elevatorMotor.getEncoder();
+
         // Degrees per motor rotation
         elevatorEncoder.setPositionConversionFactor(ElevatorConstants.ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE / ElevatorConstants.ELEVATOR_GEAR_RATIO);
         elevatorEncoder.setPosition(0); //TODO Verify start position
@@ -68,10 +69,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPIDController.setOutputRange(positionMinOutput, positionMaxOutput, 0);
 
         elevatorTab = Shuffleboard.getTab("Elevator Tab");
+
         elevatorPositionEntry = elevatorTab.add("Encoder Position: ", 0) 
             .getEntry();
+
         elevatorVolatgeEntry = elevatorTab.add("Elevator Voltage: ", 0)
             .getEntry();
+
         elevatorPEntry = elevatorTab.add("Elevator P: ", 0)
             .getEntry();
         

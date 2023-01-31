@@ -7,8 +7,6 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -41,14 +39,12 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
-        driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, //TODO move based on driver
+        driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
         driverController.getLeftX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
         driverController.getRightX() * .75, 
         driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
         driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER), driveSubsystem));
 
-    //Sendable chooser to set driver controls
-    //TODO finish and implement last
     // Configure the trigger bindings
     configureBindings();
   }
@@ -62,7 +58,7 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
+  private void configureBindings() { 
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
@@ -70,7 +66,7 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-
+//TODO turn to angle buttons
     driverController.y().onTrue(new InstantCommand(() -> driveSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
   }

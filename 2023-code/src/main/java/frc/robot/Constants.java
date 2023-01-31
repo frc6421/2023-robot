@@ -25,14 +25,14 @@ public final class Constants {
      * 
      * Measured from the center of the wheels on each side
      */
-    public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(18.75); //TODO update with actual robot size
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = Units.inchesToMeters(18.75);
 
     /**
      * Drivetrain wheelbase from front to back
      * 
      * Measured from the center of the wheels on each side
      */
-    public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.75); //TODO update with actual robot size
+    public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.75); 
 
     public static final double GEAR_RATIO_MOTOR_TO_WHEEL = 6.75;
     public static final double STEER_GEAR_RATIO = 150.0 / 7.0;
@@ -52,7 +52,7 @@ public final class Constants {
     public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0) * DRIVE_REDUCTION * DriveConstants.WHEEL_CIRCUMFERENCE;
     public static final double MAX_VOLTAGE = 8.0; //TODO update with correct voltage
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2);
-    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO update if necessary
+    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO test value instead of theoretical value
     public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.75;
 
     public static final double S_VOLTS = 0.60043;
@@ -72,7 +72,7 @@ public final class Constants {
 
     public static final double PERCENT_DEADBAND = .075;
     
-    //TODO update on competition robot
+    //TODO update angle offsets on competition robot
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
     public static final int FRONT_LEFT_MODULE_STEER_CAN_ID = 13;
     public static final int FRONT_LEFT_MODULE_ENCODER_CAN_ID = 13;
@@ -93,13 +93,13 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_ENCODER_CAN_ID = 15;
     public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -352.5;
 
-    public static final double MODULE_DRIVE_P = 0.208; //TODO update with correct values
-    public static final double MODULE_DRIVE_I = 0; //TODO update with correct values
-    public static final double MODULE_DRIVE_D = 0; //TODO update with correct values
+    public static final double MODULE_DRIVE_P = 0.208; 
+    public static final double MODULE_DRIVE_I = 0; 
+    public static final double MODULE_DRIVE_D = 0; 
 
-    public static final double MODULE_STEER_P = 0.3; //TODO update with correct values .015
-    public static final double MODULE_STEER_I = 0; //TODO update with correct values
-    public static final double MODULE_STEER_D = 0; //TODO update with correct values
+    public static final double MODULE_STEER_P = 0.3; 
+    public static final double MODULE_STEER_I = 0; 
+    public static final double MODULE_STEER_D = 0; 
 
     public static final double DEADBAND_DRIVE_MOTOR = 0.02;
     public static final double DEADBAND_STEER_MOTOR = 0.02;

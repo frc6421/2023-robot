@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -21,18 +20,14 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.Constants.OperatorConstants;
 
 public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule frontLeft;
   private final SwerveModule frontRight;
   private final SwerveModule backLeft;
   private final SwerveModule backRight;
-
-  private final CommandXboxController driver;
 
   private final AHRS navx;
 
@@ -43,11 +38,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final PIDController angleController;
   private final PIDController driftCorrector;
 
-  private double currentAngle;
   private double targetAngle;
   private double pXY;
-
-  private boolean isRotating;
 
   // Creates a sendable chooser on smartdashboard to select the desired control system
   private SendableChooser<String> controlSystem;
@@ -65,9 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
     backLeft = new SwerveModule(ModuleConstants.BACK_LEFT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ANGLE_OFFSET);
     backRight = new SwerveModule(ModuleConstants.BACK_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ANGLE_OFFSET);
 
-    driver = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
-
-    navx = new AHRS(SPI.Port.kMXP, (byte) 200);
+    navx = new AHRS(SPI.Port.kMXP, (byte) 200); //TODO Switch to Pigeon + Pigeon subsystem
     zeroGyro();
     
     swerveKinematics = new SwerveDriveKinematics(
@@ -97,12 +87,10 @@ public class DriveSubsystem extends SubsystemBase {
 
       pXY = 0;
 
-      isRotating = false;
-
       //Sets up the sendable chooser on SmartDashboard to select control system
       controlSystem = new SendableChooser<>();
-      controlSystem.setDefaultOption("Lizzy Controls", "lizzyDriving");
-      controlSystem.addOption("Ian Controls", "ianDriving");
+      controlSystem.setDefaultOption("Left Trigger Controls", "leftTrigger");
+      controlSystem.addOption("Joystick Controls", "joystick");
       controlSystem.addOption("RightTrigger", "rightTrigger");
       SmartDashboard.putData("Control system", controlSystem);
 
@@ -121,6 +109,16 @@ public class DriveSubsystem extends SubsystemBase {
       backRight.getModulePosition()});
 
       SmartDashboard.putNumber("gyro", getGyroRotation().getDegrees());
+
+      SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getCANcoderRadians()));
+      SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getCANcoderRadians()));
+      SmartDashboard.putNumber("BackLeftCANcoderAngle", Math.toDegrees(backLeft.getCANcoderRadians()));
+      SmartDashboard.putNumber("BackRightCANcoderAngle", Math.toDegrees(backRight.getCANcoderRadians()));
+  
+      SmartDashboard.putNumber("FrontLeftMotorEncoderAngle", frontLeft.getSteerMotorEncoderAngle());
+      SmartDashboard.putNumber("FrontRightMotorEncoderAngle", frontRight.getSteerMotorEncoderAngle());
+      SmartDashboard.putNumber("BackLeftMotorEncoderAngle", backLeft.getSteerMotorEncoderAngle());
+      SmartDashboard.putNumber("BackRightMotorEncoderAngle", backRight.getSteerMotorEncoderAngle());
   }
 
   // GYRO METHODS \\
@@ -217,15 +215,18 @@ public class DriveSubsystem extends SubsystemBase {
    * @param xSpeedInput value from -1.0 to 1.0 to convert to x-direction meters per second
    * @param ySpeedInput value from -1.0 to 1.0 to convert to y-direction meters per second
    * @param rotationInput value from -1.0 to 1.0 to convert to rotational speed in radians per second
-   * @param magnitude value from 0 to 1 returned by the trigger to set the magnitude of x and y speeds (not rotational)
+   * @param leftMagnitude value from 0 to 1 returned by the left trigger to set the magnitude of
+   * x and y speeds for left trigger controls(not rotational)
+   * @param rightMagnitude value from 0 to 1 returned by the right trigger to set the magnitude of 
+   * x and y speeds for right trigger controls(not rotational)
    */
   public void drive(double xSpeedInput, double ySpeedInput, double rotationInput, double leftMagnitude, double rightMagnitude) {
     Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
     double xSpeed;
-    double ySpeed;
-
+    double ySpeed;  //TODO make command instead of method?
+                    //TODO turn wheels to a certain x-position
     // Set speed as a percentage of our max velocity driving by left trigger
-    if(controlSystem.getSelected().equals("lizzyDriving")){
+    if(controlSystem.getSelected().equals("leftTrigger")){ //TODO enum driver controls w/ switch case
       leftMagnitude = magnitudeSlewRate.calculate(leftMagnitude);
 
       xSpeed = speeds.getSin() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
@@ -238,7 +239,7 @@ public class DriveSubsystem extends SubsystemBase {
       
       xSpeed = speeds.getSin() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
       ySpeed = speeds.getCos() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    }
+    } //TODO Drive by voltage changes before Sussex
 
     // Set speed as a percentage of our max velocity driving by joystick
     else{
@@ -251,8 +252,6 @@ public class DriveSubsystem extends SubsystemBase {
     if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
       ySpeed = 0;
     }
-
-    currentAngle = getGyroRotation().getDegrees();
 
     //Corrects the natural rotational drift of the swerve
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation());
@@ -275,31 +274,6 @@ public class DriveSubsystem extends SubsystemBase {
       frontRight.setDesiredState(swerveModuleStates[1]);
       backLeft.setDesiredState(swerveModuleStates[2]);
       backRight.setDesiredState(swerveModuleStates[3]);
-
-    SmartDashboard.putNumber("FrontLeftDriveVelocity", swerveModuleStates[0].speedMetersPerSecond);
-    SmartDashboard.putNumber("FrontRightDriveVelocity", swerveModuleStates[1].speedMetersPerSecond);
-    SmartDashboard.putNumber("BackLeftDriveVelocity", swerveModuleStates[2].speedMetersPerSecond);
-    SmartDashboard.putNumber("BackRightDriveVelocity", swerveModuleStates[3].speedMetersPerSecond);
-
-    SmartDashboard.putNumber("FrontLeftAngle", swerveModuleStates[0].angle.getDegrees());
-    SmartDashboard.putNumber("FrontRightAngle", swerveModuleStates[1].angle.getDegrees());
-    SmartDashboard.putNumber("BackLeftAngle", swerveModuleStates[2].angle.getDegrees());
-    SmartDashboard.putNumber("BackRightAngle", swerveModuleStates[3].angle.getDegrees());
-
-    SmartDashboard.putNumber("FrontLeftSet", frontLeft.getDriveMotorEncoderVelocity());
-    SmartDashboard.putNumber("FrontRightSet", frontRight.getDriveMotorEncoderVelocity());
-    SmartDashboard.putNumber("BackLeftSet", backLeft.getDriveMotorEncoderVelocity());
-    SmartDashboard.putNumber("BackRightSet", backRight.getDriveMotorEncoderVelocity());
-
-    SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getCANcoderRadians()));
-    SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getCANcoderRadians()));
-    SmartDashboard.putNumber("BackLeftCANcoderAngle", Math.toDegrees(backLeft.getCANcoderRadians()));
-    SmartDashboard.putNumber("BackRightCANcoderAngle", Math.toDegrees(backRight.getCANcoderRadians()));
-
-    SmartDashboard.putNumber("FrontLeftMotorEncoderAngle", frontLeft.getSteerMotorEncoderAngle());
-    SmartDashboard.putNumber("FrontRightMotorEncoderAngle", frontRight.getSteerMotorEncoderAngle());
-    SmartDashboard.putNumber("BackLeftMotorEncoderAngle", backLeft.getSteerMotorEncoderAngle());
-    SmartDashboard.putNumber("BackRightMotorEncoderAngle", backRight.getSteerMotorEncoderAngle());
   }
 
 }

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -13,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -58,26 +60,25 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
-        driverController.getLeftY(),
-        driverController.getLeftX(),
-        driverController.getRightX()), driveSubsystem));
+        driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
+        driverController.getLeftX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
+        driverController.getRightX() * .75, 
+        driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
+        driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER), driveSubsystem));
     
+      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(driverController.getRightY()), armSubsystem));
     
+      armTab = Shuffleboard.getTab("Arm Tab");
+        
+      armSetFFTestEntry = armTab.add("Set Arm FF: ", 0) 
+              .getEntry();
     
-    armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(driverController.getRightY()), armSubsystem));
+      armSetPosTestEntry = armTab.add("Set Arm Position: ", 0) 
+              .getEntry();
     
-    armTab = Shuffleboard.getTab("Arm Tab");
-    
-    armSetFFTestEntry = armTab.add("Set Arm FF: ", 0) 
-            .getEntry();
-
-    armSetPosTestEntry = armTab.add("Set Arm Position: ", 0) 
-            .getEntry();
-
-    //TODO: Testing purposes only
-    driverController.a().whileTrue(new RunCommand(()-> armSubsystem.setGravityOffsetTest(), armSubsystem));
-    driverController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleAndFF(armSetPosTestEntry.getDouble(0), armSetFFTestEntry.getDouble(0)), armSubsystem));
-
+      //TODO: Testing purposes only
+      driverController.a().whileTrue(new RunCommand(()-> armSubsystem.setGravityOffsetTest(), armSubsystem));
+      driverController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleAndFF(armSetPosTestEntry.getDouble(0), armSetFFTestEntry.getDouble(0)), armSubsystem));
     // Configure the trigger bindings
     configureBindings();
   }
@@ -91,7 +92,7 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
+  private void configureBindings() { 
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     // new Trigger(m_exampleSubsystem::exampleCondition)
     //     .onTrue(new ExampleCommand(m_exampleSubsystem));
@@ -99,6 +100,9 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+//TODO turn to angle buttons
+    driverController.y().onTrue(new InstantCommand(() -> driveSubsystem.zeroGyro())); 
+    driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
   }
 
   /**

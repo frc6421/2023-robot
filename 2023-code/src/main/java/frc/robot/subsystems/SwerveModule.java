@@ -10,31 +10,21 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
-public class SwerveModule extends SubsystemBase {
+public class SwerveModule{
   private final WPI_TalonFX driveMotor;
   private final WPI_TalonFX steerMotor;
 
-  private final CANCoder steerEncoder;
-
-  private final ProfiledPIDController steeringPIDController = new ProfiledPIDController(
-      ModuleConstants.MODULE_STEER_P,
-      ModuleConstants.MODULE_STEER_I,
-      ModuleConstants.MODULE_STEER_D,
-      new TrapezoidProfile.Constraints(DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND,
-          DriveConstants.MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED));
+  private final WPI_CANCoder steerEncoder;
 
   // TODO Add FeedForward for steer and drive motors
 
@@ -56,7 +46,7 @@ public class SwerveModule extends SubsystemBase {
     steerMotor.setInverted(true);
 
     driveMotor.setNeutralMode(NeutralMode.Brake);
-    steerMotor.setNeutralMode(NeutralMode.Brake);
+    steerMotor.setNeutralMode(NeutralMode.Coast);
 
     driveMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     steerMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
@@ -78,22 +68,20 @@ public class SwerveModule extends SubsystemBase {
     steerEncoder.configMagnetOffset(angleOffset);
     steerEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 
-    driveMotor.configNeutralDeadband(0.02); // TODO determine experimentally
-    steerMotor.configNeutralDeadband(0.02);
+    driveMotor.configNeutralDeadband(ModuleConstants.PERCENT_DEADBAND); // TODO determine experimentally
+    steerMotor.configNeutralDeadband(ModuleConstants.PERCENT_DEADBAND);
 
-    driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 80, 0, 1)); // TODO verify current
-    steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 0, 1));
+    driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1)); // TODO verify current
+    steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 25, 40, 0.1));
 
+    Timer.delay(1.0);
     setSteerMotorToAbsolute();
-
-    // TODO remove if not using
-    steeringPIDController.enableContinuousInput(0, 2 * Math.PI);
   }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  // @Override
+  // public void periodic() {
+  //   // This method will be called once per scheduler run
+  // }
 
   // DRIVE MOTOR METHODS \\
 
@@ -150,6 +138,10 @@ public class SwerveModule extends SubsystemBase {
     steerMotor.setSelectedSensorPosition(absolutePosition);
   }
 
+  /**
+   * Gets the steer motor's current angle in degrees
+   * @return steer motor's angle in degrees
+   */
   public double getSteerMotorEncoderAngle() {
     return steerMotor.getSelectedSensorPosition() / DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
   }
@@ -228,7 +220,7 @@ public class SwerveModule extends SubsystemBase {
    * From team 364
    * 
    * @param initialAngle Current Angle
-   * @param targetAngle     Target Angle
+   * @param targetAngle  Target Angle
    * @return Closest angle within scope
    */
   private static double placeInAppropriate0To360Scope(double initialAngle, double targetAngle) {

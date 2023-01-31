@@ -115,9 +115,9 @@ public final class Constants {
 
     public static final double ARM_DEFAULT_FF = 0; //TODO: Find Feed Forward value
     
-    public static final double ARM_P = 0.03;//TODO: Find P value
-    public static final double ARM_I = 0;
-    public static final double ARM_D = 0;
+    public static final double ARM_P = 0.017;//TODO: Find P value
+    public static final double ARM_I = 0.0;
+    public static final double ARM_D = 0.0;
 
     public static final float ARM_SOFT_LIMIT = 0.0f;
 

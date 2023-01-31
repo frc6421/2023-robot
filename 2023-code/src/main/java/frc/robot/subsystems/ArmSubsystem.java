@@ -84,7 +84,8 @@ public class ArmSubsystem extends SubsystemBase
     @Override
   public void periodic() 
     {
-        // Might be needed to update FF based on angle
+        armAngleEntry.setDouble(getArmDegreePosition());
+        armFFEntry.setDouble(armDynamicFF);
     }
 
 
@@ -97,6 +98,7 @@ public class ArmSubsystem extends SubsystemBase
     {
         armPIDController.setReference(0, CANSparkMax.ControlType.kPosition);
     }
+    
     
     /**
     * Sets motor to a provided position
@@ -116,7 +118,14 @@ public class ArmSubsystem extends SubsystemBase
         setGravityOffset();
         armPIDController.setReference(angle, CANSparkMax.ControlType.kPosition, 0, armDynamicFF, SparkMaxPIDController.ArbFFUnits.kPercentOut);
     }
+    
 
+    /**
+     * Takes in and sets an angle and feed forward value. For testing purposes
+     * @param angle The angle to set the arm to
+     * @param newFF The feed forward to set the arm to
+    *
+     */
     public void setArmAngleAndFF(double angle, double newFF) 
     {
         armPIDController.setReference(angle, CANSparkMax.ControlType.kPosition, 0 , armDynamicFF, SparkMaxPIDController.ArbFFUnits.kPercentOut);
@@ -138,19 +147,22 @@ public class ArmSubsystem extends SubsystemBase
     //TODO: Get rid of, for testing purposes
     public void setGravityOffsetTest()
     {
-        //TODO: Might need some transformation on getArmDegreePosition
+       armMotor.set(ArmConstants.MAX_ARM_GRAVITY_FF * Math.cos(Math.toRadians(getArmDegreePosition())));
+    }
+
+    public void setGravityOffsetTestTwo()
+    {
        armMotor.set(ArmConstants.MAX_ARM_GRAVITY_FF * Math.cos(Math.toRadians(getArmDegreePosition())));
     }
 
     public void setGravityOffset()
     {
-        //TODO: Might need some transformation on getArmDegreePosition
         armDynamicFF = (ArmConstants.MAX_ARM_GRAVITY_FF * Math.cos(Math.toRadians(getArmDegreePosition())));
     }
 
     public double getFeedForward()
     {
-        return ArmConstants.ARM_DEFAULT_FF; 
+        return armDynamicFF; 
     }
 
     

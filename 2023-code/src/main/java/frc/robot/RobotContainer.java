@@ -73,11 +73,11 @@ public class RobotContainer {
       armSetFFTestEntry = armTab.add("Set Arm FF: ", 0) 
               .getEntry();
     
-      armSetPosTestEntry = armTab.add("Set Arm Position: ", 0) 
+      armSetPosTestEntry = armTab.add("Set Arm Degree Position: ", 0) 
               .getEntry();
     
       //TODO: Testing purposes only
-      driverController.a().whileTrue(new RunCommand(()-> armSubsystem.setGravityOffsetTest(), armSubsystem));
+      driverController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPower(armSetFFTestEntry.getDouble(0)), armSubsystem));
       driverController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleAndFF(armSetPosTestEntry.getDouble(0), armSetFFTestEntry.getDouble(0)), armSubsystem));
     // Configure the trigger bindings
     configureBindings();

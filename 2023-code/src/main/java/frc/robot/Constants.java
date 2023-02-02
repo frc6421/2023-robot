@@ -62,6 +62,8 @@ public final class Constants {
     public static final double DRIVE_SLEW_RATE = 2;
 
     public static final double ANGLE_CONTROLLER_KP = .0014;
+
+    public static final int GYRO_CAN_ID = 30;
   }
 
   public static class ModuleConstants {

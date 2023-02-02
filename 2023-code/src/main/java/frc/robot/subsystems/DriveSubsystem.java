@@ -58,7 +58,7 @@ public class DriveSubsystem extends SubsystemBase {
     backRight = new SwerveModule(ModuleConstants.BACK_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ANGLE_OFFSET);
 
     navx = new AHRS(SPI.Port.kMXP, (byte) 200); //TODO Switch to Pigeon + Pigeon subsystem
-    zeroGyro();
+    GyroSubsystem.zeroGyro();
     
     swerveKinematics = new SwerveDriveKinematics(
       // Front left
@@ -129,19 +129,9 @@ public class DriveSubsystem extends SubsystemBase {
    * @return yaw rotation in degrees
    */
   public Rotation2d getGyroRotation() {
-    if (navx.isMagnetometerCalibrated()) {
-      return Rotation2d.fromDegrees(360 - navx.getFusedHeading());
-    }
-    // Invert gyro angle so counterclockwise is positive
-    return Rotation2d.fromDegrees(360 - navx.getAngle());
+    return Rotation2d.fromDegrees(360 - (GyroSubsystem.getYawAngle().getDegrees()));
   }
 
-  /**
-   * Zeros the gyroscope of the robot to the current rotated angle
-   */
-  public void zeroGyro() {
-    navx.zeroYaw();
-  }
 
   /**
    * Get rate of gyro rotation in degrees per second
@@ -149,7 +139,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return turn rate in degrees per second
    */
   public double getGyroRate() {
-    return -navx.getRate();
+    return -GyroSubsystem.getGyroRate();
   }
 
   // ODOMETRY METHODS \\

@@ -60,7 +60,7 @@ public class RobotContainer {
         driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER), driveSubsystem));
       
     elevatorSubsystem.setDefaultCommand(new RunCommand(() -> 
-      elevatorSubsystem.setElevatorWithPercent(-driverController.getRightY()), elevatorSubsystem)
+      elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
     );
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
@@ -74,7 +74,7 @@ public class RobotContainer {
     elevatorPositionTestEntry = elevatorTab.add("Set Elevator Pos: ", 0)
       .getEntry();
     
-    driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorWithPercent(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
+    driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.goToPosition(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
     
     driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
     

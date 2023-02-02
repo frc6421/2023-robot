@@ -6,7 +6,10 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+
+import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.commands.ElevatorCommand;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -112,11 +115,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     /**
      * Sets the controler to move with a certin max percentage
      * Current max is 15%
-     * @param controlerValue
+     * @param FF
      */
-    public void setElevatorWithPercent(double controlerValue)
+    public void goToPosition(double FF)
     {
-        elevatorMotor.set(controlerValue * ElevatorConstants.ELEVATOR_MAX_PRECENT);
+        elevatorMotor.set(FF * ElevatorConstants.ELEVATOR_MAX_PRECENT);
     } 
 
     // ENCODER \\

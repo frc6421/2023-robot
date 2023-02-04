@@ -45,8 +45,8 @@ public class ArmSubsystem extends SubsystemBase
         armEncoder.setPositionConversionFactor(ArmConstants.DEGREES_PER_MOTOR_ROTATION); //TODO: Verify this is not totally wrong
         armEncoder.setPosition(0); //TODO: Verify start position
 
-    
-        armMotor.setIdleMode(IdleMode.kBrake);
+        armMotor.setInverted(ArmConstants.ARM_IS_INVERTED);
+        armMotor.setIdleMode(IdleMode.kCoast);
 
         armPIDController = armMotor.getPIDController();
 
@@ -144,11 +144,6 @@ public class ArmSubsystem extends SubsystemBase
 
     //TODO: Get rid of, for testing purposes
     public void setGravityOffsetTest()
-    {
-       armMotor.set(ArmConstants.MAX_ARM_GRAVITY_FF * Math.cos(Math.toRadians(getArmDegreePosition())));
-    }
-
-    public void setGravityOffsetTestTwo()
     {
        armMotor.set(ArmConstants.MAX_ARM_GRAVITY_FF * Math.cos(Math.toRadians(getArmDegreePosition())));
     }

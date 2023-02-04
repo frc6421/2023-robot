@@ -107,6 +107,7 @@ public final class Constants {
 
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
+    public static final int COPILOT_CONTROLLER_PORT = 1;
   }
 
   public static class ArmConstants 
@@ -142,6 +143,8 @@ public final class Constants {
     public static final double FLOOR_MIN_INCH_DISTANCE = 12.1;
 
     public static final double FLOOR_MAX_INCH_DISTANCE = 20.6;
+
+    public static final boolean ARM_IS_INVERTED = false;
 
     public static class ArmAngleConstants
     {

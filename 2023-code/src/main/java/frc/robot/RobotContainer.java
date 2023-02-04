@@ -32,6 +32,8 @@ public class RobotContainer {
   // Set up controller with CommandXboxController
   private final CommandXboxController driverController;
 
+  private final CommandXboxController copilotController;
+
   private final ArmSubsystem armSubsystem;
 
   private GenericEntry armSetFFTestEntry;
@@ -46,6 +48,8 @@ public class RobotContainer {
     armSubsystem = new ArmSubsystem();
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+
+    copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
 
     
 
@@ -66,7 +70,7 @@ public class RobotContainer {
         driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
         driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER), driveSubsystem));
     
-      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(driverController.getRightY()), armSubsystem));
+      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(copilotController.getLeftY()), armSubsystem));
     
       armTab = Shuffleboard.getTab("Arm Tab");
         
@@ -77,8 +81,8 @@ public class RobotContainer {
               .getEntry();
     
       //TODO: Testing purposes only
-      armSubsystem.setDefaultCommand(new RunCommand(()-> armSubsystem.setPercentArmPower(driverController.getRightY()), armSubsystem));
-      driverController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleAndFF(armSetPosTestEntry.getDouble(0), armSetFFTestEntry.getDouble(0)), armSubsystem));
+      copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleAndFF(armSetPosTestEntry.getDouble(0), armSetFFTestEntry.getDouble(0)), armSubsystem));
+
     // Configure the trigger bindings
     configureBindings();
   }

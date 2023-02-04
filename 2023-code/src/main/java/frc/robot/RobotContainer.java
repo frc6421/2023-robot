@@ -30,6 +30,9 @@ public class RobotContainer {
 
   private final PowerDistribution PDP;
 
+  //Creates a double that takes the desired drive voltage and divides it by the current voltage
+  private double voltageRatio;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driveSubsystem = new DriveSubsystem();
@@ -40,16 +43,21 @@ public class RobotContainer {
     SmartDashboard.putNumber("LeftX", driverController.getLeftX());
     SmartDashboard.putNumber("RightX", driverController.getRightX());
 
-    driveSubsystem.setDefaultCommand(new RunCommand(() ->
-      driveSubsystem.drive(
-        driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
-        driverController.getLeftX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
-        driverController.getRightX() * .75, 
-        driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
-        driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER), driveSubsystem));
-
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
+
+    //used to make modify controller inputs TODO see if this is what we want + test + pass in or modify here?
+    voltageRatio = DriveConstants.DRIVE_VOLTAGE / PDP.getVoltage();
+
+    driveSubsystem.setDefaultCommand(new RunCommand(() ->
+      driveSubsystem.drive(
+        driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER * voltageRatio,
+        driverController.getLeftX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER * voltageRatio,
+        driverController.getRightX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER * voltageRatio, 
+        driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER * voltageRatio,
+        driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER * voltageRatio
+        ),
+        driveSubsystem));
 
     // Configure the trigger bindings
     configureBindings();
@@ -73,8 +81,8 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 //TODO turn to angle buttons
-    driverController.y().onTrue(new InstantCommand(() -> driveSubsystem.zeroGyro())); 
-    driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
+    driverController.back().onTrue(new InstantCommand(() -> driveSubsystem.zeroGyro())); 
+    driverController.start().onTrue(new InstantCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
   }
 
   /**

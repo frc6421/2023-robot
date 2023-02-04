@@ -17,14 +17,18 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.OperatorConstants;
 
 public class SwerveModule{
   private final WPI_TalonFX driveMotor;
   private final WPI_TalonFX steerMotor;
 
   private final WPI_CANCoder steerEncoder;
+
+  private CommandXboxController driverController;
 
   // TODO Add FeedForward for steer and drive motors
 
@@ -76,6 +80,8 @@ public class SwerveModule{
 
     Timer.delay(1.0);
     setSteerMotorToAbsolute();
+
+    driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
   }
 
   // @Override
@@ -178,10 +184,14 @@ public class SwerveModule{
     SwerveModuleState state = customOptimize(desiredState, new Rotation2d(Math.toRadians(getSteerMotorEncoderAngle())));
 
     // Calculate percent of max drive velocity
-    double driveOutput = state.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double driveOutput = (state.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
 
     // Calculate steer motor output
     double steerPositionOutput = state.angle.getDegrees() * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
+
+    if(driverController.rightBumper().getAsBoolean()){ //TODO Highly experimental, requires lots of testing
+      steerPositionOutput = 90 * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
+    }
 
     // Apply PID outputs
     driveMotor.set(ControlMode.PercentOutput, driveOutput);
@@ -209,7 +219,7 @@ public class SwerveModule{
     double targetAngle = placeInAppropriate0To360Scope(currentAngle.getDegrees(), desiredState.angle.getDegrees());
     double targetSpeed = desiredState.speedMetersPerSecond;
     double delta = targetAngle - currentAngle.getDegrees();
-    if (Math.abs(delta) > 90) {
+    if(Math.abs(delta) > 90) {
       targetSpeed = -targetSpeed;
       targetAngle = delta > 90 ? (targetAngle -= 180) : (targetAngle += 180);
     }

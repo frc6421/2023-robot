@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.ResourceBundle.Control;
+
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -20,8 +22,11 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.driverControlSystem;
 
 public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule frontLeft;
@@ -42,12 +47,14 @@ public class DriveSubsystem extends SubsystemBase {
   private double pXY;
 
   // Creates a sendable chooser on smartdashboard to select the desired control system
-  private SendableChooser<String> controlSystem;
+  private SendableChooser<driverControlSystem> controlSystem;
 
   // Creates the slew rates to slowly accelerate controller inputs
   private SlewRateLimiter magnitudeSlewRate;
   private SlewRateLimiter xDriveSlew;
   private SlewRateLimiter yDriveSlew;
+
+  private CommandXboxController driverController;
 
   
   /** Creates a new DriveSubsystem. */
@@ -85,13 +92,15 @@ public class DriveSubsystem extends SubsystemBase {
 
       targetAngle = getGyroRotation().getDegrees();
 
+      driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+
       pXY = 0;
 
       //Sets up the sendable chooser on SmartDashboard to select control system
       controlSystem = new SendableChooser<>();
-      controlSystem.setDefaultOption("Left Trigger Controls", "leftTrigger");
-      controlSystem.addOption("Joystick Controls", "joystick");
-      controlSystem.addOption("RightTrigger", "rightTrigger");
+      controlSystem.setDefaultOption("Left Trigger Controls", driverControlSystem.LEFT_TRIGGER);
+      controlSystem.addOption("Joystick Controls", driverControlSystem.JOYSTICK); //TODO Get these into an enum w/ switch
+      controlSystem.addOption("RightTrigger", driverControlSystem.RIGHT_TRIGGER);
       SmartDashboard.putData("Control system", controlSystem);
 
       magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
@@ -224,28 +233,30 @@ public class DriveSubsystem extends SubsystemBase {
     Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
     double xSpeed;
     double ySpeed;  //TODO make command instead of method?
-                    //TODO turn wheels to a certain x-position
-    // Set speed as a percentage of our max velocity driving by left trigger
-    if(controlSystem.getSelected().equals("leftTrigger")){ //TODO enum driver controls w/ switch case
-      leftMagnitude = magnitudeSlewRate.calculate(leftMagnitude);
 
-      xSpeed = speeds.getSin() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-      ySpeed = speeds.getCos() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    }
-
-    // Set speed as a percentage of our max velocity drivinig by right trigger
-    else if(controlSystem.getSelected().equals("rightTrigger")){
-      rightMagnitude = magnitudeSlewRate.calculate(rightMagnitude);
+    //TODO Drive by voltage changes before Sussex
+    /* Sets the speed as a percentage of our max velocity using either trigger for magintude, or joysticks
+      for both magnitude and steering */
+    switch(controlSystem.getSelected()){
       
-      xSpeed = speeds.getSin() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-      ySpeed = speeds.getCos() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    } //TODO Drive by voltage changes before Sussex
+      case RIGHT_TRIGGER:
+        rightMagnitude = magnitudeSlewRate.calculate(rightMagnitude);
+        xSpeed = speeds.getSin() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+        ySpeed = speeds.getCos() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      break;
 
-    // Set speed as a percentage of our max velocity driving by joystick
-    else{
-      xSpeed = xDriveSlew.calculate(xSpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-      ySpeed = yDriveSlew.calculate(ySpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      case JOYSTICK:
+        xSpeed = xDriveSlew.calculate(xSpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+        ySpeed = yDriveSlew.calculate(ySpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      break;
+
+      default: //Default will be left trigger driving
+        leftMagnitude = magnitudeSlewRate.calculate(leftMagnitude);
+        xSpeed = speeds.getSin() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+        ySpeed = speeds.getCos() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      break;
     }
+
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     //Keeps the robot from moving with no joystick inputs
@@ -256,8 +267,21 @@ public class DriveSubsystem extends SubsystemBase {
     //Corrects the natural rotational drift of the swerve
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation());
     double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
-    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){ // || pXY <= 0
+    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){
       targetAngle = getGyroRotation().getDegrees();
+
+      if(driverController.x().getAsBoolean()){
+        targetAngle = 270;
+      }
+      else if(driverController.y().getAsBoolean()){
+        targetAngle = 0;
+      }
+      else if(driverController.b().getAsBoolean()){
+        targetAngle = 90;
+      }
+      else if(driverController.a().getAsBoolean()){
+        targetAngle = 180;
+      }
     }
     else if(xy > 0){
       chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), targetAngle);

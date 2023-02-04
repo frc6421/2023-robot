@@ -8,6 +8,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -24,12 +25,14 @@ public class GyroSubsystem extends SubsystemBase {
   {
     pigeon = new WPI_Pigeon2(DriveConstants.GYRO_CAN_ID, ModuleConstants.CANIVORE_NAME);
     pigeon.configFactoryDefault();
+    zeroGyro();
   }
 
   @Override
   public void periodic() 
   {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Current Gyro Rotation", getYawAngle().getDegrees());
   }
 
   /**
@@ -63,30 +66,30 @@ public class GyroSubsystem extends SubsystemBase {
   /**
    * Gets the pitch angle of the gyro
    * 
-   * @return pitch angle in degrees
+   * @return pitch angle in Rotation2d
    */
   public static Rotation2d getPitchAngle()
   {
-    return (new Rotation2d(Math.toRadians(pigeon.getPitch())));
+    return Rotation2d.fromDegrees(pigeon.getPitch());
   }
 
   /**
    * Gets the yaw angle of the gyro
    * 
-   * @return yaw angle in degrees
+   * @return yaw angle in Rotation2d
    */
   public static Rotation2d getYawAngle()
   {
-    return (new Rotation2d(Math.toRadians(pigeon.getYaw())));
+    return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
   /**
    * Gets the roll angle of the gyro
    * 
-   * @return roll angle in degrees
+   * @return roll angle in Rotation2d
    */
   public static Rotation2d getRollAngle()
   {
-    return (new Rotation2d(Math.toRadians(pigeon.getRoll())));
+    return Rotation2d.fromDegrees(pigeon.getRoll());
   }
 }

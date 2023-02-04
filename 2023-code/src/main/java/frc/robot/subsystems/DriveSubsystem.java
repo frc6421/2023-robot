@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -57,12 +54,7 @@ public class DriveSubsystem extends SubsystemBase {
     frontRight = new SwerveModule(ModuleConstants.FRONT_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_ANGLE_OFFSET);
     backLeft = new SwerveModule(ModuleConstants.BACK_LEFT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ANGLE_OFFSET);
     backRight = new SwerveModule(ModuleConstants.BACK_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ANGLE_OFFSET);
-
-    //old navx insatiation
-    // navx = new AHRS(SPI.Port.kMXP, (byte) 200); //TODO Switch to Pigeon + Pigeon subsystem
-
-    //zeros Gyro
-    GyroSubsystem.zeroGyro();
+    
     
     swerveKinematics = new SwerveDriveKinematics(
       // Front left
@@ -125,26 +117,6 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("BackRightMotorEncoderAngle", backRight.getSteerMotorEncoderAngle());
   }
 
-  // GYRO METHODS \\
-
-  /**
-   * Get gyro rotation using fused headings if available, standard rotation if unavailable
-   * 
-   * @return yaw rotation in degrees
-   */
-  // public Rotation2d GyroSubsystem.getYawAngle() {
-  //   return Rotation2d.fromDegrees(360 - (GyroSubsystem.getYawAngle().getDegrees()));
-  // }
-
-
-  /**
-   * Get rate of gyro rotation in degrees per second
-   * 
-   * @return turn rate in degrees per second
-   */
-  // public double getGyroRate() {
-  //   return -GyroSubsystem.getGyroRate();
-  // }
 
   // ODOMETRY METHODS \\
 

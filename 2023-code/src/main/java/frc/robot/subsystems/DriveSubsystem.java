@@ -29,7 +29,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule backLeft;
   private final SwerveModule backRight;
 
-  private final AHRS navx;
+  // Old navx declaration
+  // private final AHRS navx;
 
   private final SwerveDriveKinematics swerveKinematics;
 
@@ -57,7 +58,10 @@ public class DriveSubsystem extends SubsystemBase {
     backLeft = new SwerveModule(ModuleConstants.BACK_LEFT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ANGLE_OFFSET);
     backRight = new SwerveModule(ModuleConstants.BACK_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ANGLE_OFFSET);
 
-    navx = new AHRS(SPI.Port.kMXP, (byte) 200); //TODO Switch to Pigeon + Pigeon subsystem
+    //old navx insatiation
+    // navx = new AHRS(SPI.Port.kMXP, (byte) 200); //TODO Switch to Pigeon + Pigeon subsystem
+
+    //zeros Gyro
     GyroSubsystem.zeroGyro();
     
     swerveKinematics = new SwerveDriveKinematics(
@@ -71,7 +75,7 @@ public class DriveSubsystem extends SubsystemBase {
       new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0, -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0)
     );
 
-    odometry = new SwerveDriveOdometry(swerveKinematics, getGyroRotation(), new SwerveModulePosition[] {
+    odometry = new SwerveDriveOdometry(swerveKinematics, GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
       frontLeft.getModulePosition(),
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
@@ -83,7 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
 
       driftCorrector = new PIDController(.07, 0, .004);
 
-      targetAngle = getGyroRotation().getDegrees();
+      targetAngle = GyroSubsystem.getYawAngle().getDegrees();
 
       pXY = 0;
 
@@ -102,13 +106,13 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    odometry.update(getGyroRotation(), new SwerveModulePosition[] {
+    odometry.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
       frontLeft.getModulePosition(),
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
       backRight.getModulePosition()});
 
-      SmartDashboard.putNumber("gyro", getGyroRotation().getDegrees());
+      SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
 
       SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getCANcoderRadians()));
       SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getCANcoderRadians()));
@@ -128,9 +132,9 @@ public class DriveSubsystem extends SubsystemBase {
    * 
    * @return yaw rotation in degrees
    */
-  public Rotation2d getGyroRotation() {
-    return Rotation2d.fromDegrees(360 - (GyroSubsystem.getYawAngle().getDegrees()));
-  }
+  // public Rotation2d GyroSubsystem.getYawAngle() {
+  //   return Rotation2d.fromDegrees(360 - (GyroSubsystem.getYawAngle().getDegrees()));
+  // }
 
 
   /**
@@ -138,9 +142,9 @@ public class DriveSubsystem extends SubsystemBase {
    * 
    * @return turn rate in degrees per second
    */
-  public double getGyroRate() {
-    return -GyroSubsystem.getGyroRate();
-  }
+  // public double getGyroRate() {
+  //   return -GyroSubsystem.getGyroRate();
+  // }
 
   // ODOMETRY METHODS \\
 
@@ -159,7 +163,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose to use for reset
    */
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(getGyroRotation(), new SwerveModulePosition[] {
+    odometry.resetPosition(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
       frontLeft.getModulePosition(),
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
@@ -244,18 +248,18 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     //Corrects the natural rotational drift of the swerve
-    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation());
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());
     double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
     if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){ // || pXY <= 0
-      targetAngle = getGyroRotation().getDegrees();
+      targetAngle = GyroSubsystem.getYawAngle().getDegrees();
     }
     else if(xy > 0){
-      chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), targetAngle);
+      chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), targetAngle);
     }
     pXY = xy;
     // Sets field relative speeds
     var swerveModuleStates = 
-      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation()));
+      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle()));
       // Ensures all wheels obey max speed
       SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
 

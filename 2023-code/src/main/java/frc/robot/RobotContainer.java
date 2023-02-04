@@ -28,9 +28,15 @@ public class RobotContainer {
   // Set up controller with CommandXboxController
   private final CommandXboxController driverController;
 
+  public GyroSubsystem gyroSubsystem;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    gyroSubsystem = new GyroSubsystem();
+    
     driveSubsystem = new DriveSubsystem();
+
+
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 

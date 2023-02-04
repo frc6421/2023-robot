@@ -10,9 +10,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ArmConstants.ArmAngleConstants;
 
 public class ArmSubsystem extends SubsystemBase
 {
@@ -43,18 +43,19 @@ public class ArmSubsystem extends SubsystemBase
 
         armEncoder = armMotor.getEncoder();
         armEncoder.setPositionConversionFactor(ArmConstants.DEGREES_PER_MOTOR_ROTATION); //TODO: Verify this is not totally wrong
-        armEncoder.setPosition(0); //TODO: Verify start position
 
         armMotor.setInverted(ArmConstants.ARM_IS_INVERTED);
         armMotor.setIdleMode(IdleMode.kCoast);
+
+        armEncoder.setPosition(ArmAngleConstants.ARM_START_POSITION); //TODO: Verify start position
 
         armPIDController = armMotor.getPIDController();
 
         armPIDController.setFeedbackDevice(armEncoder);
 
 
-        armMotor.setSoftLimit(SoftLimitDirection.kForward, ArmConstants.ARM_TOP_SOFT_LIMIT);
-        armMotor.setSoftLimit(SoftLimitDirection.kReverse, ArmConstants.ARM_BOTTOM_SOFT_LIMIT);
+        armMotor.setSoftLimit(SoftLimitDirection.kForward, ArmConstants.ARM_OUT_SOFT_LIMIT);
+        armMotor.setSoftLimit(SoftLimitDirection.kReverse, ArmConstants.ARM_IN_SOFT_LIMIT);
     
         armMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         armMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
@@ -62,7 +63,9 @@ public class ArmSubsystem extends SubsystemBase
 
         //// PID ////
         positionMinOutput = -1;
-        positionMaxOutput = 1; 
+        positionMaxOutput = 1;
+
+
 
         armPIDController.setP(ArmConstants.ARM_P);
         armPIDController.setI(ArmConstants.ARM_I);
@@ -86,7 +89,6 @@ public class ArmSubsystem extends SubsystemBase
     {
         armAngleEntry.setDouble(getArmDegreePosition());
         armFFEntry.setDouble(armDynamicFF);
-        SmartDashboard.putNumber("Arm velocity", armEncoder.getVelocity());
     }
 
 
@@ -139,7 +141,12 @@ public class ArmSubsystem extends SubsystemBase
      */
     public void setPercentArmPower(double controllerValue)
     {
-        armPIDController.setReference(controllerValue * ArmConstants.ARM_MAX_TEST_PERCENT_OUTPUT, CANSparkMax.ControlType.kVelocity);
+        armPIDController.setReference(controllerValue * ArmConstants.ARM_MAX_TEST_PERCENT_OUTPUT, CANSparkMax.ControlType.kDutyCycle);
+    }
+
+    public void setPercentArmPowerNoLimit(double inputValue)
+    {
+        armPIDController.setReference(inputValue, CANSparkMax.ControlType.kDutyCycle);
     }
 
     //TODO: Get rid of, for testing purposes
@@ -156,6 +163,15 @@ public class ArmSubsystem extends SubsystemBase
     public double getFeedForward()
     {
         return armDynamicFF; 
+    }
+
+    /**
+     * Sets the arm P value to a specified number
+     * @param newP the new P value to be passed in
+     */
+    public void setArmP(double newP)
+    {
+        armPIDController.setP(newP);
     }
 
     

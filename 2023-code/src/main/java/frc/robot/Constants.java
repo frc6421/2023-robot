@@ -130,9 +130,9 @@ public final class Constants {
      */
     public static final double DEGREES_PER_MOTOR_ROTATION = (360 / ARM_GEAR_RATIO);
 
-    public static final float ARM_BOTTOM_SOFT_LIMIT = 0;
+    public static final float ARM_IN_SOFT_LIMIT = -35;
 
-    public static final int ARM_TOP_SOFT_LIMIT = 0;
+    public static final int ARM_OUT_SOFT_LIMIT = 233;
 
     public static final double ARM_MAX_TEST_PERCENT_OUTPUT = 0.15;
 
@@ -164,6 +164,8 @@ public final class Constants {
       public static final double CUBE_MID_MIN_ANGLE = 182.7;
       public static final double CUBE_MID_MAX_ANGLE = 155.3;
       public static final double CUBE_MID_OPTIMAL_ANGLE = 167.0;
+
+      public static final double ARM_START_POSITION = -35.0;
       
       
       //TODO: Not final angle

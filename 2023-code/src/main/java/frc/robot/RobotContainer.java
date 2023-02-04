@@ -9,7 +9,6 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,6 +37,8 @@ public class RobotContainer {
 
   private GenericEntry armSetFFTestEntry;
   private GenericEntry armSetPosTestEntry;
+  private GenericEntry armSetPowerTestEntry;
+  private GenericEntry armSetPTestEntry;
 
   private ShuffleboardTab armTab;
 
@@ -79,9 +80,17 @@ public class RobotContainer {
     
       armSetPosTestEntry = armTab.add("Set Arm Degree Position: ", 0) 
               .getEntry();
+
+      armSetPowerTestEntry = armTab.add("Set Arm Power: ", 0) 
+              .getEntry();
+
+      armSetPTestEntry = armTab.add("Set Arm P Value: ", 0) 
+              .getEntry();
     
       //TODO: Testing purposes only
       copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleAndFF(armSetPosTestEntry.getDouble(0), armSetFFTestEntry.getDouble(0)), armSubsystem));
+      copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
+      copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
 
     // Configure the trigger bindings
     configureBindings();

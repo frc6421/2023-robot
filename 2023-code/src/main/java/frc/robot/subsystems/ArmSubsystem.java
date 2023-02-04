@@ -86,6 +86,7 @@ public class ArmSubsystem extends SubsystemBase
     {
         armAngleEntry.setDouble(getArmDegreePosition());
         armFFEntry.setDouble(armDynamicFF);
+        SmartDashboard.putNumber("Arm velocity", armEncoder.getVelocity());
     }
 
 
@@ -139,9 +140,6 @@ public class ArmSubsystem extends SubsystemBase
     public void setPercentArmPower(double controllerValue)
     {
         armPIDController.setReference(controllerValue * ArmConstants.ARM_MAX_TEST_PERCENT_OUTPUT, CANSparkMax.ControlType.kVelocity);
-    
-        SmartDashboard.putNumber("SetPoint", controllerValue);
-        SmartDashboard.putNumber("ProcessVariable", armEncoder.getVelocity());
     }
 
     //TODO: Get rid of, for testing purposes

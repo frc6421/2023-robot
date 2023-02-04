@@ -77,7 +77,7 @@ public class RobotContainer {
               .getEntry();
     
       //TODO: Testing purposes only
-      driverController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPower(armSetFFTestEntry.getDouble(0)), armSubsystem));
+      armSubsystem.setDefaultCommand(new RunCommand(()-> armSubsystem.setPercentArmPower(driverController.getRightY()), armSubsystem));
       driverController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleAndFF(armSetPosTestEntry.getDouble(0), armSetFFTestEntry.getDouble(0)), armSubsystem));
     // Configure the trigger bindings
     configureBindings();

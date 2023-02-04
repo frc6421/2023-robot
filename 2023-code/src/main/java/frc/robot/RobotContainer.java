@@ -7,12 +7,16 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -39,10 +43,6 @@ public class RobotContainer {
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
-    SmartDashboard.putNumber("LeftY", driverController.getLeftY());
-    SmartDashboard.putNumber("LeftX", driverController.getLeftX());
-    SmartDashboard.putNumber("RightX", driverController.getRightX());
-
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
 
@@ -51,11 +51,11 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
-        driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER * voltageRatio,
-        driverController.getLeftX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER * voltageRatio,
-        driverController.getRightX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER * voltageRatio, 
-        driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER * voltageRatio,
-        driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER * voltageRatio
+        MathUtil.clamp(driverController.getLeftY() * voltageRatio, -1.0, 1.0),
+        MathUtil.clamp(driverController.getLeftX() * voltageRatio, -1.0, 1.0),
+        MathUtil.clamp(driverController.getRightX() * voltageRatio, -1.0, 1.0),
+        MathUtil.clamp(driverController.getLeftTriggerAxis() * voltageRatio, -1.0, 1.0),
+        MathUtil.clamp(driverController.getRightTriggerAxis() * voltageRatio, 1.0, 1.0)
         ),
         driveSubsystem));
 

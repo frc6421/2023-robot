@@ -60,7 +60,7 @@ public class SwerveModule{
     driveMotor.config_kI(0, ModuleConstants.MODULE_DRIVE_I);
     driveMotor.config_kD(0, ModuleConstants.MODULE_DRIVE_D);
 
-    // For position control
+    // For position control 
     steerMotor.config_kP(0, ModuleConstants.MODULE_STEER_P);
     steerMotor.config_kI(0, ModuleConstants.MODULE_STEER_I);
     steerMotor.config_kD(0, ModuleConstants.MODULE_STEER_D);
@@ -189,8 +189,8 @@ public class SwerveModule{
     // Calculate steer motor output
     double steerPositionOutput = state.angle.getDegrees() * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
 
-    if(driverController.rightBumper().getAsBoolean()){ //TODO Highly experimental, requires lots of testing
-      steerPositionOutput = 90 * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
+    if(driverController.rightBumper().getAsBoolean()){ 
+      steerPositionOutput =  (state.angle.getDegrees() + 90 - state.angle.getDegrees() % 360) * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
     }
 
     // Apply PID outputs

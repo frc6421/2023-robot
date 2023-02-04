@@ -50,7 +50,7 @@ public final class Constants {
     // Motor free speed RPM / 60 * Drive reduction * Wheel diameter meters * pi
     public static final double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0); // Constant for SDS MK4i Modules
     public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0) * DRIVE_REDUCTION * DriveConstants.WHEEL_CIRCUMFERENCE;
-    public static final double DRIVE_VOLTAGE = 8.0; //TODO update with correct voltage
+    public static final double DRIVE_VOLTAGE = 9.5; //TODO update with correct voltage
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2);
     public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO test value instead of theoretical value
     public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.75;

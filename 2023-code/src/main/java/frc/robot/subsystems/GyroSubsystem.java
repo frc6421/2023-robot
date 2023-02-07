@@ -50,7 +50,7 @@ public class GyroSubsystem extends SubsystemBase {
    */
   public static void zeroGyro()
   {
-    pigeon.setYaw(0);
+    pigeon.setYaw(DriveConstants.GYRO_YAW_OFFSET);
   }
 
   /**

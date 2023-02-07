@@ -64,11 +64,15 @@ public final class Constants {
     public static final double ANGLE_CONTROLLER_KP = .0014;
 
     public static final int GYRO_CAN_ID = 30;
+
+    public static final double GYRO_PITCH_OFFSET = -0.056;
+    public static final double GYRO_ROLL_OFFSET = 0.102;
+    public static final double GYRO_YAW_OFFSET = -0.435;
   }
 
   public static class ModuleConstants {
     //TODO update for CANivore
-    public static final String CANIVORE_NAME = "rio";
+    public static final String CANIVORE_NAME = "driveBus";
 
     public static final String RIO_NAME = "rio";
 

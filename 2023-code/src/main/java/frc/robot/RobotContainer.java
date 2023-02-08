@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.networktables.GenericEntry;
@@ -40,6 +41,16 @@ public class RobotContainer {
   private GenericEntry elevatorPositionTestEntry;
   private GenericEntry elevatorPTestingEntry;
   
+  private final CommandXboxController copilotController;
+
+  private final ArmSubsystem armSubsystem;
+
+  private GenericEntry armSetFFTestEntry;
+  private GenericEntry armSetPosTestEntry;
+  private GenericEntry armSetPowerTestEntry;
+  private GenericEntry armSetPTestEntry;
+
+  private ShuffleboardTab armTab;
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
 
@@ -50,12 +61,23 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem();
 
     elevatorSubsystem = new ElevatorSubsystem();
+    armSubsystem = new ArmSubsystem();
+
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+
+    copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
+
+    
+
+
 
     SmartDashboard.putNumber("LeftY", driverController.getLeftY());
     SmartDashboard.putNumber("LeftX", driverController.getLeftX());
     SmartDashboard.putNumber("RightX", driverController.getRightX());
+
+    SmartDashboard.putNumber("Arm Degree Position: ", armSubsystem.getArmDegreePosition());
+    SmartDashboard.putNumber("Arm Feed Forward: ", armSubsystem.getFeedForward());
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
@@ -68,6 +90,27 @@ public class RobotContainer {
     elevatorSubsystem.setDefaultCommand(new RunCommand(() -> 
       elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
     );
+    
+      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(copilotController.getLeftY()), armSubsystem));
+    
+      armTab = Shuffleboard.getTab("Arm Tab");
+        
+      armSetFFTestEntry = armTab.add("Set Arm FF: ", 0) 
+              .getEntry();
+    
+      armSetPosTestEntry = armTab.add("Set Arm Degree Position: ", 0) 
+              .getEntry();
+
+      armSetPowerTestEntry = armTab.add("Set Arm Power: ", 0) 
+              .getEntry();
+
+      armSetPTestEntry = armTab.add("Set Arm P Value: ", 0) 
+              .getEntry();
+    
+      //TODO: Testing purposes only
+      copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
+      copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
+      copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 

@@ -136,6 +136,74 @@ public final class Constants {
   }
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
+    public static final int COPILOT_CONTROLLER_PORT = 1;
+  }
+
+  public static class ArmConstants 
+  {
+    public static final int ARM_CAN_ID = 40; //TODO: Find arm CANID
+
+    public static final double ARM_DEFAULT_FF = 0; //TODO: Find Feed Forward value
+    
+    public static final double ARM_P = 0.017;//TODO: Find P value
+    public static final double ARM_I = 0.0;
+    public static final double ARM_D = 0.0;
+
+    public static final float ARM_SOFT_LIMIT = 0.0f;
+
+
+    public static final double ARM_GEAR_RATIO = 120.0;
+
+    /**
+     * Calculated degrees arm moves per motor rotation from 360 / gear ratio
+     */
+    public static final double DEGREES_PER_MOTOR_ROTATION = (360 / ARM_GEAR_RATIO);
+
+    public static final float ARM_IN_SOFT_LIMIT = -29;
+
+    public static final float ARM_OUT_SOFT_LIMIT = 224;
+
+    public static final float ARM_ELEVATOR_OUT_SOFT_LIMIT = 270;
+
+    public static final double ARM_MAX_TEST_PERCENT_OUTPUT = 0.15;
+
+    // public static final int ARM_POS_HORIZONTAL = 840; // TODO update with correct value(May use later)
+
+    public static final double MAX_ARM_GRAVITY_FF = 0.0375; // Determined on 2/7/2023
+
+    public static final double FLOOR_MIN_INCH_DISTANCE = 12.1;
+
+    public static final double FLOOR_MAX_INCH_DISTANCE = 20.6;
+
+    public static final boolean ARM_IS_INVERTED = true;
+
+    public static class ArmAngleConstants
+    {
+      public static final double CONE_HIGH_MIN_ANGLE = 155.0;
+      public static final double CONE_HIGH_MAX_ANGLE = 142.3;
+      public static final double CONE_HIGH_TOP_ANGLE = 150.5;
+      
+      public static final double CONE_MID_MIN_ANGLE = 153.5;
+      public static final double CONE_MID_MAX_ANGLE = 141.8;
+      public static final double CONE_MID_TOP_ANGLE = 150.9;
+
+
+      public static final double CUBE_HIGH_MIN_ANGLE = 181.9;
+      public static final double CUBE_HIGH_MAX_ANGLE = 155.3;
+      public static final double CUBE_HIGH_OPTIMAL_ANGLE = 166.5;
+
+      public static final double CUBE_MID_MIN_ANGLE = 182.7;
+      public static final double CUBE_MID_MAX_ANGLE = 155.3;
+      public static final double CUBE_MID_OPTIMAL_ANGLE = 167.0;
+
+      public static final double ARM_START_POSITION = -29.0;
+      
+      
+      //TODO: Not final angle
+      public static final double GRAB_FROM_INTAKE_ANGLE = -26.9;
+
+      public static final double FLOOR_ANGLE = 210.7;
+    }
   }
 
 }

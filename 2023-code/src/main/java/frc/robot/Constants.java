@@ -117,7 +117,7 @@ public final class Constants {
     public static final double ELEVATOR_I = 0; //TODO update with correct values
     public static final double ELEVATOR_D = 0; //TODO update with correct values
 
-    public static final double ELEVATOR_FF = 0.02375; // 1/19/23 tuned with no arm wheight
+    public static final double ELEVATOR_FF = 0.02; // 2/7/23 tuned with no arm wheight
 
     public static final double ELEVATOR_GEAR_RATIO = 15;
 
@@ -141,11 +141,11 @@ public final class Constants {
 
   public static class ArmConstants 
   {
-    public static final int ARM_CAN_ID = 40; //TODO: Find arm CANID
+    public static final int ARM_CAN_ID = 40;
 
-    public static final double ARM_DEFAULT_FF = 0; //TODO: Find Feed Forward value
+    public static final double ARM_DEFAULT_FF = 0.0375; // Determined on 2/7/23
     
-    public static final double ARM_P = 0.017;//TODO: Find P value
+    public static final double ARM_P = 0.06;// Determined on 2/7/23
     public static final double ARM_I = 0.0;
     public static final double ARM_D = 0.0;
 

@@ -119,7 +119,7 @@ public class ElevatorSubsystem extends SubsystemBase {
      */
     public void goToPosition(double FF)
     {
-        elevatorMotor.set(FF * ElevatorConstants.ELEVATOR_MAX_PRECENT);
+        elevatorMotor.set(FF);
     } 
 
     // ENCODER \\

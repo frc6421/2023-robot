@@ -95,7 +95,7 @@ public class RobotContainer {
               .getEntry();
     
       //TODO: Testing purposes only
-      copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleAndFF(armSetPosTestEntry.getDouble(0), armSetFFTestEntry.getDouble(0)), armSubsystem));
+      copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
       copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
       copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
 

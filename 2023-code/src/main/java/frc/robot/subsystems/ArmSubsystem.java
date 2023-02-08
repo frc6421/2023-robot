@@ -32,6 +32,7 @@ public class ArmSubsystem extends SubsystemBase
     private ShuffleboardTab armTab;
     private GenericEntry armAngleEntry;
     private GenericEntry armFFEntry;
+    private GenericEntry armPEntry;
 
      /** Creates a new ArmSubsystem. */
     public ArmSubsystem()
@@ -45,7 +46,7 @@ public class ArmSubsystem extends SubsystemBase
         armEncoder.setPositionConversionFactor(ArmConstants.DEGREES_PER_MOTOR_ROTATION); //TODO: Verify this is not totally wrong
 
         armMotor.setInverted(ArmConstants.ARM_IS_INVERTED);
-        armMotor.setIdleMode(IdleMode.kCoast);
+        armMotor.setIdleMode(IdleMode.kBrake);
 
         armEncoder.setPosition(ArmAngleConstants.ARM_START_POSITION); //TODO: Verify start position
 
@@ -81,6 +82,9 @@ public class ArmSubsystem extends SubsystemBase
 
         armFFEntry = armTab.add("Arm Feed Forward: ", 0) 
             .getEntry();
+
+        armPEntry = armTab.add("Arm P: ", 0) 
+            .getEntry();
         
     }
     
@@ -89,6 +93,7 @@ public class ArmSubsystem extends SubsystemBase
     {
         armAngleEntry.setDouble(getArmDegreePosition());
         armFFEntry.setDouble(armDynamicFF);
+        armPEntry.setDouble(armPIDController.getP());
     }
 
 

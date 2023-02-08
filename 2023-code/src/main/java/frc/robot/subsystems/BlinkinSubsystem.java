@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.BlinkinConstants;
 
 public class BlinkinSubsystem extends SubsystemBase {
-  private static Spark blinkinLED = new Spark(0); // 0 is the RIO PWM port this is connected to
+  private static Spark blinkinLED = new Spark(9); // 9 is the RIO PWM port this is connected to
   /** Creates a new BlinkinSubsystem. */
   public BlinkinSubsystem() {}
 
@@ -27,6 +27,14 @@ public class BlinkinSubsystem extends SubsystemBase {
   
   public static void blinkinBlueSet(){
     blinkinLED.set(BlinkinConstants.BLINKIN_BLUE);
+  }
+
+  public static void blinkinYellowSet(){
+    blinkinLED.set(BlinkinConstants.BLINKIN_YELLOW);
+  }
+
+  public static void blinkinVioletSet(){
+    blinkinLED.set(BlinkinConstants.BLINKIN_VIOLET);
   }
   
   public static void blinkinGreenSet(){

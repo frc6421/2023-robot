@@ -16,7 +16,23 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class AutoConstants {
+    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 1; //TODO update
+    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1; //TODO update
 
+    public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
+    public static final double AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC = Math.PI;
+
+    public static final double X_DRIVE_P = 0;
+    public static final double X_DRIVE_I = 0;
+    public static final double X_DRIVE_D = 0;
+
+    public static final double Y_DRIVE_P = 0;
+    public static final double Y_DRIVE_I = 0;
+    public static final double Y_DRIVE_D = 0;
+
+    public static final double THETA_P = 0;
+    public static final double THETA_I = 0;
+    public static final double THETA_D = 0;
   }
 
   public static class DriveConstants {

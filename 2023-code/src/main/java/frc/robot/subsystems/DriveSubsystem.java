@@ -31,7 +31,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final AHRS navx;
 
-  private final SwerveDriveKinematics swerveKinematics;
+  public final SwerveDriveKinematics swerveKinematics;
 
   private final SwerveDriveOdometry odometry;
 

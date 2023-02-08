@@ -11,6 +11,8 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.subsystems.GyroSubsystem;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -38,9 +40,13 @@ public class RobotContainer {
   private GenericEntry elevatorPositionTestEntry;
   private GenericEntry elevatorPTestingEntry;
   
+  public GyroSubsystem gyroSubsystem;
+  private final PowerDistribution PDP;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    gyroSubsystem = new GyroSubsystem();
+    
     driveSubsystem = new DriveSubsystem();
 
     elevatorSubsystem = new ElevatorSubsystem();
@@ -80,6 +86,9 @@ public class RobotContainer {
     
     driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
    
+    PDP = new PowerDistribution();
+    PDP.clearStickyFaults();
+
     // Configure the trigger bindings
     configureBindings();
   }
@@ -102,7 +111,7 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 //TODO turn to angle buttons
-    driverController.back().onTrue(new InstantCommand(() -> driveSubsystem.zeroGyro())); 
+    driverController.y().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
   }
 

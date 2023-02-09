@@ -135,6 +135,7 @@ public class RobotContainer {
       copilotController.rightBumper().whileTrue(new InstantCommand(()-> grabberSubsystem.toggleGrabber()));
       copilotController.leftBumper().whileTrue(new InstantCommand(()-> intakeSubsystem.toggleIntake()));
       copilotController.b().whileTrue(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(motorSet.getDouble(0)), intakeSubsystem));
+      copilotController.povDown().whileTrue(new RunCommand(() -> intakeSubsystem.stopIntakeMotors()));
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 

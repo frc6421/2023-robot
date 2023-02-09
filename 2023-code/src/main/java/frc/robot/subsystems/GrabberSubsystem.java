@@ -57,7 +57,7 @@ public class GrabberSubsystem extends SubsystemBase {
   /**
    * Toggles the grabber piston
    */
-  public void togglePiston(){
+  public void toggleGrabber(){
     if(isToggled()){
       grabberPiston.set(Value.kForward);
       grabberToggled = false;

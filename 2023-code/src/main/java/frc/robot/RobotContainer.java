@@ -12,10 +12,12 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.GyroSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -36,12 +38,15 @@ public class RobotContainer {
 
   private final ElevatorSubsystem elevatorSubsystem;
 
+  private final GrabberSubsystem grabberSubsystem;
+
+  private final IntakeSubsystem intakeSubsystem;
+
   // Set up controller with CommandXboxController
   private final CommandXboxController driverController;
 
   private static Compressor compressor;
 
-  public final PowerDistribution PDH;
   public final PneumaticHub pneumaticHub;
   private ShuffleboardTab elevatorTab;
   private GenericEntry elevatorFFTestingEntry;
@@ -56,8 +61,10 @@ public class RobotContainer {
   private GenericEntry armSetPosTestEntry;
   private GenericEntry armSetPowerTestEntry;
   private GenericEntry armSetPTestEntry;
+  private GenericEntry motorSet;
 
   private ShuffleboardTab armTab;
+  private ShuffleboardTab intakeGrabberTab;
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
 
@@ -69,6 +76,9 @@ public class RobotContainer {
 
     elevatorSubsystem = new ElevatorSubsystem();
     armSubsystem = new ArmSubsystem();
+
+    grabberSubsystem = new GrabberSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
 
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
@@ -101,6 +111,10 @@ public class RobotContainer {
       armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(copilotController.getLeftY()), armSubsystem));
     
       armTab = Shuffleboard.getTab("Arm Tab");
+
+      intakeGrabberTab = Shuffleboard.getTab("Intake-Grabber Tab");
+
+      motorSet = intakeGrabberTab.add("Set motors speeds", 0).getEntry();
         
       armSetFFTestEntry = armTab.add("Set Arm FF: ", 0) 
               .getEntry();
@@ -118,6 +132,9 @@ public class RobotContainer {
       copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
       copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
       copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
+      copilotController.rightBumper().whileTrue(new InstantCommand(()-> grabberSubsystem.toggleGrabber()));
+      copilotController.leftBumper().whileTrue(new InstantCommand(()-> intakeSubsystem.toggleIntake()));
+      copilotController.b().whileTrue(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(motorSet.getDouble(0)), intakeSubsystem));
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 
@@ -142,10 +159,6 @@ public class RobotContainer {
     //configures the compressor
     compressor = new Compressor(PneumaticsModuleType.REVPH);
     compressor.enableAnalog(95, 120);
-
-    //configures the PDH
-    PDH = new PowerDistribution();
-    PDH.clearStickyFaults();
 
     //configures the Pneumatic Hub
     pneumaticHub = new PneumaticHub();

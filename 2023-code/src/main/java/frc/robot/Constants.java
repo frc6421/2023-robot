@@ -213,13 +213,13 @@ public final class Constants {
     //TODO confer with other programmers for CAN and pneumatics
     public static final int LEFT_PISTON_FORWARD_CHANNEL = 0;
     public static final int LEFT_PISTON_REVERSE_CHANNEL = 1;
-    public static final int RIGHT_PISTON_FORWARD_CHANNEL = 2;
-    public static final int RIGHT_PISTON_REVERSE_CHANNEL = 3;
+    public static final int RIGHT_PISTON_FORWARD_CHANNEL = 4;
+    public static final int RIGHT_PISTON_REVERSE_CHANNEL = 5;
   }
 
   public static class GrabberConstants {
-    public static final int FORWARD_CHANNEL = 4;
-    public static final int REVERSE_CHANNEL = 5;
+    public static final int FORWARD_CHANNEL = 2;
+    public static final int REVERSE_CHANNEL = 3;
   }
 
 }

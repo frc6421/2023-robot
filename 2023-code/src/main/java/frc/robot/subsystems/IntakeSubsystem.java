@@ -36,14 +36,14 @@ public class IntakeSubsystem extends SubsystemBase {
     rightPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, IntakeConstants.RIGHT_PISTON_FORWARD_CHANNEL, IntakeConstants.RIGHT_PISTON_REVERSE_CHANNEL);
 
     leftMotor.restoreFactoryDefaults();
-    leftMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    leftMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     leftMotor.setInverted(false);
-    leftMotor.setSmartCurrentLimit(40);
+    leftMotor.setSmartCurrentLimit(60);
     
     rightMotor.restoreFactoryDefaults();
-    rightMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    rightMotor.setInverted(false);
-    rightMotor.setSmartCurrentLimit(40); 
+    rightMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    rightMotor.setInverted(true);
+    rightMotor.setSmartCurrentLimit(60); 
 
     intakeToggled = false;
   }
@@ -84,7 +84,7 @@ public class IntakeSubsystem extends SubsystemBase {
    * @param speed double value -1.0 to 1.0
    */
   public void setIntakeSpeed(double speed) {
-    MathUtil.clamp(speed, -1, 1);
+    speed = MathUtil.clamp(speed, -1, 1);
     leftMotor.set(speed);
     rightMotor.set(speed);   //TODO set a motor to follow or have different methods for right and left?
   }
@@ -103,14 +103,10 @@ public class IntakeSubsystem extends SubsystemBase {
    */
   public void toggleIntake(){
     if(isToggled()){
-      leftPiston.set(Value.kForward);
-      rightPiston.set(Value.kForward);
-      intakeToggled = false;
+      intakeIn();
     }
     else{
-      leftPiston.set(Value.kReverse);
-      rightPiston.set(Value.kReverse);
-      intakeToggled = true;
+      intakeOut();
     }
   }
 }

@@ -260,8 +260,10 @@ public class DriveSubsystem extends SubsystemBase {
       break;
     }
 
+    //sets the rotation
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
+    // turn to angle buttons
     if(driverController.y().getAsBoolean()){
       rotation = driftCorrector.calculate(getGyroRotation().getDegrees(), 0.0);
       buttonPressed = true;
@@ -287,7 +289,7 @@ public class DriveSubsystem extends SubsystemBase {
     //Corrects the natural rotational drift of the swerve
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation());
     double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
-    if((Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0) && !buttonPressed){
+    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){
       targetAngle = getGyroRotation().getDegrees();
     }
     else if(xy > 0 && !buttonPressed){
@@ -296,24 +298,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
     pXY = xy;
 
-    // if(driverController.x().getAsBoolean()){
-    //   chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), 270);
-    //   System.out.println("X pressed");
-    // }
-    // else if(driverController.y().getAsBoolean()){
-    //   chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), 0);
-    //   System.out.println("Y pressed");
-    // }
-    // else if(driverController.b().getAsBoolean()){
-    //   chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), 90);
-    //   System.out.println("B pressed");
-    // }
-    // else if(driverController.a().getAsBoolean()){
-    //   chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), 180);
-    //   System.out.println("A pressed");
-    // }
-
-    // Sets field relative speeds
+    // Sets field relative speeds to the swerve module states
     var swerveModuleStates = 
       swerveKinematics.toSwerveModuleStates(chassisSpeeds);
       // Ensures all wheels obey max speed

@@ -234,6 +234,7 @@ public class DriveSubsystem extends SubsystemBase {
     Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
     double xSpeed;
     double ySpeed;  //TODO make command instead of method after testing the new stuff
+    boolean buttonPressed = false;
 
     //TODO Drive by voltage changes before Sussex
     /* Sets the speed as a percentage of our max velocity using either trigger for magintude, or joysticks
@@ -263,15 +264,19 @@ public class DriveSubsystem extends SubsystemBase {
 
     if(driverController.y().getAsBoolean()){
       rotation = driftCorrector.calculate(getGyroRotation().getDegrees(), 0.0);
+      buttonPressed = true;
     }
     else if(driverController.b().getAsBoolean()){
       rotation = driftCorrector.calculate(getGyroRotation().getDegrees(), 90.0);
+      buttonPressed = true;
     }
     else if(driverController.a().getAsBoolean()){
       rotation = driftCorrector.calculate(getGyroRotation().getDegrees(), 180.0);
+      buttonPressed = true;
     }
     else if(driverController.x().getAsBoolean()){
       rotation = driftCorrector.calculate(getGyroRotation().getDegrees(), 270.0);
+      buttonPressed = true;
     }
 
     //Keeps the robot from moving with no joystick inputs
@@ -280,16 +285,16 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     //Corrects the natural rotational drift of the swerve
-    // ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation());
-    // double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
-    // if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){
-    //   targetAngle = getGyroRotation().getDegrees();
-    // }
-    // else if(xy > 0){
-    //   System.out.println(targetAngle);
-    //   chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), targetAngle);
-    // }
-    // pXY = xy;
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation());
+    double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
+    if((Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0) && !buttonPressed){
+      targetAngle = getGyroRotation().getDegrees();
+    }
+    else if(xy > 0 && !buttonPressed){
+      System.out.println(targetAngle);
+      chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), targetAngle);
+    }
+    pXY = xy;
 
     // if(driverController.x().getAsBoolean()){
     //   chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), 270);
@@ -310,7 +315,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Sets field relative speeds
     var swerveModuleStates = 
-      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation()));
+      swerveKinematics.toSwerveModuleStates(chassisSpeeds);
       // Ensures all wheels obey max speed
       SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
 

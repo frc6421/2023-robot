@@ -204,6 +204,8 @@ public final class Constants {
 
       public static final double FLOOR_ANGLE = 210.7;
     }
+
+    public static double CONE_HIGH_TOP_ANGLE;
   }
 
 }

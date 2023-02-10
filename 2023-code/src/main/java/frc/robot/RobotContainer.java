@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ArmElevatorCommand;
+import frc.robot.commands.ArmElevatorCommand.PlaceStates;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -53,6 +55,9 @@ public class RobotContainer {
   private ShuffleboardTab armTab;
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
+  private final ArmElevatorCommand armElevatorCommand;
+
+  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -68,7 +73,7 @@ public class RobotContainer {
 
     copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
 
-    
+    armElevatorCommand = new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.INTAKE);
 
 
 
@@ -108,9 +113,10 @@ public class RobotContainer {
               .getEntry();
     
       //TODO: Testing purposes only
-      copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
-      copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
-      copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
+      // copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
+      // copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
+      // copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
+      copilotController.x().whileTrue(armElevatorCommand);
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 
@@ -127,7 +133,9 @@ public class RobotContainer {
     
     driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
     
-    driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
+    // driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
+
+    driverController.b().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.INTAKE));
    
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();

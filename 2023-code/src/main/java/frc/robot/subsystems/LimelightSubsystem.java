@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 
@@ -86,7 +87,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * @return true if a retroreflective target is detected, false if not
    */
   public static boolean isRetroTargetDetected(String limelightHostName) {
-    if (LimelightHelpers.getTA(limelightHostName) == 1) {
+    if (NetworkTableInstance.getDefault().getTable(limelightHostName).getEntry("tv").getDouble(0) == 1) {
       return true;
     } else {
       return false;

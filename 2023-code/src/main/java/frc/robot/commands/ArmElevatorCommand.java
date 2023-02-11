@@ -4,7 +4,10 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ArmConstants.ArmAngleConstants;
@@ -15,6 +18,23 @@ public class ArmElevatorCommand extends CommandBase {
   /** Creates a new ArmElevatorCommand. */
   ElevatorSubsystem elevator;
   ArmSubsystem arm;
+  Timer timer = new Timer();
+  
+
+  private final TrapezoidProfile.Constraints elevatorConstraints =
+      new TrapezoidProfile.Constraints(0.5, 0.25);
+  private TrapezoidProfile.State elevatorGoal = new TrapezoidProfile.State();
+  private TrapezoidProfile.State elevatorSetpoint = new TrapezoidProfile.State();
+
+  private final TrapezoidProfile.Constraints armConstraints =
+      new TrapezoidProfile.Constraints(270, 135);
+  private TrapezoidProfile.State armGoal = new TrapezoidProfile.State();
+  private TrapezoidProfile.State armSetpoint = new TrapezoidProfile.State();
+  
+  TrapezoidProfile armProfile;
+  TrapezoidProfile elevatorProfile;
+  
+
 
   public enum PlaceStates {
     FLOOR,
@@ -38,50 +58,63 @@ public class ArmElevatorCommand extends CommandBase {
   @Override
   public void initialize() 
   {
+    timer.reset();
+    timer.start();
+
     switch(placeState)
     {
       case FLOOR:
-        elevator.setElevatorPosition(ElevatorConstants.ELEVATOR_REVERSE_SOFT_LIMIT);
-        arm.setArmAngleWithGrav(ArmAngleConstants.FLOOR_ANGLE);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.FLOOR_ANGLE, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 
       case INTAKE:
-        elevator.setElevatorPosition(ElevatorConstants.ELEVATOR_REVERSE_SOFT_LIMIT);
-        arm.setArmAngleWithGrav(ArmAngleConstants.GRAB_FROM_INTAKE_ANGLE);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.GRAB_FROM_INTAKE_ANGLE, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 
       case MID:
-        elevator.setElevatorPosition(ElevatorConstants.ELEVATOR_REVERSE_SOFT_LIMIT);
-        arm.setArmAngleWithGrav(ArmAngleConstants.CONE_MID_TOP_ANGLE);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_MID_TOP_ANGLE, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 
       case HIGH:
-        elevator.setElevatorPosition(ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS);
-        arm.setArmAngleWithGrav(ArmAngleConstants.CONE_HIGH_TOP_ANGLE);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_HIGH_TOP_ANGLE, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 
       case SUBSTATION:
-        elevator.setElevatorPosition(ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS);
-        arm.setArmAngleWithGrav(0); // TODO: Find these values
+        armGoal = new TrapezoidProfile.State(0, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
     }
+
+    armProfile = new TrapezoidProfile(armConstraints, armGoal, new TrapezoidProfile.State(arm.getArmDegreePosition(), 0));
+    elevatorProfile = new TrapezoidProfile(elevatorConstraints, elevatorGoal, new TrapezoidProfile.State(elevator.getElelvatorPositionInMeters(), 0));
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() 
+  {
+    armSetpoint = armProfile.calculate(timer.get());
+    elevatorSetpoint = elevatorProfile.calculate(timer.get());
+    
+    elevator.setElevatorPosition(elevatorSetpoint.position);
+    arm.setArmAngleWithGrav(armSetpoint.position);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
-
+      
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return ((timer.get() > armProfile.totalTime()) && (timer.get() > elevatorProfile.totalTime()));
   }
 }

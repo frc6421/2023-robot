@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.GyroSubsystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -56,6 +57,8 @@ public class RobotContainer {
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
   private final ArmElevatorCommand armElevatorCommand;
+
+  SendableChooser<PlaceStates> armElevatorPos;
 
   
 
@@ -116,7 +119,7 @@ public class RobotContainer {
       // copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
       // copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
       // copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
-      copilotController.x().whileTrue(armElevatorCommand);
+
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 
@@ -128,6 +131,14 @@ public class RobotContainer {
 
     elevatorPositionTestEntry = elevatorTab.add("Set Elevator Pos: ", 0)
       .getEntry();
+
+      armTab.add(armElevatorPos = new SendableChooser<>());
+      armElevatorPos.setDefaultOption("Floor", PlaceStates.FLOOR);
+      armElevatorPos.addOption("Intake", PlaceStates.INTAKE);
+      armElevatorPos.addOption("Mid", PlaceStates.MID);
+      armElevatorPos.addOption("High", PlaceStates.HIGH);
+      armElevatorPos.addOption("Substation", PlaceStates.SUBSTATION);
+      SmartDashboard.putData("Arm elevator position", armElevatorPos);
     
     driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.goToPosition(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
     
@@ -135,7 +146,9 @@ public class RobotContainer {
     
     // driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
 
-    driverController.b().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.INTAKE));
+    copilotController.x().whileTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, armElevatorPos.getSelected()));
+
+    copilotController.a().whileTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.FLOOR));
    
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();

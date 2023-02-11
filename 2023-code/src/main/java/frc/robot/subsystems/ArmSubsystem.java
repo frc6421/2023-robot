@@ -109,7 +109,7 @@ public class ArmSubsystem extends SubsystemBase
     
     
     /**
-    * Sets motor to a provided position
+    * Sets motor to a provided position in degrees
     * @param position The position to set the motor to
     */
     public void setPosition(double position)

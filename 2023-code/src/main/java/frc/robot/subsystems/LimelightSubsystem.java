@@ -70,6 +70,84 @@ public class LimelightSubsystem extends SubsystemBase {
     return botPoseArray[5];
   }
 
+  /**
+   * Gets the robot's position in 3d space relative to the red alliance driver stations
+   * 
+   * @return 3d bot pose array values
+   */
+  public static double[] getRed3dBotPose(String limelightHostName) {
+    return LimelightHelpers.getBotpose_wpiRed(limelightHostName);
+  }
+
+  public static double getRedBotPoseX(String limelightHostName) {
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
+    return botPoseArray[0];
+  }
+
+  public static double getRedBotPoseY(String limelightHostName) {
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
+    return botPoseArray[1];
+  }
+
+  public static double getRedBotPoseZ(String limelightHostName) {
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
+    return botPoseArray[2];
+  }
+
+  public static double getRedBotPoseRoll(String limelightHostName) {
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
+    return botPoseArray[3];
+  }
+
+  public static double getRedBotPosePitch(String limelightHostName) {
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
+    return botPoseArray[4];
+  }
+
+  public static double getRedBotPoseYaw(String limelightHostName) {
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
+    return botPoseArray[5];
+  }
+
+  /**
+   * Gets the robot's position in 3d space relative to the blue alliance driver stations
+   * 
+   * @return 3d bot pose array values
+   */
+  public static double[] getBlue3dBotPose(String limelightHostName) {
+    return LimelightHelpers.getBotpose_wpiBlue(limelightHostName);
+  }
+
+  public static double getBlueBotPoseX(String limelightHostName) {
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
+    return botPoseArray[0];
+  }
+
+  public static double getBlueBotPoseY(String limelightHostName) {
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
+    return botPoseArray[1];
+  }
+
+  public static double getBlueBotPoseZ(String limelightHostName) {
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
+    return botPoseArray[2];
+  }
+
+  public static double getBlueBotPoseRoll(String limelightHostName) {
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
+    return botPoseArray[3];
+  }
+
+  public static double getBlueBotPosePitch(String limelightHostName) {
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
+    return botPoseArray[4];
+  }
+
+  public static double getBlueBotPoseYaw(String limelightHostName) {
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
+    return botPoseArray[5];
+  }
+
 
   // APRILTAG SET METHODS \\
 

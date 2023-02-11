@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -28,16 +29,17 @@ public class ScoringVisionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    xTagDistance = LimelightSubsystem.getBotPoseX(limelightHostName);
-    yTagDistance = LimelightSubsystem.getBotPoseY(limelightHostName);
-    yawTagAngle = LimelightSubsystem.getBotPoseYaw(limelightHostName);
     
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    if(DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+
+    } else if(DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+      
+    }
   }
 
   // Called once the command ends or is interrupted.

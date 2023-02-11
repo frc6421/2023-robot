@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ThreePieceCommand extends SequentialCommandGroup {
-  /** Creates a new ThreePieceCommand. */
+  /** Creates a new ThreePieceCommand. Scores one full link on the high row */
   public ThreePieceCommand() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());

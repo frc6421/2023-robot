@@ -11,30 +11,25 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.WarriorPose2d;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TestAutoCommand extends SequentialCommandGroup {
+public class FlippedTestAutoCommand extends SequentialCommandGroup {
   private DriveSubsystem driveSubsystem;
-
-  /** Creates a new TestAutoCommand. */
-  public TestAutoCommand(DriveSubsystem drive) {
+  /** Creates a new FlippedTestAutoCommand. */
+  public FlippedTestAutoCommand(DriveSubsystem drive) {
     driveSubsystem = drive;
     addRequirements(driveSubsystem);
 
@@ -49,7 +44,7 @@ public class TestAutoCommand extends SequentialCommandGroup {
      */
     Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
         List.of(new Pose2d(0, 0, new Rotation2d(0)),
-            new Pose2d(1, 1, new Rotation2d(Units.degreesToRadians(0))),
+            new Pose2d(1, -1, new Rotation2d(Units.degreesToRadians(0))),
             new Pose2d(2, 0, new Rotation2d(Units.degreesToRadians(0)))),
         forwardConfig);
 

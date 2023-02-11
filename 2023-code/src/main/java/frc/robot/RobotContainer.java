@@ -6,14 +6,17 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.autonomousCommands.TestAutoCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.GyroSubsystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -54,22 +57,24 @@ public class RobotContainer {
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
 
+  private SendableChooser<Command> autoChooser;
+
+  private TestAutoCommand testAutoCommand;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     gyroSubsystem = new GyroSubsystem();
-    
     driveSubsystem = new DriveSubsystem();
-
     elevatorSubsystem = new ElevatorSubsystem();
     armSubsystem = new ArmSubsystem();
 
+    testAutoCommand = new TestAutoCommand(driveSubsystem);
+
+    autoChooser = new SendableChooser<>();
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
     copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
-
-    
-
 
 
     SmartDashboard.putNumber("LeftY", driverController.getLeftY());
@@ -129,6 +134,9 @@ public class RobotContainer {
     
     driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
    
+    autoChooser.setDefaultOption("TestAuto", testAutoCommand);
+    SmartDashboard.putData("autoChooser", autoChooser);
+
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
 
@@ -165,6 +173,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return autoChooser.getSelected();
   }
 }

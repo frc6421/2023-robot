@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ThreePieceChargeCommand extends SequentialCommandGroup {
-  /** Creates a new ThreePieceChargeCommand. */
+  /** Creates a new ThreePieceChargeCommand. Scores a full link on the high row, then balances the charge station*/
   public ThreePieceChargeCommand() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());

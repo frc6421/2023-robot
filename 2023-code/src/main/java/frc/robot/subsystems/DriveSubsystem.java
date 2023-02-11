@@ -130,6 +130,24 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
+   * Returns estimated current robot heading as a Rotation2d
+   * 
+   * @return current estimated robot heading as a Rotation2d (radians)
+   */
+  public Rotation2d getPoseHeading() {
+    return odometry.getPoseMeters().getRotation();
+  }
+
+  /**
+   * Sets the heading to zero for auto
+   * 
+   * @return Rotation2d set to 0
+   */
+  public Rotation2d setHeadingZero() {
+    return new Rotation2d(0);
+  }
+
+  /**
    * Resets odometry to the given pose value
    * 
    * @param pose to use for reset
@@ -155,6 +173,28 @@ public class DriveSubsystem extends SubsystemBase {
     frontRight.setDesiredState(desiredStates[1]);
     backLeft.setDesiredState(desiredStates[2]);
     backRight.setDesiredState(desiredStates[3]);
+  }
+
+  /**
+   * Sets the desired ChassisSpeeds
+   * Used for auto
+   * 
+   * @param chassisSpeeds desired ChassisSpeeds
+   */
+  public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, GyroSubsystem.getYawAngle());
+
+    // Sets field relative speeds
+    var swerveModuleStates = 
+      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, GyroSubsystem.getYawAngle()));
+      // Ensures all wheels obey max speed
+      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
+      // Sets the swerve modules to their desired states using optimization method
+      frontLeft.setDesiredState(swerveModuleStates[0]);
+      frontRight.setDesiredState(swerveModuleStates[1]);
+      backLeft.setDesiredState(swerveModuleStates[2]);
+      backRight.setDesiredState(swerveModuleStates[3]);
   }
 
   //TODO not currently used

@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FourPieceCommand extends SequentialCommandGroup {
-  /** Creates a new FourPieceCommand. */
+  /** Creates a new FourPieceCommand. Scores one full link on the high row and one piece on the middle row */
   public FourPieceCommand() {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());

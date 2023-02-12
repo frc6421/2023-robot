@@ -4,20 +4,25 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
   public static class AutoConstants {
-    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 1; //TODO update
-    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1; //TODO update
+    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 1; // TODO update 4
+    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1; // TODO update 8
 
     public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
     public static final double AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC = Math.PI;
@@ -33,6 +38,72 @@ public final class Constants {
     public static final double THETA_P = 1.2;
     public static final double THETA_I = 0;
     public static final double THETA_D = 0;
+
+    public static class TrajectoryConstants {
+      public static final double CENTER_OF_ROBOT_LENGTH = Units.inchesToMeters(16.25);
+      public static final double CENTER_OF_ROBOT_WIDTH = Units.inchesToMeters(15.25);
+
+      // Note: AprilTag coordinate system starts at right corner of blue alliance
+      // driver stations
+      // (0, 0) is the front right corner of the scoring grids
+      public static final Translation2d ORIGIN = new Translation2d(0, 0);
+
+      // First game piece is farthest to the left when standing in driver station,
+      // fourth is farthest to the right
+      public static final Translation2d FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+          Units.feetToMeters(3));
+      public static final Translation2d THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+          Units.feetToMeters(7));
+      public static final Translation2d SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+          Units.feetToMeters(11));
+      public static final Translation2d FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+          Units.feetToMeters(15));
+
+      /** In line with fourth game piece */
+      public static final Translation2d FAR_EDGE_OF_COMMUNITY = new Translation2d(Units.inchesToMeters(132.81),
+          Units.feetToMeters(3));
+
+      // First cone node is farthest to the left on right grid when standing in driver
+      // station
+      public static final Translation2d SECOND_CONE_NODE = new Translation2d(Units.feetToMeters(0),
+          Units.inchesToMeters(20));
+      public static final Translation2d FIRST_CONE_NODE = new Translation2d(Units.feetToMeters(0),
+          Units.inchesToMeters(64));
+
+      public static final Translation2d CUBE_NODE = new Translation2d(Units.feetToMeters(0), Units.inchesToMeters(42));
+
+      public static final Translation2d CENTER_OF_CHARGE_STATION = new Translation2d(Units.inchesToMeters(96.75),
+          Units.inchesToMeters(107.39));
+
+      // Flipped Y value trajectories (for left start)
+
+      // First game piece is farthest to the left when standing in driver station,
+      // fourth is farthest to the right
+      public static final Translation2d FLIPPED_FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+          -Units.feetToMeters(3));
+      public static final Translation2d FLIPPED_THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+          -Units.feetToMeters(7));
+      public static final Translation2d FLIPPED_SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+          -Units.feetToMeters(11));
+      public static final Translation2d FLIPPED_FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+          -Units.feetToMeters(15));
+
+      /** In line with fourth game piece */
+      public static final Translation2d FLIPPED_FAR_EDGE_OF_COMMUNITY = new Translation2d(Units.inchesToMeters(132.81),
+          -Units.feetToMeters(3));
+
+      // First cone node is farthest to the left on right grid when standing in driver
+      // station
+      public static final Translation2d FLIPPED_SECOND_CONE_NODE = new Translation2d(Units.feetToMeters(0),
+          -Units.inchesToMeters(20));
+      public static final Translation2d FLIPPED_FIRST_CONE_NODE = new Translation2d(Units.feetToMeters(0),
+          -Units.inchesToMeters(64));
+
+      public static final Translation2d FLIPPED_CUBE_NODE = new Translation2d(Units.feetToMeters(0), -Units.inchesToMeters(42));
+
+      public static final Translation2d FLIPPED_CENTER_OF_CHARGE_STATION = new Translation2d(Units.inchesToMeters(96.75),
+          -Units.inchesToMeters(107.39));
+    }
   }
 
   public static class DriveConstants {
@@ -48,7 +119,7 @@ public final class Constants {
      * 
      * Measured from the center of the wheels on each side
      */
-    public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.75); 
+    public static final double DRIVETRAIN_WHEELBASE_METERS = Units.inchesToMeters(20.75);
 
     public static final double GEAR_RATIO_MOTOR_TO_WHEEL = 6.75;
     public static final double STEER_GEAR_RATIO = 150.0 / 7.0;
@@ -59,21 +130,27 @@ public final class Constants {
     public static final int COUNTS_PER_ROTATION = 2048;
 
     public static final double STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE = (STEER_GEAR_RATIO * COUNTS_PER_ROTATION) / 360;
-    
-    public static final double DISTANCE_PER_ENCODER_COUNT = WHEEL_CIRCUMFERENCE / (COUNTS_PER_ROTATION * GEAR_RATIO_MOTOR_TO_WHEEL);
+
+    public static final double DISTANCE_PER_ENCODER_COUNT = WHEEL_CIRCUMFERENCE
+        / (COUNTS_PER_ROTATION * GEAR_RATIO_MOTOR_TO_WHEEL);
 
     // Formula for calculating theoretical max velocity:
     // Motor free speed RPM / 60 * Drive reduction * Wheel diameter meters * pi
-    public static final double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0); // Constant for SDS MK4i Modules
-    public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0) * DRIVE_REDUCTION * DriveConstants.WHEEL_CIRCUMFERENCE;
-    public static final double MAX_VOLTAGE = 8.0; //TODO update with correct voltage
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2);
-    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO test value instead of theoretical value
+    public static final double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0); // Constant for SDS MK4i
+                                                                                                // Modules
+    public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0) * DRIVE_REDUCTION
+        * DriveConstants.WHEEL_CIRCUMFERENCE;
+    public static final double MAX_VOLTAGE = 8.0; // TODO update with correct voltage
+    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND
+        / Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2);
+    public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; // TODO test value
+                                                                                                  // instead of
+                                                                                                  // theoretical value
     public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.75;
 
-    public static final double S_VOLTS = 0.54903; //0.60043
-    public static final double V_VOLT_SECONDS_PER_METER = 3.0772; //2.2591
-    public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.41017; //0.17289
+    public static final double S_VOLTS = 0.54903; // 0.60043
+    public static final double V_VOLT_SECONDS_PER_METER = 3.0772; // 2.2591
+    public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.41017; // 0.17289
 
     public static final double DRIVE_SLEW_RATE = 2;
 
@@ -87,14 +164,14 @@ public final class Constants {
   }
 
   public static class ModuleConstants {
-    //TODO update for CANivore
+    // TODO update for CANivore
     public static final String CANIVORE_NAME = "driveBus";
 
     public static final String RIO_NAME = "rio";
 
     public static final double PERCENT_DEADBAND = .075;
-    
-    //TODO update angle offsets on competition robot
+
+    // TODO update angle offsets on competition robot
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
     public static final int FRONT_LEFT_MODULE_STEER_CAN_ID = 13;
     public static final int FRONT_LEFT_MODULE_ENCODER_CAN_ID = 13;
@@ -115,58 +192,62 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_ENCODER_CAN_ID = 15;
     public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -302.43;
 
-    public static final double MODULE_DRIVE_P = 0.208; 
-    public static final double MODULE_DRIVE_I = 0; 
-    public static final double MODULE_DRIVE_D = 0; 
+    public static final double MODULE_DRIVE_P = 0.208;
+    public static final double MODULE_DRIVE_I = 0;
+    public static final double MODULE_DRIVE_D = 0;
 
-    public static final double MODULE_STEER_P = 0.3; 
-    public static final double MODULE_STEER_I = 0; 
-    public static final double MODULE_STEER_D = 0; 
+    public static final double MODULE_STEER_P = 0.3;
+    public static final double MODULE_STEER_I = 0;
+    public static final double MODULE_STEER_D = 0;
 
     public static final double DEADBAND_DRIVE_MOTOR = 0.02;
     public static final double DEADBAND_STEER_MOTOR = 0.02;
   }
-  public static class ElevatorConstants{
-    public static final int ELEVATOR_MOTOR_CAN_ID = 50; 
+
+  public static class ElevatorConstants {
+    public static final int ELEVATOR_MOTOR_CAN_ID = 50;
 
     public static final double ELEVATOR_P = 60; // 1/21/23 tuned with no arm weight
-    public static final double ELEVATOR_I = 0; //TODO update with correct values
-    public static final double ELEVATOR_D = 0; //TODO update with correct values
+    public static final double ELEVATOR_I = 0; // TODO update with correct values
+    public static final double ELEVATOR_D = 0; // TODO update with correct values
 
     public static final double ELEVATOR_FF = 0.02; // 2/7/23 tuned with no arm wheight
 
     public static final double ELEVATOR_GEAR_RATIO = 15;
 
-    public static final double ELEVATOR_MAX_PRECENT = 0.15; //TODO update as needed
+    public static final double ELEVATOR_MAX_PRECENT = 0.15; // TODO update as needed
 
     public static final double ELEVATOR_MAX_POS_IN = 20.375;
     public static final double ELEVATOR_MIN_POS_IN = 0;
 
-    public static final float ELEVATOR_FORWARD_SOFT_LIMIT_METERS = (float)Units.inchesToMeters(ELEVATOR_MAX_POS_IN); //TODO update with correct values
-    public static final float ELEVATOR_REVERSE_SOFT_LIMIT = 0f; //TODO update with correct values
+    public static final float ELEVATOR_FORWARD_SOFT_LIMIT_METERS = (float) Units.inchesToMeters(ELEVATOR_MAX_POS_IN); // TODO
+                                                                                                                      // update
+                                                                                                                      // with
+                                                                                                                      // correct
+                                                                                                                      // values
+    public static final float ELEVATOR_REVERSE_SOFT_LIMIT = 0f; // TODO update with correct values
 
     /**
-     *  In meters
+     * In meters
      */
-    public static final double ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE = (Units.inchesToMeters(1.7567)*Math.PI);
+    public static final double ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE = (Units.inchesToMeters(1.7567) * Math.PI);
   }
+
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int COPILOT_CONTROLLER_PORT = 1;
   }
 
-  public static class ArmConstants 
-  {
+  public static class ArmConstants {
     public static final int ARM_CAN_ID = 40;
 
     public static final double ARM_DEFAULT_FF = 0.0375; // Determined on 2/7/23
-    
+
     public static final double ARM_P = 0.06;// Determined on 2/7/23
     public static final double ARM_I = 0.0;
     public static final double ARM_D = 0.0;
 
     public static final float ARM_SOFT_LIMIT = 0.0f;
-
 
     public static final double ARM_GEAR_RATIO = 120.0;
 
@@ -183,7 +264,8 @@ public final class Constants {
 
     public static final double ARM_MAX_TEST_PERCENT_OUTPUT = 0.15;
 
-    // public static final int ARM_POS_HORIZONTAL = 840; // TODO update with correct value(May use later)
+    // public static final int ARM_POS_HORIZONTAL = 840; // TODO update with correct
+    // value(May use later)
 
     public static final double MAX_ARM_GRAVITY_FF = 0.0375; // Determined on 2/7/2023
 
@@ -193,16 +275,14 @@ public final class Constants {
 
     public static final boolean ARM_IS_INVERTED = true;
 
-    public static class ArmAngleConstants
-    {
+    public static class ArmAngleConstants {
       public static final double CONE_HIGH_MIN_ANGLE = 155.0;
       public static final double CONE_HIGH_MAX_ANGLE = 142.3;
       public static final double CONE_HIGH_TOP_ANGLE = 150.5;
-      
+
       public static final double CONE_MID_MIN_ANGLE = 153.5;
       public static final double CONE_MID_MAX_ANGLE = 141.8;
       public static final double CONE_MID_TOP_ANGLE = 150.9;
-
 
       public static final double CUBE_HIGH_MIN_ANGLE = 181.9;
       public static final double CUBE_HIGH_MAX_ANGLE = 155.3;
@@ -213,9 +293,8 @@ public final class Constants {
       public static final double CUBE_MID_OPTIMAL_ANGLE = 167.0;
 
       public static final double ARM_START_POSITION = -29.0;
-      
-      
-      //TODO: Not final angle
+
+      // TODO: Not final angle
       public static final double GRAB_FROM_INTAKE_ANGLE = -26.9;
 
       public static final double FLOOR_ANGLE = 210.7;

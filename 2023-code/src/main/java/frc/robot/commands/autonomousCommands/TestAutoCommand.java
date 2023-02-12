@@ -49,8 +49,8 @@ public class TestAutoCommand extends SequentialCommandGroup {
      */
     Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
         List.of(new Pose2d(0, 0, new Rotation2d(0)),
-            new Pose2d(1, 1, new Rotation2d(Units.degreesToRadians(0))),
-            new Pose2d(2, 0, new Rotation2d(Units.degreesToRadians(0)))),
+            new Pose2d(1, 1, new Rotation2d(Units.degreesToRadians(90))),
+            new Pose2d(2, 0, new Rotation2d(Units.degreesToRadians(180)))),
         forwardConfig);
 
     var thetaController = new ProfiledPIDController(

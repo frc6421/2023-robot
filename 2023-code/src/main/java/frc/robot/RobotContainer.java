@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.autonomousCommands.FourPieceCommand;
 import frc.robot.commands.autonomousCommands.TestAutoCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -60,6 +61,7 @@ public class RobotContainer {
   private SendableChooser<Command> autoChooser;
 
   private TestAutoCommand testAutoCommand;
+  private FourPieceCommand fourPieceAutoCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -69,6 +71,7 @@ public class RobotContainer {
     armSubsystem = new ArmSubsystem();
 
     testAutoCommand = new TestAutoCommand(driveSubsystem);
+    fourPieceAutoCommand = new FourPieceCommand(driveSubsystem);
 
     autoChooser = new SendableChooser<>();
 
@@ -135,6 +138,7 @@ public class RobotContainer {
     driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
    
     autoChooser.setDefaultOption("TestAuto", testAutoCommand);
+    autoChooser.addOption("Right Start 4 Piece", fourPieceAutoCommand);
     SmartDashboard.putData("autoChooser", autoChooser);
 
     PDP = new PowerDistribution();

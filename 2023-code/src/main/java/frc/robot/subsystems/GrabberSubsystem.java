@@ -13,15 +13,12 @@ import frc.robot.Constants.GrabberConstants;
 public class GrabberSubsystem extends SubsystemBase {
 
   private DoubleSolenoid grabberPiston;
-  
-  private boolean grabberToggled;
 
   /** Creates a new GrabberSubsystem. */
   public GrabberSubsystem() {
     
     //Constructs the double solenoid for the grabber
     grabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.FORWARD_CHANNEL, GrabberConstants.REVERSE_CHANNEL);
-    grabberToggled = false;
   }
 
 
@@ -31,19 +28,10 @@ public class GrabberSubsystem extends SubsystemBase {
   }
 
   /**
-   * Return the status of the grabber's toggle
-   * @return true if the grabber is toggled (closed) false if not toggled (open)
-   */
-  public boolean isToggled(){
-    return grabberToggled;
-  }
-
-  /**
    * Extends the grabber piston and closes the grabber
    */
   public void grab(){
     grabberPiston.set(Value.kReverse);
-    grabberToggled = true;
   }
 
   /**
@@ -51,20 +39,12 @@ public class GrabberSubsystem extends SubsystemBase {
    */
   public void release(){
     grabberPiston.set(Value.kForward);
-    grabberToggled = false;
   }
 
   /**
    * Toggles the grabber piston
    */
   public void toggleGrabber(){
-    if(isToggled()){
-      grabberPiston.set(Value.kForward);
-      grabberToggled = false;
-    }
-    else{
-      grabberPiston.set(Value.kReverse);
-      grabberToggled = true;
-    }
+    grabberPiston.toggle();
   }
 }

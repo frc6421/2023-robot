@@ -99,7 +99,8 @@ public class RobotContainer {
       elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
     );
     
-      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(copilotController.getLeftY()), armSubsystem));
+
+      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentPosition(copilotController.getLeftY()), armSubsystem));
     
       armTab = Shuffleboard.getTab("Arm Tab");
         
@@ -132,10 +133,10 @@ public class RobotContainer {
     elevatorPositionTestEntry = elevatorTab.add("Set Elevator Pos: ", 0)
       .getEntry();
 
-      armTab.add(armElevatorPos = new SendableChooser<>());
-      armElevatorPos.setDefaultOption("Floor", PlaceStates.FLOOR);
+      armElevatorPos = new SendableChooser<>();
+      armElevatorPos.setDefaultOption("Mid", PlaceStates.MID);
       armElevatorPos.addOption("Intake", PlaceStates.INTAKE);
-      armElevatorPos.addOption("Mid", PlaceStates.MID);
+      armElevatorPos.addOption("Floor", PlaceStates.FLOOR);
       armElevatorPos.addOption("High", PlaceStates.HIGH);
       armElevatorPos.addOption("Substation", PlaceStates.SUBSTATION);
       SmartDashboard.putData("Arm elevator position", armElevatorPos);
@@ -146,9 +147,11 @@ public class RobotContainer {
     
     // driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
 
-    copilotController.x().whileTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, armElevatorPos.getSelected()));
+    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, armElevatorPos.getSelected()));
 
-    copilotController.a().whileTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.FLOOR));
+    copilotController.y().onTrue(new RunCommand(()-> armSubsystem.setPosition(armSetPosTestEntry.getDouble(0)), armSubsystem));
+
+    // copilotController.a().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.FLOOR));
    
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();

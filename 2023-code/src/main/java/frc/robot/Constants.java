@@ -177,6 +177,8 @@ public final class Constants {
 
     public static final boolean ARM_IS_INVERTED = true;
 
+    public static final double ARM_SET_POS_CONVERSION_FACTOR = 1.6;
+
     public static class ArmAngleConstants
     {
       public static final double CONE_HIGH_MIN_ANGLE = 155.0;

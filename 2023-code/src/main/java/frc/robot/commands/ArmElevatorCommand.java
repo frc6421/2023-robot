@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.ArmConstants;
@@ -49,6 +50,7 @@ public class ArmElevatorCommand extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(elevatorSubsystem, armSubsystem);
       placeState = state;
+      
 
       elevator = elevatorSubsystem;
       arm = armSubsystem;
@@ -66,6 +68,7 @@ public class ArmElevatorCommand extends CommandBase {
       case FLOOR:
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.FLOOR_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
+        
         break;
 
       case INTAKE:
@@ -101,15 +104,18 @@ public class ArmElevatorCommand extends CommandBase {
     armSetpoint = armProfile.calculate(timer.get());
     elevatorSetpoint = elevatorProfile.calculate(timer.get());
     
-    elevator.setElevatorPosition(elevatorSetpoint.position);
-    arm.setArmAngleWithGrav(armSetpoint.position);
+    // elevator.setElevatorPosition(elevatorSetpoint.position);
+    arm.setPosition(armSetpoint.position);
+    SmartDashboard.putNumber("Arm Goal", armSetpoint.position);
+    SmartDashboard.putNumber("Elevator Goal", elevatorSetpoint.position);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) 
   {
-      
+    arm.setPosition(armSetpoint.position);
+    arm.setSetPoint(armSetpoint.position);
   }
 
   // Returns true when the command should end.

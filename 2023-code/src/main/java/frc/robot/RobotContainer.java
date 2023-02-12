@@ -131,11 +131,22 @@ public class RobotContainer {
 
       armSetPTestEntry = armTab.add("Set Arm P Value: ", 0) 
               .getEntry();
+
+      armElevatorPos = new SendableChooser<>();
+      armElevatorPos.setDefaultOption("Mid", PlaceStates.MID);
+      armElevatorPos.addOption("Intake", PlaceStates.INTAKE);
+      armElevatorPos.addOption("Floor", PlaceStates.FLOOR);
+      armElevatorPos.addOption("High", PlaceStates.HIGH);
+      armElevatorPos.addOption("Substation", PlaceStates.SUBSTATION);
+      SmartDashboard.putData("Arm elevator position", armElevatorPos);
     
       //TODO: Testing purposes only
-      copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
-      copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
-      copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
+      //copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
+      //copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
+      //copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
+
+    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, armElevatorPos.getSelected()));
+    copilotController.y().onTrue(new RunCommand(() -> armSubsystem.setPosition(armSetPosTestEntry.getDouble(0)), armSubsystem));
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 
@@ -156,6 +167,8 @@ public class RobotContainer {
    
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
+
+    driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 
     //configures the Pneumatic Hub
     pneumaticHub = new PneumaticHub();

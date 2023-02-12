@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.ResourceBundle.Control;
-
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,7 +14,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,7 +29,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule backLeft;
   private final SwerveModule backRight;
 
-  private final AHRS navx;
+  // Old navx declaration
+  // private final AHRS navx;
 
   private final SwerveDriveKinematics swerveKinematics;
 
@@ -63,9 +59,7 @@ public class DriveSubsystem extends SubsystemBase {
     frontRight = new SwerveModule(ModuleConstants.FRONT_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_ANGLE_OFFSET);
     backLeft = new SwerveModule(ModuleConstants.BACK_LEFT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ANGLE_OFFSET);
     backRight = new SwerveModule(ModuleConstants.BACK_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ANGLE_OFFSET);
-
-    navx = new AHRS(SPI.Port.kMXP, (byte) 200); //TODO Switch to Pigeon + Pigeon subsystem
-    zeroGyro();
+    
     
     swerveKinematics = new SwerveDriveKinematics(
       // Front left
@@ -78,7 +72,7 @@ public class DriveSubsystem extends SubsystemBase {
       new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0, -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0)
     );
 
-    odometry = new SwerveDriveOdometry(swerveKinematics, getGyroRotation(), new SwerveModulePosition[] {
+    odometry = new SwerveDriveOdometry(swerveKinematics, GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
       frontLeft.getModulePosition(),
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
@@ -91,7 +85,7 @@ public class DriveSubsystem extends SubsystemBase {
       driftCorrector = new PIDController(.011, 0, 0); //TODO implement Feed Forward for functionality
       driftCorrector.enableContinuousInput(0, 360);
 
-      targetAngle = getGyroRotation().getDegrees();
+      targetAngle = GyroSubsystem.getYawAngle().getDegrees();
 
       driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -112,13 +106,13 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    odometry.update(getGyroRotation(), new SwerveModulePosition[] {
+    odometry.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
       frontLeft.getModulePosition(),
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
       backRight.getModulePosition()});
 
-      SmartDashboard.putNumber("gyro", getGyroRotation().getDegrees());
+      SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
 
       SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getCANcoderRadians()));
       SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getCANcoderRadians()));
@@ -131,36 +125,6 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("BackRightMotorEncoderAngle", backRight.getSteerMotorEncoderAngle());
   }
 
-  // GYRO METHODS \\
-
-  /**
-   * Get gyro rotation using fused headings if available, standard rotation if unavailable
-   * 
-   * @return yaw rotation in degrees
-   */
-  public Rotation2d getGyroRotation() {
-    if (navx.isMagnetometerCalibrated()) {
-      return Rotation2d.fromDegrees(360 - navx.getFusedHeading());
-    }
-    // Invert gyro angle so counterclockwise is positive
-    return Rotation2d.fromDegrees(360 - navx.getAngle());
-  }
-
-  /**
-   * Zeros the gyroscope of the robot to the current rotated angle
-   */
-  public void zeroGyro() {
-    navx.zeroYaw();
-  }
-
-  /**
-   * Get rate of gyro rotation in degrees per second
-   * 
-   * @return turn rate in degrees per second
-   */
-  public double getGyroRate() {
-    return -navx.getRate();
-  }
 
   // ODOMETRY METHODS \\
 
@@ -179,7 +143,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose to use for reset
    */
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(getGyroRotation(), new SwerveModulePosition[] {
+    odometry.resetPosition(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
       frontLeft.getModulePosition(),
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
@@ -270,31 +234,30 @@ public class DriveSubsystem extends SubsystemBase {
 
     // turn to angle buttons
     if(driverController.y().getAsBoolean()){
-      rotation = driftCorrector.calculate(getGyroRotation().getDegrees(), 0.0);
+      rotation = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 0.0);
       buttonPressed = true;
     }
     else if(driverController.b().getAsBoolean()){
-      rotation = driftCorrector.calculate(getGyroRotation().getDegrees(), 90.0);
+      rotation = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 90.0);
       buttonPressed = true;
     }
     else if(driverController.a().getAsBoolean()){
-      rotation = driftCorrector.calculate(getGyroRotation().getDegrees(), 180.0);
+      rotation = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 180.0);
       buttonPressed = true;
     }
     else if(driverController.x().getAsBoolean()){
-      rotation = driftCorrector.calculate(getGyroRotation().getDegrees(), 270.0);
+      rotation = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 270.0);
       buttonPressed = true;
     }
 
     //Corrects the natural rotational drift of the swerve
-    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation());
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());
     double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
     if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){
-      targetAngle = getGyroRotation().getDegrees();
+      targetAngle = GyroSubsystem.getYawAngle().getDegrees();
     }
     else if(xy > 0 && !buttonPressed){
-      System.out.println(targetAngle);
-      chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(getGyroRotation().getDegrees(), targetAngle);
+      chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), targetAngle);
     }
     pXY = xy;
 

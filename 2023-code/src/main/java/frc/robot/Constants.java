@@ -82,17 +82,17 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
     public static final int FRONT_LEFT_MODULE_STEER_CAN_ID = 13;
     public static final int FRONT_LEFT_MODULE_ENCODER_CAN_ID = 13;
-    public static final double FRONT_LEFT_MODULE_ANGLE_OFFSET = -62.05;
+    public static final double FRONT_LEFT_MODULE_ANGLE_OFFSET = -62.05; 
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_CAN_ID = 10;
     public static final int FRONT_RIGHT_MODULE_STEER_CAN_ID = 11;
     public static final int FRONT_RIGHT_MODULE_ENCODER_CAN_ID = 11;
-    public static final double FRONT_RIGHT_MODULE_ANGLE_OFFSET = -350.51;
+    public static final double FRONT_RIGHT_MODULE_ANGLE_OFFSET = -350.51; 
 
     public static final int BACK_LEFT_MODULE_DRIVE_CAN_ID = 16;
     public static final int BACK_LEFT_MODULE_STEER_CAN_ID = 17;
     public static final int BACK_LEFT_MODULE_ENCODER_CAN_ID = 17;
-    public static final double BACK_LEFT_MODULE_ANGLE_OFFSET = -108.02;
+    public static final double BACK_LEFT_MODULE_ANGLE_OFFSET = -108.2;
 
     public static final int BACK_RIGHT_MODULE_DRIVE_CAN_ID = 14;
     public static final int BACK_RIGHT_MODULE_STEER_CAN_ID = 15;
@@ -177,6 +177,8 @@ public final class Constants {
 
     public static final boolean ARM_IS_INVERTED = true;
 
+    public static final double ARM_SET_POS_CONVERSION_FACTOR = 1.6;
+
     public static class ArmAngleConstants
     {
       public static final double CONE_HIGH_MIN_ANGLE = 155.0;
@@ -204,6 +206,22 @@ public final class Constants {
 
       public static final double FLOOR_ANGLE = 210.7;
     }
+
+    public static double CONE_HIGH_TOP_ANGLE;
+  }
+
+  public static class IntakeConstants {
+    public static final int LEFT_INTAKE_MOTOR_ID = 20;
+    public static final int RIGHT_INTAKE_MOTOR_ID = 21; 
+
+    //TODO confer with other programmers for CAN and pneumatics
+    public static final int INTAKE_PISTON_FORWARD_CHANNEL = 0;
+    public static final int INTAKE_PISTON_REVERSE_CHANNEL = 1;
+  }
+
+  public static class GrabberConstants {
+    public static final int FORWARD_CHANNEL = 2;
+    public static final int REVERSE_CHANNEL = 3;
   }
 
 }

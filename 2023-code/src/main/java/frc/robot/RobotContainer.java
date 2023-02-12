@@ -116,7 +116,6 @@ public class RobotContainer {
       elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
     );
     
-
       armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentPosition(copilotController.getLeftY()), armSubsystem));
     
       armTab = Shuffleboard.getTab("Arm Tab");
@@ -138,14 +137,13 @@ public class RobotContainer {
               .getEntry();
     
       //TODO: Testing purposes only
-      copilotController.rightBumper().whileTrue(new InstantCommand(()-> grabberSubsystem.toggleGrabber()));
-      copilotController.leftBumper().whileTrue(new InstantCommand(()-> intakeSubsystem.toggleIntake()));
+      copilotController.rightBumper().whileTrue(new InstantCommand(()-> grabberSubsystem.grab()));
+      copilotController.leftBumper().whileTrue(new InstantCommand(()-> grabberSubsystem.toggleGrabber()));
       copilotController.b().whileTrue(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(motorSet.getDouble(0)), intakeSubsystem));
       driverController.povDown().whileTrue(new InstantCommand(() -> intakeSubsystem.stopIntakeMotors()));
       // copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
       // copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
       // copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
-
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 
@@ -181,13 +179,13 @@ public class RobotContainer {
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
 
-    //configures the compressor
-    compressor = new Compressor(PneumaticsModuleType.REVPH);
-    compressor.enableAnalog(95, 120);
-
     //configures the Pneumatic Hub
     pneumaticHub = new PneumaticHub();
     pneumaticHub.clearStickyFaults();
+
+    //configures the compressor
+    compressor = new Compressor(PneumaticsModuleType.REVPH);
+    compressor.enableAnalog(95, 120);
 
     // Configure the trigger bindings
     configureBindings();
@@ -211,7 +209,7 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 //TODO turn to angle buttons
-    driverController.y().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
+    driverController.back().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
   }
 

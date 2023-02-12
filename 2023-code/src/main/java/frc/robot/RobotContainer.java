@@ -66,9 +66,13 @@ public class RobotContainer {
   private ShuffleboardTab intakeGrabberTab;
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
-  private final ArmElevatorCommand armElevatorCommand;
+  //private final ArmElevatorCommand armElevatorCommand;
 
   SendableChooser<PlaceStates> armElevatorPos;
+
+  private static Compressor compressor;
+
+  private final PneumaticHub pneumaticHub;
 
   
 

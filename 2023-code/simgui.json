@@ -25,7 +25,23 @@
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/LiveWindow/ElevatorSubsystem": "Subsystem",
+      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/Pigeon 2 [30]": "Gyro",
+      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/LiveWindow/Ungrouped/Talon FX [10]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [11]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [12]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [13]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [14]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [15]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [16]": "Motor Controller",
+      "/LiveWindow/Ungrouped/Talon FX [17]": "Motor Controller",
+      "/Shuffleboard/Arm Tab/SendableChooser[1]": "String Chooser",
+      "/SmartDashboard/Arm elevator position": "String Chooser",
+      "/SmartDashboard/Control system": "String Chooser"
     }
   }
 }

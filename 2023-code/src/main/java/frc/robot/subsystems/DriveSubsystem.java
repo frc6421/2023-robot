@@ -260,6 +260,11 @@ public class DriveSubsystem extends SubsystemBase {
       break;
     }
 
+    //Keeps the robot from moving with no joystick inputs
+    if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
+      ySpeed = 0;
+    }
+    
     //sets the rotation
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
@@ -281,11 +286,6 @@ public class DriveSubsystem extends SubsystemBase {
       buttonPressed = true;
     }
 
-    //Keeps the robot from moving with no joystick inputs
-    if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
-      ySpeed = 0;
-    }
-
     //Corrects the natural rotational drift of the swerve
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, getGyroRotation());
     double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
@@ -301,8 +301,21 @@ public class DriveSubsystem extends SubsystemBase {
     // Sets field relative speeds to the swerve module states
     var swerveModuleStates = 
       swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+
       // Ensures all wheels obey max speed
       SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
+      //Turns all the wheels inward to prevent pushing and sets the speed of each module to 0
+      if(driverController.leftBumper().getAsBoolean()){
+        swerveModuleStates[0].angle = Rotation2d.fromDegrees(-45);
+        swerveModuleStates[0].speedMetersPerSecond = 0;
+        swerveModuleStates[1].angle = Rotation2d.fromDegrees(45);
+        swerveModuleStates[1].speedMetersPerSecond = 0;
+        swerveModuleStates[2].angle = Rotation2d.fromDegrees(45);
+        swerveModuleStates[2].speedMetersPerSecond = 0;
+        swerveModuleStates[3].angle = Rotation2d.fromDegrees(-45);
+        swerveModuleStates[3].speedMetersPerSecond = 0;
+      }
 
       // Sets the swerve modules to their desired states using optimization method
       frontLeft.setDesiredState(swerveModuleStates[0]);

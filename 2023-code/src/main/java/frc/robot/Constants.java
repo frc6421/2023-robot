@@ -66,7 +66,7 @@ public final class Constants {
 
   public static class ModuleConstants {
     //TODO update for CANivore
-    public static final String CANIVORE_NAME = "rio";
+    public static final String CANIVORE_NAME = "driveBus";
 
     public static final String RIO_NAME = "rio";
 

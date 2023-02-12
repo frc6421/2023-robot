@@ -17,6 +17,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static class AutoConstants {
 
+    
   }
 
   public static class DriveConstants {
@@ -139,8 +140,7 @@ public final class Constants {
     public static final int COPILOT_CONTROLLER_PORT = 1;
   }
 
-  public static class ArmConstants 
-  {
+  public static class ArmConstants {
     public static final int ARM_CAN_ID = 40;
 
     public static final double ARM_DEFAULT_FF = 0.0375; // Determined on 2/7/23
@@ -177,8 +177,7 @@ public final class Constants {
 
     public static final boolean ARM_IS_INVERTED = true;
 
-    public static class ArmAngleConstants
-    {
+    public static class ArmAngleConstants {
       public static final double CONE_HIGH_MIN_ANGLE = 155.0;
       public static final double CONE_HIGH_MAX_ANGLE = 142.3;
       public static final double CONE_HIGH_TOP_ANGLE = 150.5;
@@ -206,4 +205,8 @@ public final class Constants {
     }
   }
 
+  public class VisionConstants {
+    public static final double LEFT_CONE_OFFSET = -22.5;
+    public static final double RIGHT_CONE_OFFSET = 22.5;
+  }
 }

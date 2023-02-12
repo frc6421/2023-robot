@@ -29,17 +29,22 @@ public class ScoringVisionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if(DriverStation.getAlliance() == DriverStation.Alliance.Red) {
+      xTagDistance = LimelightSubsystem.getRedBotPoseX(limelightHostName);
+      yTagDistance = LimelightSubsystem.getRedBotPoseY(limelightHostName);
+      yawTagAngle = LimelightSubsystem.getRedBotPoseYaw(limelightHostName);
+    } else if(DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+      xTagDistance = LimelightSubsystem.getBlueBotPoseX(limelightHostName);
+      yTagDistance = LimelightSubsystem.getBlueBotPoseY(limelightHostName);
+      yawTagAngle = LimelightSubsystem.getBlueBotPoseYaw(limelightHostName);
+    }
     
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(DriverStation.getAlliance() == DriverStation.Alliance.Red) {
-
-    } else if(DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-      
-    }
+    
   }
 
   // Called once the command ends or is interrupted.

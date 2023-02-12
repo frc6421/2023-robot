@@ -145,8 +145,10 @@ public class RobotContainer {
       //copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
       //copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
 
-    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, armElevatorPos.getSelected()));
-    copilotController.y().onTrue(new RunCommand(() -> armSubsystem.setPosition(armSetPosTestEntry.getDouble(0)), armSubsystem));
+    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.MID));
+    copilotController.y().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP));
+    copilotController.a().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.FLOOR));
+
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 

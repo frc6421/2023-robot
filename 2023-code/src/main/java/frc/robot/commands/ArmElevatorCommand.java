@@ -42,7 +42,8 @@ public class ArmElevatorCommand extends CommandBase {
     INTAKE,
     MID,
     HIGH,
-    SUBSTATION
+    SUBSTATION,
+    UP
   }
   private PlaceStates placeState;
 
@@ -88,6 +89,11 @@ public class ArmElevatorCommand extends CommandBase {
 
       case SUBSTATION:
         armGoal = new TrapezoidProfile.State(0, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
+        break;
+      
+      case UP:
+        armGoal = new TrapezoidProfile.State(90, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
     }

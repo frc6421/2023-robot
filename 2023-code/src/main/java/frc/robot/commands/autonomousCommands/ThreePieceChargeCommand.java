@@ -97,7 +97,6 @@ public class ThreePieceChargeCommand extends SequentialCommandGroup {
         driveSubsystem::getPose2d,
         driveSubsystem.swerveKinematics,
         holonomicDriveController,
-        driveSubsystem::setHeadingZero,
         driveSubsystem::setModuleStates,
         driveSubsystem);
 
@@ -106,7 +105,6 @@ public class ThreePieceChargeCommand extends SequentialCommandGroup {
         driveSubsystem::getPose2d,
         driveSubsystem.swerveKinematics,
         holonomicDriveController,
-        driveSubsystem::setHeadingZero,
         driveSubsystem::setModuleStates,
         driveSubsystem);
 
@@ -115,7 +113,6 @@ public class ThreePieceChargeCommand extends SequentialCommandGroup {
         driveSubsystem::getPose2d,
         driveSubsystem.swerveKinematics,
         holonomicDriveController,
-        driveSubsystem::setHeadingZero,
         driveSubsystem::setModuleStates,
         driveSubsystem);
 
@@ -124,7 +121,6 @@ public class ThreePieceChargeCommand extends SequentialCommandGroup {
         driveSubsystem::getPose2d,
         driveSubsystem.swerveKinematics,
         holonomicDriveController,
-        driveSubsystem::setHeadingZero,
         driveSubsystem::setModuleStates,
         driveSubsystem);
 
@@ -133,7 +129,6 @@ public class ThreePieceChargeCommand extends SequentialCommandGroup {
         driveSubsystem::getPose2d,
         driveSubsystem.swerveKinematics,
         holonomicDriveController,
-        driveSubsystem::setHeadingZero,
         driveSubsystem::setModuleStates,
         driveSubsystem);
 

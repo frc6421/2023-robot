@@ -70,7 +70,6 @@ public class TestAutoCommand extends SequentialCommandGroup {
         driveSubsystem::getPose2d,
         driveSubsystem.swerveKinematics,
         holonomicDriveController,
-        driveSubsystem::setHeadingZero,
         driveSubsystem::setModuleStates,
         driveSubsystem);
 

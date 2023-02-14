@@ -139,15 +139,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Sets the heading to zero for auto
-   * 
-   * @return Rotation2d set to 0
-   */
-  public Rotation2d setHeadingZero() {
-    return new Rotation2d(0);
-  }
-
-  /**
    * Resets odometry to the given pose value
    * 
    * @param pose to use for reset

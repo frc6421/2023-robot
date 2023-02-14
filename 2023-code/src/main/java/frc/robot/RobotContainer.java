@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.SubstationVisionCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -56,6 +57,8 @@ public class RobotContainer {
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
 
+  private final SubstationVisionCommand substationVisionCommand;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     gyroSubsystem = new GyroSubsystem();
@@ -66,6 +69,7 @@ public class RobotContainer {
     elevatorSubsystem = new ElevatorSubsystem();
     armSubsystem = new ArmSubsystem();
 
+    substationVisionCommand = new SubstationVisionCommand(driveSubsystem);
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -159,6 +163,8 @@ public class RobotContainer {
 //TODO turn to angle buttons
     driverController.y().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
+
+    driverController.x().whileTrue(substationVisionCommand);
   }
 
   /**

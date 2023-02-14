@@ -242,4 +242,42 @@ public class DriveSubsystem extends SubsystemBase {
       backRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  /** Same as drive method, but without the trigger control inputs.
+   *  This allows it to be used for drivin to targets based on vision.
+   * 
+   * @param xSpeedInput percent input from -1 to 1 (converts to meters per sec)
+   * @param ySpeedInput percent input from -1 to 1 (converts to meters per sec)
+   * @param rotationInput percent input from -1 to 1 (converts to radians per sec)
+   */
+  public void visionDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
+    Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
+
+    double xSpeed = xDriveSlew.calculate(xSpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double ySpeed = yDriveSlew.calculate(ySpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+
+    double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    
+    //Corrects the natural rotational drift of the swerve
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());
+    double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
+    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){ // || pXY <= 0
+      targetAngle = GyroSubsystem.getYawAngle().getDegrees();
+    }
+    else if(xy > 0){
+      chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), targetAngle);
+    }
+    pXY = xy;
+    // Sets field relative speeds
+    var swerveModuleStates = 
+      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle()));
+      // Ensures all wheels obey max speed
+      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
+      // Sets the swerve modules to their desired states using optimization method
+      frontLeft.setDesiredState(swerveModuleStates[0]);
+      frontRight.setDesiredState(swerveModuleStates[1]);
+      backLeft.setDesiredState(swerveModuleStates[2]);
+      backRight.setDesiredState(swerveModuleStates[3]);
+  }
+
 }

@@ -4,21 +4,38 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 
 public class LimelightSubsystem extends SubsystemBase {
+  private ShuffleboardTab limelightTab;
+
+  private GenericEntry redXPose;
+  private GenericEntry redYPose;
+  private GenericEntry redYaw;
+  
   /** Creates a new LimelightSubsystem. */
   public LimelightSubsystem() {
     NetworkTable tableOne = NetworkTableInstance.getDefault().getTable("limelight-one");
     NetworkTable tableTwo = NetworkTableInstance.getDefault().getTable("limelight-two");
+
+    limelightTab = Shuffleboard.getTab("Limelight Tab");
+    redXPose = limelightTab.add("Red X Pose", 0).getEntry();
+    redYPose = limelightTab.add("Red Y Pose", 0).getEntry();
+    redYaw = limelightTab.add("Red Yaw Angle", 0).getEntry();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    redXPose.setDouble(getRedBotPoseX("limelight-two"));
+    redYPose.setDouble(getRedBotPoseY("limelight-two"));
+    redYaw.setDouble(getRedBotPoseYaw("limelight-two"));
   }
 
 

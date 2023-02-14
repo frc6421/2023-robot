@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -46,6 +47,9 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter magnitudeSlewRate;
   private SlewRateLimiter xDriveSlew;
   private SlewRateLimiter yDriveSlew;
+
+  // Feedforward
+  private final SimpleMotorFeedforward feedForward;
 
   
   /** Creates a new DriveSubsystem. */
@@ -93,6 +97,8 @@ public class DriveSubsystem extends SubsystemBase {
       magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
       xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
       yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
+
+      feedForward = new SimpleMotorFeedforward(DriveConstants.S_VOLTS, DriveConstants.V_VOLT_SECONDS_PER_METER, DriveConstants.A_VOLT_SECONDS_SQUARED_PER_METER);
     }
 
   @Override
@@ -103,6 +109,8 @@ public class DriveSubsystem extends SubsystemBase {
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
       backRight.getModulePosition()});
+
+      SmartDashboard.putData("drive", this);
 
       SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
 
@@ -250,12 +258,14 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rotationInput percent input from -1 to 1 (converts to radians per sec)
    */
   public void visionDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
-    Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
-
-    double xSpeed = xDriveSlew.calculate(xSpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double ySpeed = yDriveSlew.calculate(ySpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double xSpeed = xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    
+    xSpeed = feedForward.calculate(xSpeed);
+    ySpeed = feedForward.calculate(ySpeed);
+    rotation = feedForward.calculate(rotation);
     
     //Corrects the natural rotational drift of the swerve
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());

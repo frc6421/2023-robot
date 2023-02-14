@@ -25,7 +25,9 @@
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Control system": "String Chooser",
+      "/SmartDashboard/drive": "Subsystem"
     }
   }
 }

@@ -21,12 +21,12 @@ public class SubstationVisionCommand extends CommandBase {
   private double xTagDistance;
   private double targetXDistance = 1;
   private double allowableXError = 0.01;
-  private double xP = 2; // TODO update with constant
+  private double xP = 4; // TODO update with constant
 
   private double yTagDistance;
   private double targetYDistance = 0;
   private double allowableYError = 0.01;
-  private double yP = 2; // TODO update with constant
+  private double yP = 4; // TODO update with constant
 
   private double yawTagAngle;
   private double targetYawAngle = 0;
@@ -52,6 +52,7 @@ public class SubstationVisionCommand extends CommandBase {
   @Override
   public void execute() {
     if (DriverStation.getAlliance() == Alliance.Red && tagID == 5) {
+      // Set target distance based on field relative pose
       xTagDistance = LimelightSubsystem.getRedBotPoseX(limelightHostName);
       yTagDistance = LimelightSubsystem.getRedBotPoseY(limelightHostName);
       yawTagAngle = LimelightSubsystem.getRedBotPoseYaw(limelightHostName);
@@ -64,10 +65,10 @@ public class SubstationVisionCommand extends CommandBase {
       double yPercentAdjust = (yDistanceError * yP);
       double yawPercentAdjust = (yawAngleError * yawP);
 
-      //driveSubsystem.visionDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
-      driveSubsystem.visionDrive(0, yPercentAdjust, 0);
+      driveSubsystem.visionDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
 
     } else if (DriverStation.getAlliance() == Alliance.Blue && tagID == 4) {
+      // Set target distance based on field relative pose
       xTagDistance = LimelightSubsystem.getBlueBotPoseX(limelightHostName);
       yTagDistance = LimelightSubsystem.getBlueBotPoseY(limelightHostName);
       yawTagAngle = LimelightSubsystem.getBlueBotPoseYaw(limelightHostName);
@@ -80,8 +81,7 @@ public class SubstationVisionCommand extends CommandBase {
       double yPercentAdjust = (yDistanceError * yP);
       double yawPercentAdjust = (yawAngleError * yawP);
 
-      //driveSubsystem.visionDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
-      driveSubsystem.visionDrive(0, yPercentAdjust, 0);
+      driveSubsystem.visionDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
     }
   }
 
@@ -107,10 +107,6 @@ public class SubstationVisionCommand extends CommandBase {
       yawTagAngle = LimelightSubsystem.getBlueBotPoseYaw(limelightHostName);
     }
 
-    if (xTagDistance <= allowableXError && yTagDistance <= allowableYError && yawTagAngle <= allowableYawError) {
-      return true;
-    } else {
-      return false;
-    }
+    return Math.abs(xTagDistance) <= allowableXError && Math.abs(yTagDistance) <= allowableYError && Math.abs(yawTagAngle) <= allowableYawError;
   }
 }

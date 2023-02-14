@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -52,6 +53,10 @@ public class DriveSubsystem extends SubsystemBase {
 
   private CommandXboxController driverController;
 
+  private final SimpleMotorFeedforward driveFeedforward;
+
+  //TODO organize everything in and out of constructor and remove reduncancies
+
   
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -82,7 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
       angleController = new PIDController(DriveConstants.ANGLE_CONTROLLER_KP, 0, 0);
       angleController.enableContinuousInput(-180, 180);
 
-      driftCorrector = new PIDController(.011, 0, 0); //TODO implement Feed Forward for functionality
+      driftCorrector = new PIDController(.021, 0, 0); //TODO implement Feed Forward for functionality
       driftCorrector.enableContinuousInput(0, 360);
 
       targetAngle = GyroSubsystem.getYawAngle().getDegrees();
@@ -101,6 +106,9 @@ public class DriveSubsystem extends SubsystemBase {
       magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
       xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
       yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
+
+      driveFeedforward = new SimpleMotorFeedforward(.60043, 2.2591, .17289);
+      //TODO make these constants
     }
 
   @Override
@@ -228,38 +236,46 @@ public class DriveSubsystem extends SubsystemBase {
     if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
       ySpeed = 0;
     }
-    
-    //sets the rotation
-    double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     // turn to angle buttons
     if(driverController.y().getAsBoolean()){
-      rotation = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 0.0);
+      rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 0.0);
       buttonPressed = true;
     }
     else if(driverController.b().getAsBoolean()){
-      rotation = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 90.0);
+      rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 90.0);
       buttonPressed = true;
     }
     else if(driverController.a().getAsBoolean()){
-      rotation = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 180.0);
+      rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 180.0);
       buttonPressed = true;
     }
     else if(driverController.x().getAsBoolean()){
-      rotation = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 270.0);
+      rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 270.0);
       buttonPressed = true;
     }
+   
+    //sets the rotation
+    double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
+    xSpeed = driveFeedforward.calculate(xSpeed);
+    ySpeed = driveFeedforward.calculate(ySpeed);
+    rotation = driveFeedforward.calculate(rotation);
 
     //Corrects the natural rotational drift of the swerve
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());
-    double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
-    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){
-      targetAngle = GyroSubsystem.getYawAngle().getDegrees();
-    }
-    else if(xy > 0 && !buttonPressed){
-      chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), targetAngle);
-    }
-    pXY = xy;
+    // double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
+    // if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){
+    //   targetAngle = GyroSubsystem.getYawAngle().getDegrees();
+    // }
+    // else if(xy > 0 && !buttonPressed){
+    //   chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), targetAngle);
+    // }
+    // pXY = xy;
+
+    // chassisSpeeds.vxMetersPerSecond = driveFeedforward.calculate(chassisSpeeds.vxMetersPerSecond);
+    // chassisSpeeds.vyMetersPerSecond = driveFeedforward.calculate(chassisSpeeds.vyMetersPerSecond);
+    // chassisSpeeds.omegaRadiansPerSecond = driveFeedforward.calculate(chassisSpeeds.omegaRadiansPerSecond);
 
     // Sets field relative speeds to the swerve module states
     var swerveModuleStates = 

@@ -15,6 +15,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.GyroSubsystem;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -61,6 +62,8 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    DriverStation.silenceJoystickConnectionWarning(true);
+    
     gyroSubsystem = new GyroSubsystem();
     
     driveSubsystem = new DriveSubsystem();
@@ -164,7 +167,7 @@ public class RobotContainer {
     driverController.y().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
 
-    driverController.x().whileTrue(substationVisionCommand);
+    driverController.a().whileTrue(substationVisionCommand);
   }
 
   /**

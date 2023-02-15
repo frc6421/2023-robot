@@ -62,7 +62,7 @@ public final class Constants {
 
     public static final double DRIVE_SLEW_RATE = 2;
 
-    public static final double ANGLE_CONTROLLER_KP = .0014;
+    public static final double ANGLE_CONTROLLER_KP = 0.0014;
 
     public static final int GYRO_CAN_ID = 30;
 
@@ -72,12 +72,11 @@ public final class Constants {
   }
 
   public static class ModuleConstants {
-    //TODO update for CANivore
     public static final String CANIVORE_NAME = "driveBus";
 
     public static final String RIO_NAME = "rio";
 
-    public static final double PERCENT_DEADBAND = .075;
+    public static final double PERCENT_DEADBAND = 0.075;
     
     //TODO update angle offsets on competition robot
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
@@ -118,7 +117,7 @@ public final class Constants {
     public static final double ELEVATOR_I = 0; //TODO update with correct values
     public static final double ELEVATOR_D = 0; //TODO update with correct values
 
-    public static final double ELEVATOR_FF = 0.02; // 2/7/23 tuned with no arm wheight
+    public static final double ELEVATOR_FF = 0.02; // 2/7/23 tuned with no arm weight
 
     public static final double ELEVATOR_GEAR_RATIO = 15;
 
@@ -208,5 +207,29 @@ public final class Constants {
   public class VisionConstants {
     public static final double LEFT_CONE_OFFSET = -22.5;
     public static final double RIGHT_CONE_OFFSET = 22.5;
+
+    public static final double RED_LEFT_GRID_LEFT_CONE_OFFSET = 0;
+    public static final double RED_LEFT_GRID_CUBE_OFFSET = 0;
+    public static final double RED_LEFT_GRID_RIGHT_CONE_OFFSET = 0;
+
+    public static final double RED_COOP_GRID_LEFT_CONE_OFFSET = 0;
+    public static final double RED_COOP_GRID_CUBE_OFFSET = 0;
+    public static final double RED_COOP_GRID_RIGHT_CONE_OFFSET = 0;
+
+    public static final double RED_RIGHT_GRID_LEFT_CONE_OFFSET = 0;
+    public static final double RED_RIGHT_GRID_CUBE_OFFSET = 0;
+    public static final double RED_RIGHT_GRID_RIGHT_CONE_OFFSET = 0;
+
+    public static final double BLUE_LEFT_GRID_LEFT_CONE_OFFSET = 0;
+    public static final double BLUE_LEFT_GRID_CUBE_OFFSET = 0;
+    public static final double BLUE_LEFT_GRID_RIGHT_CONE_OFFSET = 0;
+
+    public static final double BLUE_COOP_GRID_LEFT_CONE_OFFSET = 0;
+    public static final double BLUE_COOP_GRID_CUBE_OFFSET = 0;
+    public static final double BLUE_COOP_GRID_RIGHT_CONE_OFFSET = 0;
+
+    public static final double BLUE_RIGHT_GRID_LEFT_CONE_OFFSET = 0;
+    public static final double BLUE_RIGHT_GRID_CUBE_OFFSET = 0;
+    public static final double BLUE_RIGHT_GRID_RIGHT_CONE_OFFSET = 0;
   }
 }

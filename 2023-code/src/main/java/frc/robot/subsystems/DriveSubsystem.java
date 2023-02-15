@@ -262,21 +262,9 @@ public class DriveSubsystem extends SubsystemBase {
     double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
+    System.out.println("XSpeed: " + xSpeed);
     
-    xSpeed = feedForward.calculate(xSpeed);
-    ySpeed = feedForward.calculate(ySpeed);
-    rotation = feedForward.calculate(rotation);
-    
-    //Corrects the natural rotational drift of the swerve
-    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());
-    double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
-    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){ // || pXY <= 0
-      targetAngle = GyroSubsystem.getYawAngle().getDegrees();
-    }
-    else if(xy > 0){
-      chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), targetAngle);
-    }
-    pXY = xy;
     // Sets field relative speeds
     var swerveModuleStates = 
       swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle()));

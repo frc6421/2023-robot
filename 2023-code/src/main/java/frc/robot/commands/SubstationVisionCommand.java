@@ -51,7 +51,13 @@ public class SubstationVisionCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    tagID = LimelightSubsystem.getAprilTagID(limelightHostName);
+
+    System.out.println(DriverStation.getAlliance());
+    System.out.println("AprilTag: " + tagID);
+
     if (DriverStation.getAlliance() == Alliance.Red && tagID == 5) {
+      System.out.println("Red Alliance & Tag 5 ***********************");
       // Set target distance based on field relative pose
       xTagDistance = LimelightSubsystem.getRedBotPoseX(limelightHostName);
       yTagDistance = LimelightSubsystem.getRedBotPoseY(limelightHostName);
@@ -65,6 +71,7 @@ public class SubstationVisionCommand extends CommandBase {
       double yPercentAdjust = (yDistanceError * yP);
       double yawPercentAdjust = (yawAngleError * yawP);
 
+      System.out.println("xPercentAdjust: " + xPercentAdjust);
       driveSubsystem.visionDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
 
     } else if (DriverStation.getAlliance() == Alliance.Blue && tagID == 4) {
@@ -88,6 +95,7 @@ public class SubstationVisionCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("Entered substation end ****************");
     driveSubsystem.visionDrive(0, 0, 0);
     // set arm to substation height
     // delay

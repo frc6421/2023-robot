@@ -13,7 +13,7 @@ public class ScoringVisionCommand extends CommandBase {
   private DriveSubsystem driveSubsystem;
 
   private String limelightHostName = "limelight-two";
-  private double targetTagID;
+  private int targetTagID;
   private double xTagDistance;
   private double yTagDistance;
   private double yawTagAngle;
@@ -44,7 +44,34 @@ public class ScoringVisionCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    targetTagID = (int)LimelightSubsystem.getAprilTagID(limelightHostName);
+
+    switch(targetTagID) {
+      // Left grid (from driver perspective) on red alliance
+      case 1:
+
+      break;
+      // Middle grid (from driver perspective) on red alliance
+      case 2:
+
+      break;
+      // Right grid (from driver perspective) on red alliance
+      case 3:
+
+      break;
+      // Left grid (from driver perspective) on blue alliance
+      case 6:
+
+      break;
+      // Middle grid (from driver perspective) on blue alliance
+      case 7:
+
+      break;
+      // Right grid (from driver perspective) on blue alliance
+      case 8:
+
+      break;
+    }
   }
 
   // Called once the command ends or is interrupted.

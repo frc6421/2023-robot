@@ -114,20 +114,20 @@ public final class Constants {
     public static final int ELEVATOR_MOTOR_CAN_ID = 50; 
 
     public static final double ELEVATOR_P = 60; // 1/21/23 tuned with no arm weight
-    public static final double ELEVATOR_I = 0; //TODO update with correct values
-    public static final double ELEVATOR_D = 0; //TODO update with correct values
+    public static final double ELEVATOR_I = 0; 
+    public static final double ELEVATOR_D = 0;
 
     public static final double ELEVATOR_FF = 0.02; // 2/7/23 tuned with no arm wheight
 
     public static final double ELEVATOR_GEAR_RATIO = 15;
 
-    public static final double ELEVATOR_MAX_PRECENT = 0.15; //TODO update as needed
-
     public static final double ELEVATOR_MAX_POS_IN = 20.375;
     public static final double ELEVATOR_MIN_POS_IN = 0;
 
-    public static final float ELEVATOR_FORWARD_SOFT_LIMIT_METERS = (float)Units.inchesToMeters(ELEVATOR_MAX_POS_IN); //TODO update with correct values
-    public static final float ELEVATOR_REVERSE_SOFT_LIMIT = 0f; //TODO update with correct values
+    public static final float ELEVATOR_FORWARD_SOFT_LIMIT_METERS = (float)Units.inchesToMeters(ELEVATOR_MAX_POS_IN);
+    public static final float ELEVATOR_REVERSE_SOFT_LIMIT = 0f;
+
+    public static final double ELEVATOR_DEFULT_NERF = 0.01;
 
     /**
      *  In meters
@@ -143,9 +143,8 @@ public final class Constants {
   {
     public static final int ARM_CAN_ID = 40;
 
-    public static final double ARM_DEFAULT_FF = 0.0375; // Determined on 2/7/23
-    
-    public static final double ARM_P = 0.06;// Determined on 2/7/23
+    public static final double ARM_DEFAULT_FF = 0.04; // Determined on 2/13/23 0.04    
+    public static final double ARM_P = 0.06;// Determined on 2/7/23 0.06
     public static final double ARM_I = 0.0;
     public static final double ARM_D = 0.0;
 

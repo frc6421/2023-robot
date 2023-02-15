@@ -84,7 +84,7 @@ public class ArmElevatorCommand extends CommandBase {
 
       case HIGH:
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_HIGH_TOP_ANGLE, 0);
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS, 0);
         break;
 
       case SUBSTATION:
@@ -110,7 +110,7 @@ public class ArmElevatorCommand extends CommandBase {
     armSetpoint = armProfile.calculate(timer.get());
     elevatorSetpoint = elevatorProfile.calculate(timer.get());
     
-    // elevator.setElevatorPosition(elevatorSetpoint.position);
+    elevator.setElevatorPosition(elevatorSetpoint.position);
     arm.setPosition(armSetpoint.position);
     SmartDashboard.putNumber("Arm Goal", armSetpoint.position);
     SmartDashboard.putNumber("Elevator Goal", elevatorSetpoint.position);
@@ -122,6 +122,8 @@ public class ArmElevatorCommand extends CommandBase {
   {
     arm.setPosition(armSetpoint.position);
     arm.setSetPoint(armSetpoint.position);
+    elevator.setElevatorPosition(elevatorSetpoint.position);
+    elevator.setSetPoint(elevatorSetpoint.position);
   }
 
   // Returns true when the command should end.

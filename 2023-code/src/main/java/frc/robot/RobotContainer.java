@@ -112,11 +112,13 @@ public class RobotContainer {
         driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
         driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER), driveSubsystem));
       
-    elevatorSubsystem.setDefaultCommand(new RunCommand(() -> 
-      elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
-    );
+    // elevatorSubsystem.setDefaultCommand(new RunCommand(() -> 
+    // elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
+    // );
     
-      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(copilotController.getLeftY()), armSubsystem));
+      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentPosition(copilotController.getLeftY()), armSubsystem));
+
+      elevatorSubsystem.setDefaultCommand(new RunCommand(() -> elevatorSubsystem.setPercentPosition(copilotController.getRightY()), elevatorSubsystem));
     
       armTab = Shuffleboard.getTab("Arm Tab");
         
@@ -148,6 +150,7 @@ public class RobotContainer {
     copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.MID));
     copilotController.y().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP));
     copilotController.a().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.FLOOR));
+    copilotController.b().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH));
 
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
@@ -161,11 +164,11 @@ public class RobotContainer {
     elevatorPositionTestEntry = elevatorTab.add("Set Elevator Pos: ", 0)
       .getEntry();
     
-    driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.goToPosition(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
+    //driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.goToPosition(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
     
-    driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
+    //driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
     
-    driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
+    //driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
    
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();

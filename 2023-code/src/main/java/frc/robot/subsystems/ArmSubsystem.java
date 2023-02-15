@@ -159,6 +159,8 @@ public class ArmSubsystem extends SubsystemBase
 
         double change = controllerValue;
 
+        change = MathUtil.applyDeadband(change, 0.04);
+
         setPoint = change + setPoint;
 
         setPoint = MathUtil.clamp(setPoint, (double) ArmConstants.ARM_IN_SOFT_LIMIT, ArmAngleConstants.FLOOR_ANGLE);

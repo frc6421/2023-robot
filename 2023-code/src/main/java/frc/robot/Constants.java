@@ -63,19 +63,21 @@ public final class Constants {
             public static final Translation2d FAR_EDGE_OF_COMMUNITY = new Translation2d(Units.inchesToMeters(132.81),
                     Units.feetToMeters(3));
 
-            // First cone node is farthest to the left on right grid when standing in driver
-            // station
+            // First cone node is farthest to the left on right grid when standing in driver station
             public static final Translation2d SECOND_CONE_NODE = new Translation2d(Units.feetToMeters(0),
                     Units.inchesToMeters(20));
             public static final Translation2d FIRST_CONE_NODE = new Translation2d(Units.feetToMeters(0),
                     Units.inchesToMeters(64));
 
-            public static final Translation2d FIRST_COOPERTITION_CONE_NODE = new Translation2d(Units.feetToMeters(0),
+            // Cone node on the right side of the coopertition grid
+            public static final Translation2d SECOND_COOPERTITION_CONE_NODE = new Translation2d(Units.feetToMeters(0),
                     Units.inchesToMeters(86));
 
             public static final Translation2d CUBE_NODE = new Translation2d(Units.feetToMeters(0),
                     Units.inchesToMeters(42));
 
+            public static final Translation2d MID_POINT_OF_PIECES_AND_CHARGE_STATION = new Translation2d(Units.feetToMeters(139.32),
+                    Units.inchesToMeters(107.39));
             public static final Translation2d CENTER_OF_CHARGE_STATION = new Translation2d(Units.inchesToMeters(96.75),
                     Units.inchesToMeters(107.39));
 
@@ -97,8 +99,7 @@ public final class Constants {
                     Units.inchesToMeters(132.81),
                     -Units.feetToMeters(3));
 
-            // First cone node is farthest to the left on right grid when standing in driver
-            // station
+            // First is farthest to the right on first grid (flipped relative to normal trajectories)
             public static final Translation2d FLIPPED_SECOND_CONE_NODE = new Translation2d(Units.feetToMeters(0),
                     -Units.inchesToMeters(20));
             public static final Translation2d FLIPPED_FIRST_CONE_NODE = new Translation2d(Units.feetToMeters(0),

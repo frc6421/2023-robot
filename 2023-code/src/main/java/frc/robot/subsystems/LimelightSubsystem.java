@@ -18,6 +18,10 @@ public class LimelightSubsystem extends SubsystemBase {
   private GenericEntry redXPose;
   private GenericEntry redYPose;
   private GenericEntry redYaw;
+
+  private GenericEntry blueXPose;
+  private GenericEntry blueYPose;
+  private GenericEntry blueYaw;
   
   /** Creates a new LimelightSubsystem. */
   public LimelightSubsystem() {
@@ -28,6 +32,10 @@ public class LimelightSubsystem extends SubsystemBase {
     redXPose = limelightTab.add("Red X Pose", 0).getEntry();
     redYPose = limelightTab.add("Red Y Pose", 0).getEntry();
     redYaw = limelightTab.add("Red Yaw Angle", 0).getEntry();
+
+    blueXPose = limelightTab.add("Blue X Pose", 0).getEntry();
+    blueYPose = limelightTab.add("Blue Y Pose", 0).getEntry();
+    blueYaw = limelightTab.add("Blue Yaw Angle", 0).getEntry();
   }
 
   @Override
@@ -36,6 +44,10 @@ public class LimelightSubsystem extends SubsystemBase {
     redXPose.setDouble(getRedBotPoseX("limelight-two"));
     redYPose.setDouble(getRedBotPoseY("limelight-two"));
     redYaw.setDouble(getRedBotPoseYaw("limelight-two"));
+
+    blueXPose.setDouble(getBlueBotPoseX("limelight-two"));
+    blueYPose.setDouble(getBlueBotPoseY("limelight-two"));
+    blueYaw.setDouble(getBlueBotPoseYaw("limelight-two"));
   }
 
 

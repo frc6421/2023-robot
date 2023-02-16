@@ -209,7 +209,7 @@ public final class Constants {
     public static final double RIGHT_CONE_OFFSET = 22.5;
 
     public static final double RED_LEFT_GRID_LEFT_CONE_OFFSET = 0;
-    public static final double RED_LEFT_GRID_CUBE_OFFSET = 0;
+    public static final double RED_LEFT_GRID_CUBE_POSE_X = 0;
     public static final double RED_LEFT_GRID_RIGHT_CONE_OFFSET = 0;
 
     public static final double RED_COOP_GRID_LEFT_CONE_OFFSET = 0;
@@ -231,5 +231,8 @@ public final class Constants {
     public static final double BLUE_RIGHT_GRID_LEFT_CONE_OFFSET = 0;
     public static final double BLUE_RIGHT_GRID_CUBE_OFFSET = 0;
     public static final double BLUE_RIGHT_GRID_RIGHT_CONE_OFFSET = 0;
+
+    public static final double BLUE_SUBSTATION_X_POSE = 16.18;
+    public static final double BLUE_SUBSTATION_Y_POSE = 6.75;
   }
 }

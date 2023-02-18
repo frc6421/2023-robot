@@ -87,7 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
       angleController = new PIDController(DriveConstants.ANGLE_CONTROLLER_KP, 0, 0);
       angleController.enableContinuousInput(-180, 180);
 
-      driftCorrector = new PIDController(.021, 0, 0); //TODO implement Feed Forward for functionality
+      driftCorrector = new PIDController(.0011, 0, 0); //TODO implement Feed Forward for functionality
       driftCorrector.enableContinuousInput(0, 360);
 
       targetAngle = GyroSubsystem.getYawAngle().getDegrees();
@@ -232,11 +232,6 @@ public class DriveSubsystem extends SubsystemBase {
       break;
     }
 
-    //Keeps the robot from moving with no joystick inputs
-    if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
-      ySpeed = 0;
-    }
-
     // turn to angle buttons
     if(driverController.y().getAsBoolean()){
       rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 0.0);
@@ -258,9 +253,25 @@ public class DriveSubsystem extends SubsystemBase {
     //sets the rotation
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
-    xSpeed = driveFeedforward.calculate(xSpeed);
-    ySpeed = driveFeedforward.calculate(ySpeed);
-    rotation = driveFeedforward.calculate(rotation);
+    //Manual Feed Forward
+    xSpeed = xSpeed + (Math.signum(xSpeed) * (.095 * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND));
+    ySpeed = ySpeed + (Math.signum(ySpeed) * (.095 * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND));
+    rotation = rotation + (Math.signum(rotation) * (.05 * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
+
+    //Keeps the robot from moving with no joystick inputs
+    if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
+      ySpeed = 0;
+    }
+    if(Math.abs(xSpeedInput) < ModuleConstants.PERCENT_DEADBAND){
+      xSpeed = 0;
+    }
+    if(Math.abs(rotationInput) < ModuleConstants.PERCENT_DEADBAND){
+      rotation = 0;
+    }
+
+    // xSpeed = driveFeedforward.calculate(xSpeed);
+    // ySpeed = driveFeedforward.calculate(ySpeed);
+    // rotation = driveFeedforward.calculate(rotation);
 
     //Corrects the natural rotational drift of the swerve
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());

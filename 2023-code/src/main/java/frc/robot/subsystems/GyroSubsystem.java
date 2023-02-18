@@ -83,6 +83,11 @@ public class GyroSubsystem extends SubsystemBase {
     return Rotation2d.fromDegrees(pigeon.getYaw());
   }
 
+  public static Rotation2d get0to360YawAngle()
+  {
+    return Rotation2d.fromDegrees(pigeon.getYaw());
+  }
+
   /**
    * Gets the roll angle of the gyro
    * 

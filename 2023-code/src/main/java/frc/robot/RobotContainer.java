@@ -13,6 +13,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.commands.ArmElevatorCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.BlinkinSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticHub;
@@ -31,6 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -100,12 +102,11 @@ public class RobotContainer {
     grabberSubsystem = new GrabberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
 
-
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
     copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
 
-    
+    BlinkinSubsystem.blinkinConfettiSet();
 
 
 
@@ -181,6 +182,10 @@ public class RobotContainer {
     PDP.clearStickyFaults();
 
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
+
+    driverController.povUp().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
+
+    driverController.povDown().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
 
     //configures the Pneumatic Hub
     pneumaticHub = new PneumaticHub();

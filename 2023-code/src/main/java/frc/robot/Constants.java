@@ -20,6 +20,20 @@ public final class Constants {
     
   }
 
+  public static class BlinkinConstants {
+    public static final double BLINKIN_RED = 0.61;
+    public static final double BLINKIN_BLUE = 0.87;
+    public static final double BLINKIN_YELLOW = 0.69;
+    public static final double BLINKIN_VIOLET = 0.91;
+    public static final double BLINKIN_RAINBOW = -0.99;
+    public static final double BLINKIN_HOT_PINK = 0.57;
+    public static final double BLINKIN_GREEN = 0.77;
+    public static final double BLINKIN_FADE_TO_BLACK = -0.03;
+    public static final double BLINKIN_RAINBOW_WAVE = -0.45;
+    public static final double BLINKIN_RAINBOW_SINELON = -0.45;
+    public static final double BLINKIN_CONFETTI = -0.87;
+  }
+
   public static class DriveConstants {
     /**
      * Drivetrain trackwidth from side to side

@@ -23,12 +23,12 @@ public class ArmElevatorCommand extends CommandBase {
   
 
   private final TrapezoidProfile.Constraints elevatorConstraints =
-      new TrapezoidProfile.Constraints(1, 0.5);
+      new TrapezoidProfile.Constraints(4, 2);
   private TrapezoidProfile.State elevatorGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State elevatorSetpoint = new TrapezoidProfile.State();
 
   private final TrapezoidProfile.Constraints armConstraints =
-      new TrapezoidProfile.Constraints(270, 270);
+      new TrapezoidProfile.Constraints(100, 100);
   private TrapezoidProfile.State armGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State armSetpoint = new TrapezoidProfile.State();
   
@@ -88,24 +88,25 @@ public class ArmElevatorCommand extends CommandBase {
         break;
 
       case SUBSTATION:
-        armGoal = new TrapezoidProfile.State(0, 0);
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.GRAB_FROM_SUBSTATION_ANGLE, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_SUBSTATION_LENGTH, 0);
         break;
       
       case UP:
-        armGoal = new TrapezoidProfile.State(90, 0);
+        armGoal = new TrapezoidProfile.State(95, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
     }
 
     armProfile = new TrapezoidProfile(armConstraints, armGoal, new TrapezoidProfile.State(arm.getArmDegreePosition(), 0));
-    elevatorProfile = new TrapezoidProfile(elevatorConstraints, elevatorGoal, new TrapezoidProfile.State(elevator.getElelvatorPositionInMeters(), 0));
+    elevatorProfile = new TrapezoidProfile(elevatorConstraints, elevatorGoal, new TrapezoidProfile.State(ElevatorSubsystem.getElevatorEncoderPosition(), 0));
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
+
   {
     armSetpoint = armProfile.calculate(timer.get());
     elevatorSetpoint = elevatorProfile.calculate(timer.get());

@@ -9,7 +9,6 @@ import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.commands.ElevatorCommand;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -86,6 +85,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         elevatorPEntry = elevatorTab.add("Elevator P: ", 0)
             .getEntry();
+
+        elevatorTab.add(this);
         
     }
 
@@ -95,6 +96,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPositionEntry.setDouble(getElevatorEncoderPosition());
         elevatorVolatgeEntry.setDouble(elevatorMotor.getBusVoltage());
         elevatorPEntry.setDouble(elevatorPIDController.getP());
+        
     }
 
     // MOTOR PID \\
@@ -115,6 +117,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setElevatorPosition(double position)
     {
         elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition, 0, 0.02375, SparkMaxPIDController.ArbFFUnits.kPercentOut);
+        // elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
 
     /**

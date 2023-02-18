@@ -129,6 +129,8 @@ public final class Constants {
 
     public static final double ELEVATOR_DEFULT_NERF = 0.01;
 
+    public static final double ELEVATOR_SUBSTATION_LENGTH = 0.27;
+
     /**
      *  In meters
      */
@@ -182,22 +184,24 @@ public final class Constants {
     {
       public static final double CONE_HIGH_MIN_ANGLE = 155.0;
       public static final double CONE_HIGH_MAX_ANGLE = 142.3;
-      public static final double CONE_HIGH_TOP_ANGLE = 150.5;
+      public static final double CONE_HIGH_TOP_ANGLE = 130.0;
       
       public static final double CONE_MID_MIN_ANGLE = 153.5;
       public static final double CONE_MID_MAX_ANGLE = 141.8;
-      public static final double CONE_MID_TOP_ANGLE = 150.9;
+      public static final double CONE_MID_TOP_ANGLE = 135.0;
 
 
       public static final double CUBE_HIGH_MIN_ANGLE = 181.9;
       public static final double CUBE_HIGH_MAX_ANGLE = 155.3;
-      public static final double CUBE_HIGH_OPTIMAL_ANGLE = 166.5;
+      public static final double CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
 
       public static final double CUBE_MID_MIN_ANGLE = 182.7;
       public static final double CUBE_MID_MAX_ANGLE = 155.3;
-      public static final double CUBE_MID_OPTIMAL_ANGLE = 167.0;
+      public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
 
-      public static final double ARM_START_POSITION = -29.0;
+      public static final double ARM_START_POSITION = -31.0; //Determined 02/18/23 -31.0
+
+      public static final double GRAB_FROM_SUBSTATION_ANGLE = 143.5;
       
       
       //TODO: Not final angle
@@ -206,7 +210,6 @@ public final class Constants {
       public static final double FLOOR_ANGLE = 210.7;
     }
 
-    public static double CONE_HIGH_TOP_ANGLE;
   }
 
   public static class IntakeConstants {

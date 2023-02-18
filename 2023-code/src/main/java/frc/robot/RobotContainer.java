@@ -10,13 +10,23 @@ import frc.robot.commands.SubstationVisionCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.commands.ArmElevatorCommand;
+import frc.robot.commands.ArmElevatorCommand.PlaceStates;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.GyroSubsystem;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -37,6 +47,10 @@ public class RobotContainer {
 
   private final ElevatorSubsystem elevatorSubsystem;
 
+  private final GrabberSubsystem grabberSubsystem;
+
+  private final IntakeSubsystem intakeSubsystem;
+
   // Set up controller with CommandXboxController
   private final CommandXboxController driverController;
 
@@ -55,8 +69,18 @@ public class RobotContainer {
   private GenericEntry armSetPTestEntry;
 
   private ShuffleboardTab armTab;
+  private ShuffleboardTab intakeGrabberTab;
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
+  //private final ArmElevatorCommand armElevatorCommand;
+
+  SendableChooser<PlaceStates> armElevatorPos;
+
+  private static Compressor compressor;
+
+  private final PneumaticHub pneumaticHub;
+
+  
 
   private final SubstationVisionCommand substationVisionCommand;
 
@@ -73,6 +97,9 @@ public class RobotContainer {
     armSubsystem = new ArmSubsystem();
 
     substationVisionCommand = new SubstationVisionCommand(driveSubsystem);
+    grabberSubsystem = new GrabberSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
+
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -116,11 +143,22 @@ public class RobotContainer {
 
       armSetPTestEntry = armTab.add("Set Arm P Value: ", 0) 
               .getEntry();
+
+      armElevatorPos = new SendableChooser<>();
+      armElevatorPos.setDefaultOption("Mid", PlaceStates.MID);
+      armElevatorPos.addOption("Intake", PlaceStates.INTAKE);
+      armElevatorPos.addOption("Floor", PlaceStates.FLOOR);
+      armElevatorPos.addOption("High", PlaceStates.HIGH);
+      armElevatorPos.addOption("Substation", PlaceStates.SUBSTATION);
+      SmartDashboard.putData("Arm elevator position", armElevatorPos);
     
       //TODO: Testing purposes only
-      copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
-      copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
-      copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
+      //copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
+      //copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
+      //copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
+
+    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, armElevatorPos.getSelected()));
+    copilotController.y().onTrue(new RunCommand(() -> armSubsystem.setPosition(armSetPosTestEntry.getDouble(0)), armSubsystem));
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 
@@ -141,6 +179,16 @@ public class RobotContainer {
    
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
+
+    driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
+
+    //configures the Pneumatic Hub
+    pneumaticHub = new PneumaticHub();
+    pneumaticHub.clearStickyFaults();
+
+    //configures the compressor
+    compressor = new Compressor(PneumaticsModuleType.REVPH);
+    compressor.enableAnalog(95, 120);
 
     // Configure the trigger bindings
     configureBindings();
@@ -163,8 +211,8 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    //TODO turn to angle buttons
-    driverController.y().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
+//TODO turn to angle buttons
+    driverController.back().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
 
     driverController.a().whileTrue(substationVisionCommand);

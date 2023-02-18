@@ -11,6 +11,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -18,30 +19,30 @@ import frc.robot.subsystems.LimelightSubsystem;
 public class SubstationVisionCommand extends CommandBase {
   private DriveSubsystem driveSubsystem;
 
-  // ALL DISTANCES ARE IN METERS \\
+  // All distances are in meters \\
   private double tagID;
   private double xTagDistance;
-  private double targetXDistance = 1;
+  private double targetXDistance;
   private double xDistanceError;
-  private double allowableXError = 0.01;
+  private double allowableXError = 0.02;
   private double xPercentAdjust;
-  private double xP = 0.3; // TODO update with constant
+  private double xP = 0.35; // TODO update with constant
 
   private double yTagDistance;
-  private double targetYDistance = 0;
+  private double targetYDistance;
   private double yDistanceError;
-  private double allowableYError = 0.01;
+  private double allowableYError = 0.02;
   private double yPercentAdjust;
-  private double yP = 0.6; // TODO update with constant
+  private double yP = 0.35; // TODO update with constant
 
   private double yawTagAngle;
-  private double targetYawAngle = 0;
+  private double targetYawAngle;
   private double yawAngleError;
-  private double allowableYawError = 1;
+  private double allowableYawError = 5;
   private double yawPercentAdjust;
   private double yawP = 0.01; // TODO update with constant
 
-  private double feedForward = 0.095;
+  private double feedForward = 0.09;
 
   private String limelightHostName = "limelight-two";
 
@@ -55,7 +56,8 @@ public class SubstationVisionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    LimelightSubsystem.setAprilTagPipeline(limelightHostName);
+    LimelightSubsystem.setPipelineLEDControl(limelightHostName);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -69,6 +71,10 @@ public class SubstationVisionCommand extends CommandBase {
       yTagDistance = LimelightSubsystem.getRedBotPoseY(limelightHostName);
       yawTagAngle = LimelightSubsystem.getRedBotPoseYaw(limelightHostName);
 
+      targetXDistance = VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_OFFSET;
+      targetYDistance = VisionConstants.RED_SUBSTATION_POSE_Y;
+      targetYawAngle = 180;
+
       xDistanceError = xTagDistance - targetXDistance;
       yDistanceError = yTagDistance - targetYDistance;
       yawAngleError = yawTagAngle - targetYawAngle;
@@ -79,8 +85,8 @@ public class SubstationVisionCommand extends CommandBase {
       yTagDistance = LimelightSubsystem.getBlueBotPoseY(limelightHostName);
       yawTagAngle = LimelightSubsystem.getBlueBotPoseYaw(limelightHostName);
 
-      targetXDistance = VisionConstants.BLUE_SUBSTATION_X_POSE - 1;
-      targetYDistance = VisionConstants.BLUE_SUBSTATION_Y_POSE;
+      targetXDistance = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET;
+      targetYDistance = VisionConstants.BLUE_SUBSTATION_POSE_Y;
       targetYawAngle = 0;
 
       xDistanceError = targetXDistance - xTagDistance;
@@ -88,24 +94,24 @@ public class SubstationVisionCommand extends CommandBase {
       yawAngleError = targetYawAngle - yawTagAngle;
     }
 
-    xPercentAdjust = (xDistanceError * xP) + feedForward;
-    yPercentAdjust = (yDistanceError * yP) + feedForward;
-    yawPercentAdjust = (yawAngleError * yawP) + feedForward;
+    xPercentAdjust = (xDistanceError * xP) + (Math.signum(xDistanceError) * feedForward);
+    yPercentAdjust = (yDistanceError * yP) + (Math.signum(yDistanceError) * feedForward);
+    yawPercentAdjust = (yawAngleError * yawP) + (Math.signum(yawAngleError) * feedForward);
 
     xPercentAdjust = MathUtil.clamp(xPercentAdjust, -1, 1);
     yPercentAdjust = MathUtil.clamp(yPercentAdjust, -1, 1);
     yawPercentAdjust = MathUtil.clamp(yawPercentAdjust, -1, 1);
 
-    driveSubsystem.visionDrive(0, 0, -yawPercentAdjust);
+    driveSubsystem.visionDrive(xPercentAdjust, yPercentAdjust, 0);
+
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("Entered Substation End");
+
     driveSubsystem.visionDrive(0, 0, 0);
-    // set arm to substation height
-    // delay
-    // activate gripper
   }
 
   // Returns true when the command should end.
@@ -115,13 +121,23 @@ public class SubstationVisionCommand extends CommandBase {
       xTagDistance = LimelightSubsystem.getRedBotPoseX(limelightHostName);
       yTagDistance = LimelightSubsystem.getRedBotPoseY(limelightHostName);
       yawTagAngle = LimelightSubsystem.getRedBotPoseYaw(limelightHostName);
+
+      return Math.abs(xTagDistance - (VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_OFFSET)) <= allowableXError
+          && Math.abs(yTagDistance - VisionConstants.RED_SUBSTATION_POSE_Y) <= allowableYError
+          && Math.abs(yawTagAngle - targetYawAngle) <= allowableYawError;
+
     } else if (DriverStation.getAlliance() == Alliance.Blue) {
       xTagDistance = LimelightSubsystem.getBlueBotPoseX(limelightHostName);
       yTagDistance = LimelightSubsystem.getBlueBotPoseY(limelightHostName);
       yawTagAngle = LimelightSubsystem.getBlueBotPoseYaw(limelightHostName);
+
+      return Math.abs(xTagDistance - (VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET)) <= allowableXError
+          && Math.abs(yTagDistance - VisionConstants.BLUE_SUBSTATION_POSE_Y) <= allowableYError
+          && Math.abs(yawTagAngle - targetYawAngle) <= allowableYawError;
+
+    } else {
+      return true;
     }
 
-    return Math.abs(xTagDistance) <= allowableXError && Math.abs(yTagDistance) <= allowableYError
-        && Math.abs(yawTagAngle) <= allowableYawError;
   }
 }

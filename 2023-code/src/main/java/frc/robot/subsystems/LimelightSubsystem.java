@@ -189,15 +189,15 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
 
-  // RETROREFLECTIVE GET METHODS \\
+  // RETROREFLECTIVE/CUBE/CONE GET METHODS \\
 
   /**
-   * Returns true if a retroreflective target is detected
+   * Returns true if a retroreflective/cube/cone target is detected
    * 
    * @param limelightHostName Host name for the correct Limelight
    * @return true if a retroreflective target is detected, false if not
    */
-  public static boolean isRetroTargetDetected(String limelightHostName) {
+  public static boolean isTargetDetected(String limelightHostName) {
     if (NetworkTableInstance.getDefault().getTable(limelightHostName).getEntry("tv").getDouble(0) == 1) {
       return true;
     } else {
@@ -205,10 +205,12 @@ public class LimelightSubsystem extends SubsystemBase {
     }
   }
 
+  /** Works for retroreflective, cube, and cone (depending on which pipeline is set) */
   public static double getX(String limelightHostName) {
     return LimelightHelpers.getTX(limelightHostName);
   }
 
+  /** Works for retroreflective, cube, and cone (depending on which pipeline is set) */
   public static double getY(String limelightHostName) {
     return LimelightHelpers.getTY(limelightHostName);
   }
@@ -220,6 +222,17 @@ public class LimelightSubsystem extends SubsystemBase {
     LimelightHelpers.setPipelineIndex(limelightHostName, 1);
   }
 
+  // CUBE/CONE GET METHODS \\
+
+  public static void setConePipeline(String limelightHostName) {
+    LimelightHelpers.setPipelineIndex(limelightHostName, 2);
+  }
+
+  public static void setCubePipeline(String limelightHostName) {
+    LimelightHelpers.setPipelineIndex(limelightHostName, 3);
+  }
+
+  // CUBE/CONE SET METHODS \\
 
   // LED SET METHODS \\
 
@@ -235,6 +248,5 @@ public class LimelightSubsystem extends SubsystemBase {
   public static void setLEDOff(String limelightHostName) {
     LimelightHelpers.setLEDMode_ForceOff(limelightHostName);
   }
-
-
+  
 }

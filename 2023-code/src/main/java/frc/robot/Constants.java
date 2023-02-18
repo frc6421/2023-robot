@@ -247,6 +247,8 @@ public final class Constants {
     /** X offset from substation AprilTag */
     public static final double SUBSTATION_OFFSET = 1.08;
 
+    public static final double SUBSTATION_GAME_PIECE_Y_ANGLE = 0;
+
     public static final double RED_LEFT_GRID_CUBE_POSE_X = 0;
     public static final double RED_LEFT_GRID_CUBE_POSE_Y = 0;
 

@@ -61,6 +61,11 @@ public class BlinkinSubsystem extends SubsystemBase {
     blinkinLED.set(BlinkinConstants.BLINKIN_FADE_TO_BLACK);
   }
 
+  /** Gets the last PWM value set to the Blinkin */
+  public static double getBlinkinColor(){
+    return blinkinLED.get();
+  }
+
 }
 
 

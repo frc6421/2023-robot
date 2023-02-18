@@ -158,9 +158,6 @@ public class RobotContainer {
       //copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
       //copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
 
-    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, armElevatorPos.getSelected()));
-    copilotController.y().onTrue(new RunCommand(() -> armSubsystem.setPosition(armSetPosTestEntry.getDouble(0)), armSubsystem));
-
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 
     elevatorFFTestingEntry = elevatorTab.add("Set Elevator FF: ", 0)
@@ -171,21 +168,9 @@ public class RobotContainer {
 
     elevatorPositionTestEntry = elevatorTab.add("Set Elevator Pos: ", 0)
       .getEntry();
-    
-    driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.goToPosition(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
-    
-    driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
-    
-    driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
    
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
-
-    driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
-
-    driverController.povUp().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
-
-    driverController.povDown().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
 
     //configures the Pneumatic Hub
     pneumaticHub = new PneumaticHub();
@@ -221,6 +206,20 @@ public class RobotContainer {
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
 
     driverController.a().whileTrue(substationVisionCommand);
+
+    driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
+
+    driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.goToPosition(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
+    
+    driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
+    
+    driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
+
+    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, armElevatorPos.getSelected()));
+    copilotController.y().onTrue(new RunCommand(() -> armSubsystem.setPosition(armSetPosTestEntry.getDouble(0)), armSubsystem));
+
+    copilotController.povUp().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
+    copilotController.povDown().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
   }
 
   /**

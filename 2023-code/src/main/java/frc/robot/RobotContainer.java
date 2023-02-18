@@ -11,6 +11,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.commands.ArmElevatorCommand;
+import frc.robot.commands.SubstationGamePieceVisionCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.BlinkinSubsystem;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -82,9 +84,8 @@ public class RobotContainer {
 
   private final PneumaticHub pneumaticHub;
 
-  
-
   private final SubstationVisionCommand substationVisionCommand;
+  private final SubstationGamePieceVisionCommand substationGamePieceVisionCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -98,9 +99,11 @@ public class RobotContainer {
     elevatorSubsystem = new ElevatorSubsystem();
     armSubsystem = new ArmSubsystem();
 
-    substationVisionCommand = new SubstationVisionCommand(driveSubsystem);
     grabberSubsystem = new GrabberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
+
+    substationVisionCommand = new SubstationVisionCommand(driveSubsystem);
+    substationGamePieceVisionCommand = new SubstationGamePieceVisionCommand(driveSubsystem);
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -160,11 +163,6 @@ public class RobotContainer {
       //copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
       //copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
 
-    copilotController.a().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.MID));
-    copilotController.y().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP));
-    copilotController.b().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.SUBSTATION));
-    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH));
-
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 
@@ -219,21 +217,21 @@ public class RobotContainer {
     driverController.back().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
 
-    driverController.a().whileTrue(substationVisionCommand);
+    driverController.a().whileTrue(substationVisionCommand
+      //.andThen(substationGamePieceVisionCommand)
+      .andThen(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.SUBSTATION)));
+
+    driverController.x().whileTrue(substationGamePieceVisionCommand);
 
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 
-    driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.goToPosition(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
-    
-    driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
-    
-    driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
-
-    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, armElevatorPos.getSelected()));
-    copilotController.y().onTrue(new RunCommand(() -> armSubsystem.setPosition(armSetPosTestEntry.getDouble(0)), armSubsystem));
-
     copilotController.povUp().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
     copilotController.povDown().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
+
+    copilotController.a().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.MID));
+    copilotController.y().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP));
+    copilotController.b().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.SUBSTATION));
+    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH));
   }
 
   /**

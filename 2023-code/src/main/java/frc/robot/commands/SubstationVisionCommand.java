@@ -24,14 +24,14 @@ public class SubstationVisionCommand extends CommandBase {
   private double xTagDistance;
   private double targetXDistance;
   private double xDistanceError;
-  private double allowableXError = 0.02;
+  private double allowableXError = 0.03;
   private double xPercentAdjust;
   private double xP = 0.35; // TODO update with constant
 
   private double yTagDistance;
   private double targetYDistance;
   private double yDistanceError;
-  private double allowableYError = 0.02;
+  private double allowableYError = 0.03;
   private double yPercentAdjust;
   private double yP = 0.35; // TODO update with constant
 
@@ -102,7 +102,7 @@ public class SubstationVisionCommand extends CommandBase {
     yPercentAdjust = MathUtil.clamp(yPercentAdjust, -1, 1);
     yawPercentAdjust = MathUtil.clamp(yawPercentAdjust, -1, 1);
 
-    driveSubsystem.visionDrive(xPercentAdjust, yPercentAdjust, 0);
+    driveSubsystem.visionDrive(-xPercentAdjust, -yPercentAdjust, 0);
 
   }
 
@@ -118,19 +118,11 @@ public class SubstationVisionCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     if (DriverStation.getAlliance() == Alliance.Red) {
-      xTagDistance = LimelightSubsystem.getRedBotPoseX(limelightHostName);
-      yTagDistance = LimelightSubsystem.getRedBotPoseY(limelightHostName);
-      yawTagAngle = LimelightSubsystem.getRedBotPoseYaw(limelightHostName);
-
       return Math.abs(xTagDistance - (VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_OFFSET)) <= allowableXError
           && Math.abs(yTagDistance - VisionConstants.RED_SUBSTATION_POSE_Y) <= allowableYError
           && Math.abs(yawTagAngle - targetYawAngle) <= allowableYawError;
 
     } else if (DriverStation.getAlliance() == Alliance.Blue) {
-      xTagDistance = LimelightSubsystem.getBlueBotPoseX(limelightHostName);
-      yTagDistance = LimelightSubsystem.getBlueBotPoseY(limelightHostName);
-      yawTagAngle = LimelightSubsystem.getBlueBotPoseYaw(limelightHostName);
-
       return Math.abs(xTagDistance - (VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET)) <= allowableXError
           && Math.abs(yTagDistance - VisionConstants.BLUE_SUBSTATION_POSE_Y) <= allowableYError
           && Math.abs(yawTagAngle - targetYawAngle) <= allowableYawError;

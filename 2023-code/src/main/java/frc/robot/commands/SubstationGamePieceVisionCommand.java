@@ -17,7 +17,7 @@ public class SubstationGamePieceVisionCommand extends CommandBase {
   private String limelightHostName = "limelight-two";
 
   private double currentYAngle;
-  private double targetYAngle = VisionConstants.SUBSTATION_GAME_PIECE_Y_ANGLE;
+  private double targetYAngle = 19.5; //Constant angle for the piece to be at the right grabber position
   private double yAngleError;
   private double allowableYAngleError = 0.5;
   private double yPercentAdjust;
@@ -43,9 +43,11 @@ public class SubstationGamePieceVisionCommand extends CommandBase {
   @Override
   public void initialize() {
     if(BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_YELLOW) {
+      BlinkinSubsystem.blinkinRedSet();
       LimelightSubsystem.setConePipeline(limelightHostName);
       LimelightSubsystem.setPipelineLEDControl(limelightHostName);
     } else if(BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET) {
+      BlinkinSubsystem.blinkinBlueSet();
       LimelightSubsystem.setCubePipeline(limelightHostName);
       LimelightSubsystem.setPipelineLEDControl(limelightHostName);
     }
@@ -54,36 +56,39 @@ public class SubstationGamePieceVisionCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentXAngle = LimelightSubsystem.getX(limelightHostName);
-    xAngleError = targetXAngle - currentXAngle;
+    if(LimelightSubsystem.getPipelineID(limelightHostName) == 2 || LimelightSubsystem.getPipelineID(limelightHostName) == 3){
+      currentXAngle = LimelightSubsystem.getX(limelightHostName);
+      xAngleError = targetXAngle - currentXAngle;
 
-    currentYAngle = LimelightSubsystem.getY(limelightHostName);
-    yAngleError = targetYAngle - currentYAngle;
+      currentYAngle = LimelightSubsystem.getY(limelightHostName);
+      yAngleError = targetYAngle - currentYAngle;
 
-    xPercentAdjust = (xAngleError * xP) + (Math.signum(xAngleError) * feedForward);
-    yPercentAdjust = (yAngleError * yP) + (Math.signum(yAngleError) * feedForward);
+      xPercentAdjust = (xAngleError * xP) + (Math.signum(xAngleError) * feedForward);
+      yPercentAdjust = (yAngleError * yP) + (Math.signum(yAngleError) * feedForward);
 
-    xPercentAdjust = MathUtil.clamp(xPercentAdjust, -1, 1);
-    yPercentAdjust = MathUtil.clamp(yPercentAdjust, -1, 1);
+      xPercentAdjust = MathUtil.clamp(xPercentAdjust, -1, 1);
+      yPercentAdjust = MathUtil.clamp(yPercentAdjust, -1, 1);
 
-    driveSubsystem.visionDrive(xPercentAdjust, yPercentAdjust, 0);
+      driveSubsystem.visionDrive(-yPercentAdjust, -xPercentAdjust, 0);
+    } else {
+      end(true);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     driveSubsystem.visionDrive(0, 0, 0);
+    if(interrupted) {
+      BlinkinSubsystem.blinkinConfettiSet();
+    } else {
+      BlinkinSubsystem.blinkinGreenSet();
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    currentXAngle = LimelightSubsystem.getX(limelightHostName);
-    xAngleError = targetXAngle - currentXAngle;
-
-    currentYAngle = LimelightSubsystem.getY(limelightHostName);
-    yAngleError = targetYAngle - currentYAngle;
-
     return Math.abs(xAngleError) < allowableXAngleError && Math.abs(yAngleError) < allowableYAngleError;
   }
 }

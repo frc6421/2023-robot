@@ -68,7 +68,7 @@ public final class Constants {
     public static final double MAX_VOLTAGE = 8.0; //TODO update with correct voltage
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2);
     public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO test value instead of theoretical value
-    public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.75;
+    public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.9;
 
     public static final double S_VOLTS = 0.60043;
     public static final double V_VOLT_SECONDS_PER_METER = 2.2591;
@@ -128,20 +128,22 @@ public final class Constants {
     public static final int ELEVATOR_MOTOR_CAN_ID = 50; 
 
     public static final double ELEVATOR_P = 60; // 1/21/23 tuned with no arm weight
-    public static final double ELEVATOR_I = 0; //TODO update with correct values
-    public static final double ELEVATOR_D = 0; //TODO update with correct values
+    public static final double ELEVATOR_I = 0; 
+    public static final double ELEVATOR_D = 0;
 
     public static final double ELEVATOR_FF = 0.02; // 2/7/23 tuned with no arm weight
 
     public static final double ELEVATOR_GEAR_RATIO = 15;
 
-    public static final double ELEVATOR_MAX_PRECENT = 0.15; //TODO update as needed
-
     public static final double ELEVATOR_MAX_POS_IN = 20.375;
     public static final double ELEVATOR_MIN_POS_IN = 0;
 
-    public static final float ELEVATOR_FORWARD_SOFT_LIMIT_METERS = (float)Units.inchesToMeters(ELEVATOR_MAX_POS_IN); //TODO update with correct values
-    public static final float ELEVATOR_REVERSE_SOFT_LIMIT = 0f; //TODO update with correct values
+    public static final float ELEVATOR_FORWARD_SOFT_LIMIT_METERS = (float)Units.inchesToMeters(ELEVATOR_MAX_POS_IN);
+    public static final float ELEVATOR_REVERSE_SOFT_LIMIT = 0f;
+
+    public static final double ELEVATOR_DEFULT_NERF = 0.01;
+
+    public static final double ELEVATOR_SUBSTATION_LENGTH = 0.27;
 
     /**
      *  In meters
@@ -156,9 +158,8 @@ public final class Constants {
   public static class ArmConstants {
     public static final int ARM_CAN_ID = 40;
 
-    public static final double ARM_DEFAULT_FF = 0.0375; // Determined on 2/7/23
-    
-    public static final double ARM_P = 0.06;// Determined on 2/7/23
+    public static final double ARM_DEFAULT_FF = 0.04; // Determined on 2/13/23 0.04    
+    public static final double ARM_P = 0.06;// Determined on 2/7/23 0.06
     public static final double ARM_I = 0.0;
     public static final double ARM_D = 0.0;
 
@@ -195,22 +196,24 @@ public final class Constants {
     public static class ArmAngleConstants {
       public static final double CONE_HIGH_MIN_ANGLE = 155.0;
       public static final double CONE_HIGH_MAX_ANGLE = 142.3;
-      public static final double CONE_HIGH_TOP_ANGLE = 150.5;
+      public static final double CONE_HIGH_TOP_ANGLE = 130.0;
       
       public static final double CONE_MID_MIN_ANGLE = 153.5;
       public static final double CONE_MID_MAX_ANGLE = 141.8;
-      public static final double CONE_MID_TOP_ANGLE = 150.9;
+      public static final double CONE_MID_TOP_ANGLE = 135.0;
 
 
       public static final double CUBE_HIGH_MIN_ANGLE = 181.9;
       public static final double CUBE_HIGH_MAX_ANGLE = 155.3;
-      public static final double CUBE_HIGH_OPTIMAL_ANGLE = 166.5;
+      public static final double CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
 
       public static final double CUBE_MID_MIN_ANGLE = 182.7;
       public static final double CUBE_MID_MAX_ANGLE = 155.3;
-      public static final double CUBE_MID_OPTIMAL_ANGLE = 167.0;
+      public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
 
-      public static final double ARM_START_POSITION = -29.0;
+      public static final double ARM_START_POSITION = -31.0; //Determined 02/18/23 -31.0
+
+      public static final double GRAB_FROM_SUBSTATION_ANGLE = 143.5;
       
       
       //TODO: Not final angle
@@ -219,7 +222,6 @@ public final class Constants {
       public static final double FLOOR_ANGLE = 210.7;
     }
 
-    public static double CONE_HIGH_TOP_ANGLE;
   }
 
   public static class IntakeConstants {

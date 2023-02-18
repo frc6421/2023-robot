@@ -48,8 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter xDriveSlew;
   private SlewRateLimiter yDriveSlew;
 
-  // Feedforward
-  private final SimpleMotorFeedforward feedForward;
+  private final SimpleMotorFeedforward driveFeedForward;
 
   
   /** Creates a new DriveSubsystem. */
@@ -98,7 +97,7 @@ public class DriveSubsystem extends SubsystemBase {
       xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
       yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
 
-      feedForward = new SimpleMotorFeedforward(DriveConstants.S_VOLTS, DriveConstants.V_VOLT_SECONDS_PER_METER, DriveConstants.A_VOLT_SECONDS_SQUARED_PER_METER);
+      driveFeedForward = new SimpleMotorFeedforward(DriveConstants.S_VOLTS, DriveConstants.V_VOLT_SECONDS_PER_METER, DriveConstants.A_VOLT_SECONDS_SQUARED_PER_METER);
     }
 
   @Override
@@ -216,6 +215,10 @@ public class DriveSubsystem extends SubsystemBase {
     if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
       ySpeed = 0;
     }
+
+    // xSpeed = driveFeedForward.calculate(xSpeed);
+    // ySpeed = driveFeedForward.calculate(ySpeed);
+    // rotation = driveFeedForward.calculate(rotation);
 
     //Corrects the natural rotational drift of the swerve
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());

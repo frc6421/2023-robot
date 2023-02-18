@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -23,6 +24,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.driverControlSystem;
+import frc.robot.commands.DriveCommand;
 
 public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule frontLeft;
@@ -43,7 +45,8 @@ public class DriveSubsystem extends SubsystemBase {
   private double targetAngle;
   private double pXY;
 
-  // Creates a sendable chooser on smartdashboard to select the desired control system
+  // Creates a sendable chooser on smartdashboard to select the desired control
+  // system
   private SendableChooser<driverControlSystem> controlSystem;
 
   // Creates the slew rates to slowly accelerate controller inputs
@@ -55,84 +58,95 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final SimpleMotorFeedforward driveFeedforward;
 
-  //TODO organize everything in and out of constructor and remove reduncancies
+  // TODO organize everything in and out of constructor and remove reduncancies
 
-  
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-    frontLeft = new SwerveModule(ModuleConstants.FRONT_LEFT_MODULE_DRIVE_CAN_ID, ModuleConstants.FRONT_LEFT_MODULE_STEER_CAN_ID, ModuleConstants.FRONT_LEFT_MODULE_ENCODER_CAN_ID, ModuleConstants.FRONT_LEFT_MODULE_ANGLE_OFFSET);
-    frontRight = new SwerveModule(ModuleConstants.FRONT_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_ANGLE_OFFSET);
-    backLeft = new SwerveModule(ModuleConstants.BACK_LEFT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ANGLE_OFFSET);
-    backRight = new SwerveModule(ModuleConstants.BACK_RIGHT_MODULE_DRIVE_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ENCODER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ANGLE_OFFSET);
-    
-    
+    frontLeft = new SwerveModule(ModuleConstants.FRONT_LEFT_MODULE_DRIVE_CAN_ID,
+        ModuleConstants.FRONT_LEFT_MODULE_STEER_CAN_ID, ModuleConstants.FRONT_LEFT_MODULE_ENCODER_CAN_ID,
+        ModuleConstants.FRONT_LEFT_MODULE_ANGLE_OFFSET);
+    frontRight = new SwerveModule(ModuleConstants.FRONT_RIGHT_MODULE_DRIVE_CAN_ID,
+        ModuleConstants.FRONT_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.FRONT_RIGHT_MODULE_ENCODER_CAN_ID,
+        ModuleConstants.FRONT_RIGHT_MODULE_ANGLE_OFFSET);
+    backLeft = new SwerveModule(ModuleConstants.BACK_LEFT_MODULE_DRIVE_CAN_ID,
+        ModuleConstants.BACK_LEFT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_LEFT_MODULE_ENCODER_CAN_ID,
+        ModuleConstants.BACK_LEFT_MODULE_ANGLE_OFFSET);
+    backRight = new SwerveModule(ModuleConstants.BACK_RIGHT_MODULE_DRIVE_CAN_ID,
+        ModuleConstants.BACK_RIGHT_MODULE_STEER_CAN_ID, ModuleConstants.BACK_RIGHT_MODULE_ENCODER_CAN_ID,
+        ModuleConstants.BACK_RIGHT_MODULE_ANGLE_OFFSET);
+
     swerveKinematics = new SwerveDriveKinematics(
-      // Front left
-      new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0, DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      // Front right
-      new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0, -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      // Back left
-      new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0, DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
-      // Back right
-      new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0, -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0)
-    );
+        // Front left
+        new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+            DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+        // Front right
+        new Translation2d(DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+            -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+        // Back left
+        new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+            DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0),
+        // Back right
+        new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
+            -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0));
 
     odometry = new SwerveDriveOdometry(swerveKinematics, GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
-      frontLeft.getModulePosition(),
-      frontRight.getModulePosition(),
-      backLeft.getModulePosition(),
-      backRight.getModulePosition()});
+        frontLeft.getModulePosition(),
+        frontRight.getModulePosition(),
+        backLeft.getModulePosition(),
+        backRight.getModulePosition() });
 
-      //PID controller for the rotation of the robot
-      angleController = new PIDController(DriveConstants.ANGLE_CONTROLLER_KP, 0, 0);
-      angleController.enableContinuousInput(-180, 180);
+    // PID controller for the rotation of the robot
+    angleController = new PIDController(DriveConstants.ANGLE_CONTROLLER_KP, 0, 0);
+    angleController.enableContinuousInput(-180, 180);
 
-      driftCorrector = new PIDController(.0011, 0, 0); //TODO implement Feed Forward for functionality
-      driftCorrector.enableContinuousInput(0, 360);
+    driftCorrector = new PIDController(.001, 0, 0); // TODO implement Feed Forward for functionality
+    driftCorrector.enableContinuousInput(0, 360);
 
-      targetAngle = GyroSubsystem.getYawAngle().getDegrees();
+    targetAngle = GyroSubsystem.getYawAngle().getDegrees();
 
-      driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+    driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
-      pXY = 0;
+    pXY = 0;
 
-      //Sets up the sendable chooser on SmartDashboard to select control system
-      controlSystem = new SendableChooser<>();
-      controlSystem.setDefaultOption("Left Trigger Controls", driverControlSystem.LEFT_TRIGGER);
-      controlSystem.addOption("Joystick Controls", driverControlSystem.JOYSTICK); //TODO Get these into an enum w/ switch
-      controlSystem.addOption("RightTrigger", driverControlSystem.RIGHT_TRIGGER);
-      SmartDashboard.putData("Control system", controlSystem);
+    // Sets up the sendable chooser on SmartDashboard to select control system
+    controlSystem = new SendableChooser<>();
+    controlSystem.setDefaultOption("Left Trigger Controls", driverControlSystem.LEFT_TRIGGER);
+    controlSystem.addOption("Joystick Controls", driverControlSystem.JOYSTICK); // TODO Get these into an enum w/ switch
+    controlSystem.addOption("RightTrigger", driverControlSystem.RIGHT_TRIGGER);
+    SmartDashboard.putData("Control system", controlSystem);
 
-      magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
-      xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
-      yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
+    magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
+    xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
+    yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
 
-      driveFeedforward = new SimpleMotorFeedforward(.60043, 2.2591, .17289);
-      //TODO make these constants
-    }
+    driveFeedforward = new SimpleMotorFeedforward(.60043, 2.2591, .17289);
+    // TODO make these constants
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     odometry.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
-      frontLeft.getModulePosition(),
-      frontRight.getModulePosition(),
-      backLeft.getModulePosition(),
-      backRight.getModulePosition()});
+        frontLeft.getModulePosition(),
+        frontRight.getModulePosition(),
+        backLeft.getModulePosition(),
+        backRight.getModulePosition() });
 
-      SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
+    SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
 
-      SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getCANcoderRadians()));
-      SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getCANcoderRadians()));
-      SmartDashboard.putNumber("BackLeftCANcoderAngle", Math.toDegrees(backLeft.getCANcoderRadians()));
-      SmartDashboard.putNumber("BackRightCANcoderAngle", Math.toDegrees(backRight.getCANcoderRadians()));
-  
-      SmartDashboard.putNumber("FrontLeftMotorEncoderAngle", frontLeft.getSteerMotorEncoderAngle());
-      SmartDashboard.putNumber("FrontRightMotorEncoderAngle", frontRight.getSteerMotorEncoderAngle());
-      SmartDashboard.putNumber("BackLeftMotorEncoderAngle", backLeft.getSteerMotorEncoderAngle());
-      SmartDashboard.putNumber("BackRightMotorEncoderAngle", backRight.getSteerMotorEncoderAngle());
+    SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getCANcoderRadians()));
+    SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getCANcoderRadians()));
+    SmartDashboard.putNumber("BackLeftCANcoderAngle", Math.toDegrees(backLeft.getCANcoderRadians()));
+    SmartDashboard.putNumber("BackRightCANcoderAngle", Math.toDegrees(backRight.getCANcoderRadians()));
+
+    SmartDashboard.putNumber("FrontLeftMotorEncoderAngle", frontLeft.getSteerMotorEncoderAngle());
+    SmartDashboard.putNumber("FrontRightMotorEncoderAngle", frontRight.getSteerMotorEncoderAngle());
+    SmartDashboard.putNumber("BackLeftMotorEncoderAngle", backLeft.getSteerMotorEncoderAngle());
+    SmartDashboard.putNumber("BackRightMotorEncoderAngle", backRight.getSteerMotorEncoderAngle());
+
+    SmartDashboard.putNumber("LeftY", driverController.getLeftY());
+    SmartDashboard.putNumber("LeftX", driverController.getLeftX());
   }
-
 
   // ODOMETRY METHODS \\
 
@@ -152,10 +166,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
-      frontLeft.getModulePosition(),
-      frontRight.getModulePosition(),
-      backLeft.getModulePosition(),
-      backRight.getModulePosition()}, pose);
+        frontLeft.getModulePosition(),
+        frontRight.getModulePosition(),
+        backLeft.getModulePosition(),
+        backRight.getModulePosition() }, pose);
   }
 
   /**
@@ -173,7 +187,7 @@ public class DriveSubsystem extends SubsystemBase {
     backRight.setDesiredState(desiredStates[3]);
   }
 
-  //TODO not currently used
+  // TODO not currently used
   public void resetEncoders() {
     frontLeft.resetEncoders();
     frontRight.resetEncoders();
@@ -184,134 +198,143 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * Sets the steer motors to the absolute encoder positions
    */
-  public void setSteerMotorsToAbsolute(){
+  public void setSteerMotorsToAbsolute() {
     frontRight.setSteerMotorToAbsolute();
     frontLeft.setSteerMotorToAbsolute();
     backLeft.setSteerMotorToAbsolute();
     backRight.setSteerMotorToAbsolute();
   }
 
-   /**
+  /**
    * Sets up the drive method
    * 
-   * @param xSpeedInput value from -1.0 to 1.0 to convert to x-direction meters per second
-   * @param ySpeedInput value from -1.0 to 1.0 to convert to y-direction meters per second
-   * @param rotationInput value from -1.0 to 1.0 to convert to rotational speed in radians per second
-   * @param leftMagnitude value from 0 to 1 returned by the left trigger to set the magnitude of
-   * x and y speeds for left trigger controls(not rotational)
-   * @param rightMagnitude value from 0 to 1 returned by the right trigger to set the magnitude of 
-   * x and y speeds for right trigger controls(not rotational)
+   * @param xSpeedInput    value from -1.0 to 1.0 to convert to x-direction meters
+   *                       per second
+   * @param ySpeedInput    value from -1.0 to 1.0 to convert to y-direction meters
+   *                       per second
+   * @param rotationInput  value from -1.0 to 1.0 to convert to rotational speed
+   *                       in radians per second
+   * @param leftMagnitude  value from 0 to 1 returned by the left trigger to set
+   *                       the magnitude of
+   *                       x and y speeds for left trigger controls(not
+   *                       rotational)
+   * @param rightMagnitude value from 0 to 1 returned by the right trigger to set
+   *                       the magnitude of
+   *                       x and y speeds for right trigger controls(not
+   *                       rotational)
    */
-  public void drive(double xSpeedInput, double ySpeedInput, double rotationInput, double leftMagnitude, double rightMagnitude) {
+  public void drive(double xSpeedInput, double ySpeedInput, double rotationInput, double leftMagnitude,
+      double rightMagnitude) {
+
+    ySpeedInput = MathUtil.applyDeadband(ySpeedInput, ModuleConstants.PERCENT_DEADBAND);
+    xSpeedInput = MathUtil.applyDeadband(xSpeedInput, ModuleConstants.PERCENT_DEADBAND);
+    rotationInput = MathUtil.applyDeadband(rotationInput, ModuleConstants.PERCENT_DEADBAND);
+    leftMagnitude = MathUtil.applyDeadband(leftMagnitude, ModuleConstants.PERCENT_DEADBAND);
+    rightMagnitude = MathUtil.applyDeadband(rightMagnitude, ModuleConstants.PERCENT_DEADBAND);
+
     Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
     double xSpeed;
-    double ySpeed;  //TODO make command instead of method after testing the new stuff
+    double ySpeed; // TODO make command instead of method after testing the new stuff
     boolean buttonPressed = false;
 
-    //TODO Drive by voltage changes before Sussex
-    /* Sets the speed as a percentage of our max velocity using either trigger for magintude, or joysticks
-      for both magnitude and steering */
-    switch(controlSystem.getSelected()){
-      
+    // TODO Drive by voltage changes before Sussex
+    /*
+     * Sets the speed as a percentage of our max velocity using either trigger for
+     * magintude, or joysticks
+     * for both magnitude and steering
+     */
+    switch (controlSystem.getSelected()) {
+
       case RIGHT_TRIGGER:
         rightMagnitude = magnitudeSlewRate.calculate(rightMagnitude);
-        xSpeed = speeds.getSin() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-        ySpeed = speeds.getCos() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-      break;
+        xSpeed = speeds.getSin() * rightMagnitude;
+        ySpeed = speeds.getCos() * rightMagnitude;
+        break;
 
       case JOYSTICK:
-        xSpeed = xDriveSlew.calculate(xSpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-        ySpeed = yDriveSlew.calculate(ySpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-      break;
+        xSpeed = xDriveSlew.calculate(xSpeedInput);
+        ySpeed = yDriveSlew.calculate(ySpeedInput);
+        break;
 
       case LEFT_TRIGGER:
       default:
         leftMagnitude = magnitudeSlewRate.calculate(leftMagnitude);
-        xSpeed = speeds.getSin() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-        ySpeed = speeds.getCos() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-      break;
+        xSpeed = speeds.getSin() * leftMagnitude;
+        ySpeed = speeds.getCos() * leftMagnitude;
+        break;
     }
 
     // turn to angle buttons
-    if(driverController.y().getAsBoolean()){
+    if (driverController.y().getAsBoolean()) {
       rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 0.0);
       buttonPressed = true;
-    }
-    else if(driverController.b().getAsBoolean()){
+    } else if (driverController.b().getAsBoolean()) {
       rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 90.0);
       buttonPressed = true;
-    }
-    else if(driverController.a().getAsBoolean()){
+    } else if (driverController.a().getAsBoolean()) {
       rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 180.0);
       buttonPressed = true;
-    }
-    else if(driverController.x().getAsBoolean()){
+      System.out.println("aPID reading: " + rotationInput);
+    } else if (driverController.x().getAsBoolean()) {
       rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 270.0);
       buttonPressed = true;
     }
-   
-    //sets the rotation
-    double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
-    //Manual Feed Forward
-    xSpeed = xSpeed + (Math.signum(xSpeed) * (.095 * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND));
-    ySpeed = ySpeed + (Math.signum(ySpeed) * (.095 * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND));
-    rotation = rotation + (Math.signum(rotation) * (.05 * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND));
-
-    //Keeps the robot from moving with no joystick inputs
-    if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
-      ySpeed = 0;
-    }
-    if(Math.abs(xSpeedInput) < ModuleConstants.PERCENT_DEADBAND){
-      xSpeed = 0;
-    }
-    if(Math.abs(rotationInput) < ModuleConstants.PERCENT_DEADBAND){
-      rotation = 0;
-    }
+    double rotation = -(rotationInput + .095 * Math.signum(rotationInput))
+    * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    xSpeed = (xSpeed + (Math.signum(xSpeed) * .095)) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    ySpeed = (ySpeed + (Math.signum(ySpeed) * .095)) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
     // xSpeed = driveFeedforward.calculate(xSpeed);
     // ySpeed = driveFeedforward.calculate(ySpeed);
     // rotation = driveFeedforward.calculate(rotation);
 
-    //Corrects the natural rotational drift of the swerve
-    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());
-    // double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
+    // Corrects the natural rotational drift of the swerve
+    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation,
+        GyroSubsystem.getYawAngle());
+    // double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) +
+    // Math.abs(chassisSpeeds.vyMetersPerSecond);
     // if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){
-    //   targetAngle = GyroSubsystem.getYawAngle().getDegrees();
+    // targetAngle = GyroSubsystem.getYawAngle().getDegrees();
     // }
     // else if(xy > 0 && !buttonPressed){
-    //   chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), targetAngle);
+    // chassisSpeeds.omegaRadiansPerSecond +=
+    // driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(),
+    // targetAngle);
     // }
     // pXY = xy;
 
-    // chassisSpeeds.vxMetersPerSecond = driveFeedforward.calculate(chassisSpeeds.vxMetersPerSecond);
-    // chassisSpeeds.vyMetersPerSecond = driveFeedforward.calculate(chassisSpeeds.vyMetersPerSecond);
-    // chassisSpeeds.omegaRadiansPerSecond = driveFeedforward.calculate(chassisSpeeds.omegaRadiansPerSecond);
+    // chassisSpeeds.vxMetersPerSecond =
+    // driveFeedforward.calculate(chassisSpeeds.vxMetersPerSecond);
+    // chassisSpeeds.vyMetersPerSecond =
+    // driveFeedforward.calculate(chassisSpeeds.vyMetersPerSecond);
+    // chassisSpeeds.omegaRadiansPerSecond =
+    // driveFeedforward.calculate(chassisSpeeds.omegaRadiansPerSecond);
 
     // Sets field relative speeds to the swerve module states
-    var swerveModuleStates = 
-      swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+    var swerveModuleStates = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-      // Ensures all wheels obey max speed
-      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+    // Ensures all wheels obey max speed
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
 
-      //Turns all the wheels inward to prevent pushing and sets the speed of each module to 0
-      if(driverController.leftBumper().getAsBoolean()){
-        swerveModuleStates[0].angle = Rotation2d.fromDegrees(-45);
-        swerveModuleStates[0].speedMetersPerSecond = 0;
-        swerveModuleStates[1].angle = Rotation2d.fromDegrees(45);
-        swerveModuleStates[1].speedMetersPerSecond = 0;
-        swerveModuleStates[2].angle = Rotation2d.fromDegrees(45);
-        swerveModuleStates[2].speedMetersPerSecond = 0;
-        swerveModuleStates[3].angle = Rotation2d.fromDegrees(-45);
-        swerveModuleStates[3].speedMetersPerSecond = 0;
-      }
+    // Turns all the wheels inward to prevent pushing and sets the speed of each
+    // module to 0
+    if (driverController.leftBumper().getAsBoolean()) {
+      swerveModuleStates[0].angle = Rotation2d.fromDegrees(45);
+      swerveModuleStates[0].speedMetersPerSecond = 0;
+      swerveModuleStates[1].angle = Rotation2d.fromDegrees(-45);
+      swerveModuleStates[1].speedMetersPerSecond = 0;
+      swerveModuleStates[2].angle = Rotation2d.fromDegrees(-45);
+      swerveModuleStates[2].speedMetersPerSecond = 0;
+      swerveModuleStates[3].angle = Rotation2d.fromDegrees(45);
+      swerveModuleStates[3].speedMetersPerSecond = 0;
+    }
 
-      // Sets the swerve modules to their desired states using optimization method
-      frontLeft.setDesiredState(swerveModuleStates[0]);
-      frontRight.setDesiredState(swerveModuleStates[1]);
-      backLeft.setDesiredState(swerveModuleStates[2]);
-      backRight.setDesiredState(swerveModuleStates[3]);
+    // Sets the swerve modules to their desired states using optimization method
+    frontLeft.setDesiredState(swerveModuleStates[0]);
+    frontRight.setDesiredState(swerveModuleStates[1]);
+    backLeft.setDesiredState(swerveModuleStates[2]);
+    backRight.setDesiredState(swerveModuleStates[3]);
   }
 
 }

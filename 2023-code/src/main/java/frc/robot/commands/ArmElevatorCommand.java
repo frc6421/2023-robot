@@ -23,12 +23,12 @@ public class ArmElevatorCommand extends CommandBase {
   
 
   private final TrapezoidProfile.Constraints elevatorConstraints =
-      new TrapezoidProfile.Constraints(2, 1);
+      new TrapezoidProfile.Constraints(1, 0.5);
   private TrapezoidProfile.State elevatorGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State elevatorSetpoint = new TrapezoidProfile.State();
 
   private final TrapezoidProfile.Constraints armConstraints =
-      new TrapezoidProfile.Constraints(270, 135);
+      new TrapezoidProfile.Constraints(270, 270);
   private TrapezoidProfile.State armGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State armSetpoint = new TrapezoidProfile.State();
   

@@ -196,7 +196,7 @@ public final class Constants {
 
     public static final String RIO_NAME = "rio";
 
-    public static final double PERCENT_DEADBAND = 0.075;
+    public static final double PERCENT_DEADBAND = 0.045;
     
     //TODO update angle offsets on competition robot
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;

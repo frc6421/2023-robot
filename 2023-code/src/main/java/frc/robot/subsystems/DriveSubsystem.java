@@ -223,44 +223,47 @@ public class DriveSubsystem extends SubsystemBase {
     if(controlSystem.getSelected().equals("leftTrigger")){ //TODO enum driver controls w/ switch case
       leftMagnitude = magnitudeSlewRate.calculate(leftMagnitude);
 
-      xSpeed = speeds.getSin() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-      ySpeed = speeds.getCos() * leftMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      xSpeed = speeds.getSin() * leftMagnitude;
+      ySpeed = speeds.getCos() * leftMagnitude;
     }
 
     // Set speed as a percentage of our max velocity drivinig by right trigger
     else if(controlSystem.getSelected().equals("rightTrigger")){
       rightMagnitude = magnitudeSlewRate.calculate(rightMagnitude);
       
-      xSpeed = speeds.getSin() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-      ySpeed = speeds.getCos() * rightMagnitude * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      xSpeed = speeds.getSin() * rightMagnitude;
+      ySpeed = speeds.getCos() * rightMagnitude;
     } //TODO Drive by voltage changes before Sussex
 
     // Set speed as a percentage of our max velocity driving by joystick
     else{
-      xSpeed = xDriveSlew.calculate(xSpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-      ySpeed = yDriveSlew.calculate(ySpeedInput) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+      xSpeed = xDriveSlew.calculate(xSpeedInput);
+      ySpeed = yDriveSlew.calculate(ySpeedInput);
     }
-    double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     //Keeps the robot from moving with no joystick inputs
     if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
       ySpeed = 0;
     }
 
+    xSpeed = (xSpeed + Math.signum(xSpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    ySpeed = (ySpeed + Math.signum(ySpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double rotation = (rotationInput + Math.signum(rotationInput) * .095) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
     // xSpeed = driveFeedForward.calculate(xSpeed);
     // ySpeed = driveFeedForward.calculate(ySpeed);
     // rotation = driveFeedForward.calculate(rotation);
 
     //Corrects the natural rotational drift of the swerve
-    ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());
-    double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
-    if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){ // || pXY <= 0
-      targetAngle = GyroSubsystem.getYawAngle().getDegrees();
-    }
-    else if(xy > 0){
-      chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), targetAngle);
-    }
-    pXY = xy;
+    // ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());
+    // double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) + Math.abs(chassisSpeeds.vyMetersPerSecond);
+    // if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){ // || pXY <= 0
+    //   targetAngle = GyroSubsystem.getYawAngle().getDegrees();
+    // }
+    // else if(xy > 0){
+    //   chassisSpeeds.omegaRadiansPerSecond += driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), targetAngle);
+    // }
+    // pXY = xy;
     // Sets field relative speeds
     var swerveModuleStates = 
       swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle()));

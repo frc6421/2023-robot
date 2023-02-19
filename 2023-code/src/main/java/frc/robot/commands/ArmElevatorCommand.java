@@ -43,7 +43,8 @@ public class ArmElevatorCommand extends CommandBase {
     MID,
     HIGH,
     SUBSTATION,
-    UP
+    UP,
+    HYBRID
   }
   private PlaceStates placeState;
 
@@ -96,6 +97,12 @@ public class ArmElevatorCommand extends CommandBase {
         armGoal = new TrapezoidProfile.State(95, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
+
+      case HYBRID:
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.GRAB_FROM_INTAKE_ANGLE, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
+        break;
+
     }
 
     armProfile = new TrapezoidProfile(armConstraints, armGoal, new TrapezoidProfile.State(arm.getArmDegreePosition(), 0));

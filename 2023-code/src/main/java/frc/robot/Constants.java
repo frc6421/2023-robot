@@ -180,7 +180,7 @@ public final class Constants {
     public static final double V_VOLT_SECONDS_PER_METER = 3.0772; // 2.2591
     public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.41017; // 0.17289
 
-    public static final double DRIVE_SLEW_RATE = 2;
+    public static final double DRIVE_SLEW_RATE = 2.5;
 
     public static final double ANGLE_CONTROLLER_KP = 0.0014;
 

@@ -246,10 +246,15 @@ public class RobotContainer {
 
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 
+    driverController.y().onTrue(
+      new RunCommand(() -> armSubsystem.setPosition(armSubsystem.getArmDegreePosition() + 5), armSubsystem)
+      .andThen(new InstantCommand(() -> grabberSubsystem.toggleGrabber(), grabberSubsystem)));
+
     copilotController.povLeft().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
     copilotController.povRight().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
 
     copilotController.rightBumper().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP));
+    copilotController.leftBumper().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID));
     copilotController.y().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH));
     copilotController.b().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.MID));
     copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.SUBSTATION));

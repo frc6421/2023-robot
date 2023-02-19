@@ -116,7 +116,7 @@ public class RobotContainer {
     testAutoCommand = new TestAutoCommand(driveSubsystem);
     fourPieceAutoCommand = new FourPieceCommand(driveSubsystem);
 
-    onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem);
+    onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
     flippedOnePieceChargeCommand = new FlippedOnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
 
     autoChooser = new SendableChooser<>();

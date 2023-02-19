@@ -16,22 +16,34 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
+import frc.robot.commands.ArmElevatorCommand;
+import frc.robot.commands.ArmElevatorCommand.PlaceStates;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OnePieceChargeCommand extends SequentialCommandGroup {
   private DriveSubsystem driveSubsystem;
-
+  private ElevatorSubsystem elevatorSubsystem;
+  private ArmSubsystem armSubsystem;
+  private GrabberSubsystem grabberSubsystem;
   /** Creates a new OnePieceChargeCommand. */
-  public OnePieceChargeCommand(DriveSubsystem drive) {
+  public OnePieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, GrabberSubsystem grabber) {
     driveSubsystem = drive;
-    addRequirements(driveSubsystem);
+    elevatorSubsystem = elevator;
+    armSubsystem = arm;
+    grabberSubsystem = grabber;
+    addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
 
     TrajectoryConfig forwardConfig = new TrajectoryConfig(
         AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
@@ -51,6 +63,9 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
         new Pose2d(TrajectoryConstants.MID_POINT_OF_PIECES_AND_CHARGE_STATION, new Rotation2d(0)),
         new Pose2d(TrajectoryConstants.CENTER_OF_CHARGE_STATION, new Rotation2d(0))), forwardConfig);
 
+    var xPIDController = new PIDController(AutoConstants.X_DRIVE_P, AutoConstants.X_DRIVE_I, AutoConstants.X_DRIVE_D);
+    var yPIDController = new PIDController(AutoConstants.Y_DRIVE_P, AutoConstants.Y_DRIVE_I, AutoConstants.Y_DRIVE_D);
+
     var thetaController = new ProfiledPIDController(
         AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,
         new TrapezoidProfile.Constraints(AutoConstants.AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC,
@@ -67,15 +82,20 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
         chargeStationTrajectory,
         driveSubsystem::getPose2d,
         driveSubsystem.swerveKinematics,
-        holonomicDriveController,
+        xPIDController,
+        yPIDController,
+        thetaController,
         driveSubsystem::setModuleStates,
         driveSubsystem);
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(() -> driveSubsystem.resetOdometry(chargeStationTrajectory.getInitialPose())),
-      chargeStationCommand,
-      new InstantCommand(() -> driveSubsystem.drive(0, 0, 0, 0, 0)));
+        new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH),
+        new ParallelDeadlineGroup(new WaitCommand(0.7), new InstantCommand(() -> grabberSubsystem.toggleGrabber())),
+        new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP),
+        new InstantCommand(() -> driveSubsystem.resetOdometry(chargeStationTrajectory.getInitialPose())),
+        chargeStationCommand,
+        new InstantCommand(() -> driveSubsystem.drive(0, 0, 0, 0, 0)));
   }
 }

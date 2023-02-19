@@ -38,7 +38,7 @@ public class SubstationVisionCommand extends CommandBase {
   private double yawTagAngle;
   private double targetYawAngle;
   private double yawAngleError;
-  private double allowableYawError = 5;
+  private double allowableYawError = 10;
   private double yawPercentAdjust;
   private double yawP = 0.01; // TODO update with constant
 

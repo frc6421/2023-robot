@@ -6,7 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.autonomousCommands.FlippedOnePieceChargeCommand;
 import frc.robot.commands.autonomousCommands.FourPieceCommand;
+import frc.robot.commands.autonomousCommands.OnePieceChargeCommand;
 import frc.robot.commands.autonomousCommands.TestAutoCommand;
 import frc.robot.commands.ArmElevatorCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
@@ -84,19 +86,26 @@ public class RobotContainer {
   private TestAutoCommand testAutoCommand;
   private FourPieceCommand fourPieceAutoCommand;
 
+  private OnePieceChargeCommand onePieceChargeCommand;
+  private FlippedOnePieceChargeCommand flippedOnePieceChargeCommand;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     gyroSubsystem = new GyroSubsystem();
     driveSubsystem = new DriveSubsystem();
     elevatorSubsystem = new ElevatorSubsystem();
     armSubsystem = new ArmSubsystem();
+    grabberSubsystem = new GrabberSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
 
     testAutoCommand = new TestAutoCommand(driveSubsystem);
     fourPieceAutoCommand = new FourPieceCommand(driveSubsystem);
 
+    onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem);
+    flippedOnePieceChargeCommand = new FlippedOnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+
     autoChooser = new SendableChooser<>();
-    grabberSubsystem = new GrabberSubsystem();
-    intakeSubsystem = new IntakeSubsystem();
+    
 
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
@@ -179,6 +188,8 @@ public class RobotContainer {
    
     autoChooser.setDefaultOption("TestAuto", testAutoCommand);
     autoChooser.addOption("Right Start 4 Piece", fourPieceAutoCommand);
+    autoChooser.addOption("Right Start 1 Piece Charge", onePieceChargeCommand);
+    autoChooser.addOption("Left Start 1 Piece Charge", flippedOnePieceChargeCommand);
     SmartDashboard.putData("autoChooser", autoChooser);
 
     PDP = new PowerDistribution();

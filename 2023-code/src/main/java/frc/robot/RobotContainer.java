@@ -217,11 +217,9 @@ public class RobotContainer {
     driverController.back().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
 
-    driverController.a().whileTrue(substationVisionCommand
-      //.andThen(substationGamePieceVisionCommand)
-      .andThen(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.SUBSTATION)));
+    driverController.a().whileTrue(substationVisionCommand);
 
-    driverController.x().whileTrue(substationGamePieceVisionCommand);
+    //driverController.x().whileTrue(substationGamePieceVisionCommand);
 
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 

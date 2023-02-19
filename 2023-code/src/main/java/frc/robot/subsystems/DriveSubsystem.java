@@ -109,6 +109,8 @@ public class DriveSubsystem extends SubsystemBase {
       backLeft.getModulePosition(),
       backRight.getModulePosition()});
 
+      SmartDashboard.putData("drive", this);
+
       SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
   }
 
@@ -272,4 +274,31 @@ public class DriveSubsystem extends SubsystemBase {
       backRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  /** Same as drive method, but without the trigger control inputs.
+   *  This allows it to be used for drivin to targets based on vision.
+   * 
+   * @param xSpeedInput percent input from -1 to 1 (converts to meters per sec)
+   * @param ySpeedInput percent input from -1 to 1 (converts to meters per sec)
+   * @param rotationInput percent input from -1 to 1 (converts to radians per sec)
+   */
+  public void visionDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
+    double xSpeed = xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+
+    double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
+    System.out.println("XSpeed: " + xSpeed);
+    
+    // Sets field relative speeds
+    var swerveModuleStates = 
+      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle()));
+      // Ensures all wheels obey max speed
+      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
+      // Sets the swerve modules to their desired states using optimization method
+      frontLeft.setDesiredState(swerveModuleStates[0]);
+      frontRight.setDesiredState(swerveModuleStates[1]);
+      backLeft.setDesiredState(swerveModuleStates[2]);
+      backRight.setDesiredState(swerveModuleStates[3]);
+  }
 }

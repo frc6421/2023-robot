@@ -26,6 +26,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Control system": "String Chooser",
+      "/SmartDashboard/drive": "Subsystem",
       "/LiveWindow/ElevatorSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",

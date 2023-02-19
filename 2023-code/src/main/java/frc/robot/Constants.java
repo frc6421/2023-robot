@@ -182,7 +182,7 @@ public final class Constants {
 
     public static final double DRIVE_SLEW_RATE = 2;
 
-    public static final double ANGLE_CONTROLLER_KP = .0014;
+    public static final double ANGLE_CONTROLLER_KP = 0.0014;
 
     public static final int GYRO_CAN_ID = 30;
 
@@ -192,14 +192,13 @@ public final class Constants {
   }
 
   public static class ModuleConstants {
-    // TODO update for CANivore
     public static final String CANIVORE_NAME = "driveBus";
 
     public static final String RIO_NAME = "rio";
 
-    public static final double PERCENT_DEADBAND = .075;
-
-    // TODO update angle offsets on competition robot
+    public static final double PERCENT_DEADBAND = 0.075;
+    
+    //TODO update angle offsets on competition robot
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
     public static final int FRONT_LEFT_MODULE_STEER_CAN_ID = 13;
     public static final int FRONT_LEFT_MODULE_ENCODER_CAN_ID = 13;
@@ -239,7 +238,7 @@ public final class Constants {
     public static final double ELEVATOR_I = 0; 
     public static final double ELEVATOR_D = 0;
 
-    public static final double ELEVATOR_FF = 0.02; // 2/7/23 tuned with no arm wheight
+    public static final double ELEVATOR_FF = 0.02; // 2/7/23 tuned with no arm weight
 
     public static final double ELEVATOR_GEAR_RATIO = 15;
 
@@ -344,5 +343,43 @@ public final class Constants {
   public static class GrabberConstants {
     public static final int FORWARD_CHANNEL = 2;
     public static final int REVERSE_CHANNEL = 3;
+  }
+
+  public class VisionConstants {
+    // All distances are in meters \\
+    // Left and right are relative to the driver's perspective in the driver station \\
+
+    /** Y offset from center of the cube AprilTag */
+    public static final double LEFT_CONE_OFFSET = -0.5715;
+    /** Y offset from center of the cube AprilTag */
+    public static final double RIGHT_CONE_OFFSET = 0.5715;
+    /** X offset from substation AprilTag */
+    public static final double SUBSTATION_OFFSET = 1.08;
+
+    public static final double SUBSTATION_GAME_PIECE_Y_ANGLE = 0;
+
+    public static final double RED_LEFT_GRID_CUBE_POSE_X = 0;
+    public static final double RED_LEFT_GRID_CUBE_POSE_Y = 0;
+
+    public static final double RED_CENTER_GRID_CUBE_POSE_X = 0;
+    public static final double RED_CENTER_GRID_CUBE_POSE_Y = 0;
+
+    public static final double RED_RIGHT_GRID_CUBE_POSE_X = 0;
+    public static final double RED_RIGHT_GRID_CUBE_POSE_Y = 0;
+
+    public static final double RED_SUBSTATION_POSE_X = 0;
+    public static final double RED_SUBSTATION_POSE_Y = 0;
+
+    public static final double BLUE_LEFT_GRID_CUBE_POSE_X = 0;
+    public static final double BLUE_LEFT_GRID_CUBE_POSE_Y = 0;
+
+    public static final double BLUE_CENTER_GRID_CUBE_POSE_X = 0;
+    public static final double BLUE_CENTER_GRID_CUBE_POSE_Y = 0;
+
+    public static final double BLUE_RIGHT_GRID_CUBE_POSE_X = 0;
+    public static final double BLUE_RIGHT_GRID_CUBE_POSE_Y = 0;
+
+    public static final double BLUE_SUBSTATION_POSE_X = 16.18;
+    public static final double BLUE_SUBSTATION_POSE_Y = 6.75;
   }
 }

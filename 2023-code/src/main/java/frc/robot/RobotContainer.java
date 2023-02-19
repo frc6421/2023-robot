@@ -8,15 +8,22 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.autonomousCommands.FourPieceCommand;
 import frc.robot.commands.autonomousCommands.TestAutoCommand;
+import frc.robot.commands.ArmElevatorCommand;
+import frc.robot.commands.ArmElevatorCommand.PlaceStates;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.GrabberSubsystem;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.GenericEntry;
+import frc.robot.subsystems.GyroSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.subsystems.GyroSubsystem;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -37,6 +44,10 @@ public class RobotContainer {
 
   private final ElevatorSubsystem elevatorSubsystem;
 
+  private final GrabberSubsystem grabberSubsystem;
+
+  private final IntakeSubsystem intakeSubsystem;
+
   // Set up controller with CommandXboxController
   private final CommandXboxController driverController;
 
@@ -55,8 +66,18 @@ public class RobotContainer {
   private GenericEntry armSetPTestEntry;
 
   private ShuffleboardTab armTab;
+  private ShuffleboardTab intakeGrabberTab;
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
+  //private final ArmElevatorCommand armElevatorCommand;
+
+  SendableChooser<PlaceStates> armElevatorPos;
+
+  private static Compressor compressor;
+
+  private final PneumaticHub pneumaticHub;
+
+  
 
   private SendableChooser<Command> autoChooser;
 
@@ -74,6 +95,9 @@ public class RobotContainer {
     fourPieceAutoCommand = new FourPieceCommand(driveSubsystem);
 
     autoChooser = new SendableChooser<>();
+    grabberSubsystem = new GrabberSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
+
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -91,15 +115,17 @@ public class RobotContainer {
       driveSubsystem.drive(
         driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
         driverController.getLeftX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
-        driverController.getRightX() * .75, 
+        driverController.getRightX() * .5, 
         driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
         driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER), driveSubsystem));
       
-    elevatorSubsystem.setDefaultCommand(new RunCommand(() -> 
-      elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
-    );
+    // elevatorSubsystem.setDefaultCommand(new RunCommand(() -> 
+    // elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
+    // );
     
-      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentArmPower(copilotController.getLeftY()), armSubsystem));
+      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentPosition(copilotController.getRightY()), armSubsystem));
+
+      elevatorSubsystem.setDefaultCommand(new RunCommand(() -> elevatorSubsystem.setPercentPosition(copilotController.getLeftY()), elevatorSubsystem));
     
       armTab = Shuffleboard.getTab("Arm Tab");
         
@@ -114,11 +140,25 @@ public class RobotContainer {
 
       armSetPTestEntry = armTab.add("Set Arm P Value: ", 0) 
               .getEntry();
+
+      armElevatorPos = new SendableChooser<>();
+      armElevatorPos.setDefaultOption("Mid", PlaceStates.MID);
+      armElevatorPos.addOption("Intake", PlaceStates.INTAKE);
+      armElevatorPos.addOption("Floor", PlaceStates.FLOOR);
+      armElevatorPos.addOption("High", PlaceStates.HIGH);
+      armElevatorPos.addOption("Substation", PlaceStates.SUBSTATION);
+      SmartDashboard.putData("Arm elevator position", armElevatorPos);
     
       //TODO: Testing purposes only
-      copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
-      copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
-      copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
+      //copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
+      //copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
+      //copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
+
+    copilotController.a().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.MID));
+    copilotController.y().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP));
+    copilotController.b().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.SUBSTATION));
+    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH));
+
 
     elevatorTab = Shuffleboard.getTab("Elevator Tab");
 
@@ -131,11 +171,11 @@ public class RobotContainer {
     elevatorPositionTestEntry = elevatorTab.add("Set Elevator Pos: ", 0)
       .getEntry();
     
-    driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.goToPosition(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
+    //driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.goToPosition(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
     
-    driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
+    //driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
     
-    driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
+    //driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
    
     autoChooser.setDefaultOption("TestAuto", testAutoCommand);
     autoChooser.addOption("Right Start 4 Piece", fourPieceAutoCommand);
@@ -143,6 +183,16 @@ public class RobotContainer {
 
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
+
+    driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
+
+    //configures the Pneumatic Hub
+    pneumaticHub = new PneumaticHub();
+    pneumaticHub.clearStickyFaults();
+
+    //configures the compressor
+    compressor = new Compressor(PneumaticsModuleType.REVPH);
+    compressor.enableAnalog(95, 120);
 
     // Configure the trigger bindings
     configureBindings();
@@ -166,7 +216,7 @@ public class RobotContainer {
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 //TODO turn to angle buttons
-    driverController.y().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
+    driverController.back().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
   }
 

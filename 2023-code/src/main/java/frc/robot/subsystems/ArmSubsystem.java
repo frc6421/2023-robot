@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -28,6 +29,8 @@ public class ArmSubsystem extends SubsystemBase
     private double positionMinOutput;
 
     private double armDynamicFF;
+
+    private double setPoint;
 
     private ShuffleboardTab armTab;
     private GenericEntry armAngleEntry;
@@ -54,6 +57,7 @@ public class ArmSubsystem extends SubsystemBase
 
         armPIDController.setFeedbackDevice(armEncoder);
 
+        setPoint = ArmConstants.ARM_IN_SOFT_LIMIT;
 
         armMotor.setSoftLimit(SoftLimitDirection.kForward, ArmConstants.ARM_OUT_SOFT_LIMIT);
         armMotor.setSoftLimit(SoftLimitDirection.kReverse, ArmConstants.ARM_IN_SOFT_LIMIT);
@@ -109,12 +113,13 @@ public class ArmSubsystem extends SubsystemBase
     
     
     /**
-    * Sets motor to a provided position
+    * Sets motor to a provided position in degrees
     * @param position The position to set the motor to
     */
-    public void setPosition(double position)
+    public void 
+    setPosition(double position)
     {
-        armPIDController.setReference(position, CANSparkMax.ControlType.kPosition);
+        armPIDController.setReference(position / ArmConstants.ARM_SET_POS_CONVERSION_FACTOR, CANSparkMax.ControlType.kPosition);
     }
 
     /**
@@ -149,6 +154,20 @@ public class ArmSubsystem extends SubsystemBase
         armPIDController.setReference(controllerValue * ArmConstants.ARM_MAX_TEST_PERCENT_OUTPUT, CANSparkMax.ControlType.kDutyCycle);
     }
 
+    public void setPercentPosition (double controllerValue)
+    {
+
+        double change = controllerValue;
+
+        change = MathUtil.applyDeadband(change, 0.04);
+
+        setPoint = change + setPoint;
+
+        setPoint = MathUtil.clamp(setPoint, (double) ArmConstants.ARM_IN_SOFT_LIMIT, ArmAngleConstants.FLOOR_ANGLE);
+        
+        setPosition(setPoint);
+    }
+
     public void setPercentArmPowerNoLimit(double inputValue)
     {
         armPIDController.setReference(inputValue, CANSparkMax.ControlType.kDutyCycle);
@@ -177,6 +196,10 @@ public class ArmSubsystem extends SubsystemBase
     public void setArmP(double newP)
     {
         armPIDController.setP(newP);
+    }
+
+    public void setSetPoint(double setPoint) {
+        this.setPoint = setPoint;
     }
 
     

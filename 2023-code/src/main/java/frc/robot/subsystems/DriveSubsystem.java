@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -46,6 +47,8 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter magnitudeSlewRate;
   private SlewRateLimiter xDriveSlew;
   private SlewRateLimiter yDriveSlew;
+
+  private final SimpleMotorFeedforward driveFeedForward;
 
   
   /** Creates a new DriveSubsystem. */
@@ -93,6 +96,8 @@ public class DriveSubsystem extends SubsystemBase {
       magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
       xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
       yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
+
+      driveFeedForward = new SimpleMotorFeedforward(DriveConstants.S_VOLTS, DriveConstants.V_VOLT_SECONDS_PER_METER, DriveConstants.A_VOLT_SECONDS_SQUARED_PER_METER);
     }
 
   @Override
@@ -105,16 +110,6 @@ public class DriveSubsystem extends SubsystemBase {
       backRight.getModulePosition()});
 
       SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
-
-      SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getCANcoderRadians()));
-      SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getCANcoderRadians()));
-      SmartDashboard.putNumber("BackLeftCANcoderAngle", Math.toDegrees(backLeft.getCANcoderRadians()));
-      SmartDashboard.putNumber("BackRightCANcoderAngle", Math.toDegrees(backRight.getCANcoderRadians()));
-  
-      SmartDashboard.putNumber("FrontLeftMotorEncoderAngle", frontLeft.getSteerMotorEncoderAngle());
-      SmartDashboard.putNumber("FrontRightMotorEncoderAngle", frontRight.getSteerMotorEncoderAngle());
-      SmartDashboard.putNumber("BackLeftMotorEncoderAngle", backLeft.getSteerMotorEncoderAngle());
-      SmartDashboard.putNumber("BackRightMotorEncoderAngle", backRight.getSteerMotorEncoderAngle());
   }
 
 
@@ -249,6 +244,10 @@ public class DriveSubsystem extends SubsystemBase {
     if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
       ySpeed = 0;
     }
+
+    // xSpeed = driveFeedForward.calculate(xSpeed);
+    // ySpeed = driveFeedForward.calculate(ySpeed);
+    // rotation = driveFeedForward.calculate(rotation);
 
     //Corrects the natural rotational drift of the swerve
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle());

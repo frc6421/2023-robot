@@ -29,6 +29,9 @@
       "/LiveWindow/ElevatorSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon 2 [30]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/Talon FX [10]": "Motor Controller",
@@ -39,9 +42,52 @@
       "/LiveWindow/Ungrouped/Talon FX [15]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [16]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [17]": "Motor Controller",
-      "/Shuffleboard/Arm Tab/SendableChooser[1]": "String Chooser",
-      "/SmartDashboard/Arm elevator position": "String Chooser",
-      "/SmartDashboard/Control system": "String Chooser"
+      "/SmartDashboard/Control system": "String Chooser",
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/autoChooser": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "Pick Up Trajectory 1": {
+          "arrowSize": 33,
+          "arrows": false,
+          "style": "Hidden"
+        },
+        "Pick Up Trajectory 2": {
+          "arrows": false,
+          "style": "Hidden"
+        },
+        "Pick Up Trajectory 3": {
+          "arrows": false,
+          "style": "Hidden"
+        },
+        "Score Trajectory 1": {
+          "arrows": false,
+          "style": "Hidden"
+        },
+        "Score Trajectory 2": {
+          "arrows": false,
+          "style": "Line"
+        },
+        "Score Trajectory 3": {
+          "arrows": false,
+          "style": "Line",
+          "weight": 0.0
+        },
+        "window": {
+          "visible": true
+        }
+      }
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Field": {
+          "open": true
+        },
+        "open": true
+      }
     }
   }
 }

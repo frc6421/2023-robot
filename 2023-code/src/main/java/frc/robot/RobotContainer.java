@@ -6,6 +6,10 @@ package frc.robot;
 
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.autonomousCommands.FlippedOnePieceChargeCommand;
+import frc.robot.commands.autonomousCommands.FourPieceCommand;
+import frc.robot.commands.autonomousCommands.OnePieceChargeCommand;
+import frc.robot.commands.autonomousCommands.TestAutoCommand;
 import frc.robot.commands.ArmElevatorCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
 import frc.robot.subsystems.ArmSubsystem;
@@ -16,12 +20,13 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -78,22 +83,36 @@ public class RobotContainer {
 
   
 
+  private SendableChooser<Command> autoChooser;
+
+  private TestAutoCommand testAutoCommand;
+  private FourPieceCommand fourPieceAutoCommand;
+
+  private OnePieceChargeCommand onePieceChargeCommand;
+  private FlippedOnePieceChargeCommand flippedOnePieceChargeCommand;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     gyroSubsystem = new GyroSubsystem();
-    
     driveSubsystem = new DriveSubsystem();
-
     elevatorSubsystem = new ElevatorSubsystem();
     armSubsystem = new ArmSubsystem();
-
     grabberSubsystem = new GrabberSubsystem();
     intakeSubsystem = new IntakeSubsystem();
+
+    testAutoCommand = new TestAutoCommand(driveSubsystem);
+    fourPieceAutoCommand = new FourPieceCommand(driveSubsystem);
+
+    onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem);
+    flippedOnePieceChargeCommand = new FlippedOnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+
+    autoChooser = new SendableChooser<>();
+    
+
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
     copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
-
 
 
     SmartDashboard.putNumber("LeftY", driverController.getLeftY());
@@ -169,6 +188,12 @@ public class RobotContainer {
     
     //driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
    
+    autoChooser.setDefaultOption("TestAuto", testAutoCommand);
+    autoChooser.addOption("Right Start 4 Piece", fourPieceAutoCommand);
+    autoChooser.addOption("Right Start 1 Piece Charge", onePieceChargeCommand);
+    autoChooser.addOption("Left Start 1 Piece Charge", flippedOnePieceChargeCommand);
+    SmartDashboard.putData("autoChooser", autoChooser);
+
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
 
@@ -219,6 +244,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return autoChooser.getSelected();
   }
 }

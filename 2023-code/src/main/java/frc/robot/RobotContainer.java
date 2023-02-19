@@ -94,8 +94,6 @@ public class RobotContainer {
 
     copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
 
-    BlinkinSubsystem.blinkinConfettiSet();
-
 
 
     SmartDashboard.putNumber("LeftY", driverController.getLeftY());

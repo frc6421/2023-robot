@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
-    LiveWindow.enableAllTelemetry();
+    // LiveWindow.enableAllTelemetry();
   }
 
   /**
@@ -71,7 +71,7 @@ public class Robot extends TimedRobot {
       BlinkinSubsystem.blinkinBlueSet();
     }
 
-    
+
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

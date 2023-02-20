@@ -7,8 +7,10 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.autonomousCommands.FlippedOnePieceChargeCommand;
+import frc.robot.commands.autonomousCommands.FlippedOutOfCommunityCommand;
 import frc.robot.commands.autonomousCommands.FourPieceCommand;
 import frc.robot.commands.autonomousCommands.OnePieceChargeCommand;
+import frc.robot.commands.autonomousCommands.OutOfCommunityCommand;
 import frc.robot.commands.autonomousCommands.TestAutoCommand;
 import frc.robot.commands.SubstationVisionCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -97,8 +99,11 @@ public class RobotContainer {
   private TestAutoCommand testAutoCommand;
   private FourPieceCommand fourPieceAutoCommand;
 
-  private OnePieceChargeCommand onePieceChargeCommand;
-  private FlippedOnePieceChargeCommand flippedOnePieceChargeCommand;
+  //private OnePieceChargeCommand onePieceChargeCommand;
+  //private FlippedOnePieceChargeCommand flippedOnePieceChargeCommand;
+
+  private OutOfCommunityCommand outOfCommunityCommand;
+  private FlippedOutOfCommunityCommand flippedOutOfCommunityCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -116,8 +121,10 @@ public class RobotContainer {
     testAutoCommand = new TestAutoCommand(driveSubsystem);
     fourPieceAutoCommand = new FourPieceCommand(driveSubsystem);
 
-    onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
-    flippedOnePieceChargeCommand = new FlippedOnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+    //onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+    //flippedOnePieceChargeCommand = new FlippedOnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+    outOfCommunityCommand = new OutOfCommunityCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+    flippedOutOfCommunityCommand = new FlippedOutOfCommunityCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
 
     autoChooser = new SendableChooser<>();
     
@@ -141,7 +148,7 @@ public class RobotContainer {
       driveSubsystem.drive(
         driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
         driverController.getLeftX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
-        driverController.getRightX() * .5, 
+        driverController.getRightX() * .4, 
         driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER,
         driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER), driveSubsystem));
       
@@ -200,8 +207,10 @@ public class RobotContainer {
    
     autoChooser.setDefaultOption("TestAuto", testAutoCommand);
     autoChooser.addOption("Right Start 4 Piece", fourPieceAutoCommand);
-    autoChooser.addOption("Right Start 1 Piece Charge", onePieceChargeCommand);
-    autoChooser.addOption("Left Start 1 Piece Charge", flippedOnePieceChargeCommand);
+    //autoChooser.addOption("Right Start 1 Piece Charge", onePieceChargeCommand);
+    //autoChooser.addOption("Left Start 1 Piece Charge", flippedOnePieceChargeCommand);
+    autoChooser.addOption("Right Start Out of Community", outOfCommunityCommand);
+    autoChooser.addOption("Left Start out of community", flippedOutOfCommunityCommand);
     SmartDashboard.putData("autoChooser", autoChooser);
 
     PDP = new PowerDistribution();
@@ -246,9 +255,10 @@ public class RobotContainer {
 
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 
-    driverController.y().onTrue(
-      new RunCommand(() -> armSubsystem.setPosition(armSubsystem.getArmDegreePosition() + 5), armSubsystem)
-      .andThen(new InstantCommand(() -> grabberSubsystem.toggleGrabber(), grabberSubsystem)));
+    // driverController.y().onTrue(
+    //   new InstantCommand(() -> armSubsystem.setSetPoint(armSubsystem.getArmDegreePosition() + 5))
+    //   .andThen(new RunCommand(() -> armSubsystem.setPosition(armSubsystem.getSetPoint()), armSubsystem))
+    //   .andThen(new InstantCommand(() -> grabberSubsystem.toggleGrabber(), grabberSubsystem)));
 
     copilotController.povLeft().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
     copilotController.povRight().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));

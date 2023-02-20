@@ -70,7 +70,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * @return 3D bot pose array values in field space
    */
   public static double[] get3dBotPose(String limelightHostName) {
-    return LimelightHelpers.getBotpose(limelightHostName);
+    return LimelightHelpers.getBotPose(limelightHostName);
   }
 
   public static double getBotPoseX(String limelightHostName) {
@@ -109,7 +109,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * @return 3d bot pose array values
    */
   public static double[] getRed3dBotPose(String limelightHostName) {
-    return LimelightHelpers.getBotpose_wpiRed(limelightHostName);
+    return LimelightHelpers.getBotPose_wpiRed(limelightHostName);
   }
 
   public static double getRedBotPoseX(String limelightHostName) {
@@ -148,7 +148,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * @return 3d bot pose array values
    */
   public static double[] getBlue3dBotPose(String limelightHostName) {
-    return LimelightHelpers.getBotpose_wpiBlue(limelightHostName);
+    return LimelightHelpers.getBotPose_wpiBlue(limelightHostName);
   }
 
   public static double getBlueBotPoseX(String limelightHostName) {

@@ -174,7 +174,7 @@ public final class Constants {
     public static final double MAX_VOLTAGE = 8.0; //TODO update with correct voltage
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2);
     public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO test value instead of theoretical value
-    public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.9;
+    public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.75;
 
     public static final double S_VOLTS = 0.54903; // 0.60043
     public static final double V_VOLT_SECONDS_PER_METER = 3.0772; // 2.2591

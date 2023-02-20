@@ -245,6 +245,12 @@ public class DriveSubsystem extends SubsystemBase {
     if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
       ySpeed = 0;
     }
+    if(Math.abs(xSpeedInput) < ModuleConstants.PERCENT_DEADBAND){
+      xSpeed = 0;
+    }
+    if(Math.abs(rotationInput) < ModuleConstants.PERCENT_DEADBAND){
+      rotationInput = 0;
+    }
 
     xSpeed = (xSpeed + Math.signum(xSpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     ySpeed = (ySpeed + Math.signum(ySpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;

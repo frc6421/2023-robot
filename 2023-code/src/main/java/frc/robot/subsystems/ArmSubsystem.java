@@ -37,6 +37,7 @@ public class ArmSubsystem extends SubsystemBase
     private GenericEntry armFFEntry;
     private GenericEntry armPEntry;
 
+
      /** Creates a new ArmSubsystem. */
     public ArmSubsystem()
     {
@@ -212,6 +213,10 @@ public class ArmSubsystem extends SubsystemBase
     public double getArmDegreePosition()
     {
         return armEncoder.getPosition();
+    }
+
+    public double getSetPoint() {
+        return setPoint;
     }
 
 

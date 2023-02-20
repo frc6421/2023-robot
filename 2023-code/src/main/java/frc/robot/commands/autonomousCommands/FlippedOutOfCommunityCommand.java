@@ -31,13 +31,13 @@ import frc.robot.subsystems.GrabberSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class OutOfCommunityCommand extends SequentialCommandGroup {
+public class FlippedOutOfCommunityCommand extends SequentialCommandGroup {
   private DriveSubsystem driveSubsystem;
   private ElevatorSubsystem elevatorSubsystem;
   private ArmSubsystem armSubsystem;
   private GrabberSubsystem grabberSubsystem;
-  /** Creates a new OutOfCommunityCommand. */
-  public OutOfCommunityCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, GrabberSubsystem grabber) {
+  /** Creates a new FlippedOutOfCommunityCommand. */
+  public FlippedOutOfCommunityCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, GrabberSubsystem grabber) {
     driveSubsystem = drive;
     elevatorSubsystem = elevator;
     armSubsystem = arm;
@@ -56,8 +56,8 @@ public class OutOfCommunityCommand extends SequentialCommandGroup {
         .setReversed(true);
 
         Trajectory outOfCommunityTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-        new Pose2d(TrajectoryConstants.SECOND_CONE_NODE, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE, new Rotation2d(0))), reverseConfig);
+        new Pose2d(TrajectoryConstants.FLIPPED_SECOND_CONE_NODE, new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE, new Rotation2d(0))), reverseConfig);
     
         var xPIDController = new PIDController(AutoConstants.X_DRIVE_P, AutoConstants.X_DRIVE_I, AutoConstants.X_DRIVE_D);
     var yPIDController = new PIDController(AutoConstants.Y_DRIVE_P, AutoConstants.Y_DRIVE_I, AutoConstants.Y_DRIVE_D);

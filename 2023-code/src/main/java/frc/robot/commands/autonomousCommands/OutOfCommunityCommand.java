@@ -14,6 +14,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -55,11 +56,11 @@ public class OutOfCommunityCommand extends SequentialCommandGroup {
         .setKinematics(driveSubsystem.swerveKinematics)
         .setReversed(true);
 
-        Trajectory outOfCommunityTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-        new Pose2d(TrajectoryConstants.SECOND_CONE_NODE, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE, new Rotation2d(0))), reverseConfig);
+    Trajectory outOfCommunityTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
+        new Pose2d(TrajectoryConstants.SECOND_CONE_NODE, new Rotation2d(Units.degreesToRadians(0))),
+        new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE, new Rotation2d(Units.degreesToRadians(180)))), forwardConfig);
     
-        var xPIDController = new PIDController(AutoConstants.X_DRIVE_P, AutoConstants.X_DRIVE_I, AutoConstants.X_DRIVE_D);
+    var xPIDController = new PIDController(AutoConstants.X_DRIVE_P, AutoConstants.X_DRIVE_I, AutoConstants.X_DRIVE_D);
     var yPIDController = new PIDController(AutoConstants.Y_DRIVE_P, AutoConstants.Y_DRIVE_I, AutoConstants.Y_DRIVE_D);
 
     var thetaController = new ProfiledPIDController(

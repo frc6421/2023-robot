@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -21,7 +24,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class AutoConstants {
-    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 1; // TODO update 4
+    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 2; // TODO update 4
     public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1; // TODO update 8
 
     public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
@@ -35,9 +38,13 @@ public final class Constants {
     public static final double Y_DRIVE_I = 0;
     public static final double Y_DRIVE_D = 0;
 
-    public static final double THETA_P = 1.2;
+    public static final double THETA_P = 1;
     public static final double THETA_I = 0;
     public static final double THETA_D = 0;
+
+    // This is just an example event map. It would be better to have a constant, global event map
+    // in your code that will be used by all path following commands.
+    public static final HashMap<String, Command> eventMap = new HashMap<>();
 
     public static class TrajectoryConstants {
       public static final double CENTER_OF_ROBOT_LENGTH = Units.inchesToMeters(16.25);

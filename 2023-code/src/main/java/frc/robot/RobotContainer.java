@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.autonomousCommands.FlippedOnePieceChargeCommand;
@@ -11,6 +12,7 @@ import frc.robot.commands.autonomousCommands.FlippedOutOfCommunityCommand;
 import frc.robot.commands.autonomousCommands.FourPieceCommand;
 import frc.robot.commands.autonomousCommands.OnePieceChargeCommand;
 import frc.robot.commands.autonomousCommands.OutOfCommunityCommand;
+import frc.robot.commands.autonomousCommands.PathPlannerOnePieceChargeCommand;
 import frc.robot.commands.autonomousCommands.TestAutoCommand;
 import frc.robot.commands.SubstationVisionCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -27,6 +29,12 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
+
+import java.util.HashMap;
+
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.networktables.GenericEntry;
 import frc.robot.subsystems.GyroSubsystem;
@@ -105,6 +113,8 @@ public class RobotContainer {
   private OutOfCommunityCommand outOfCommunityCommand;
   private FlippedOutOfCommunityCommand flippedOutOfCommunityCommand;
 
+  private PathPlannerOnePieceChargeCommand pathPlannerOnePieceChargeCommand;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -125,6 +135,8 @@ public class RobotContainer {
     //flippedOnePieceChargeCommand = new FlippedOnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
     outOfCommunityCommand = new OutOfCommunityCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
     flippedOutOfCommunityCommand = new FlippedOutOfCommunityCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+
+    pathPlannerOnePieceChargeCommand = new PathPlannerOnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
 
     autoChooser = new SendableChooser<>();
     
@@ -271,13 +283,32 @@ public class RobotContainer {
     copilotController.a().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.FLOOR));
   }
 
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    AutoConstants.eventMap.put("armHigh", new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH));
+    AutoConstants.eventMap.put("openGrabber", new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
+    AutoConstants.eventMap.put("armIn", new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID));
+
+    // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+    SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+    driveSubsystem::getPose2d, // Pose2d supplier
+    driveSubsystem::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
+    driveSubsystem.swerveKinematics, // SwerveDriveKinematics
+    new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+    new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+    driveSubsystem::setModuleStates, // Module states consumer used to output to the drive subsystem
+    AutoConstants.eventMap,
+    true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+    driveSubsystem // The drive subsystem. Used to properly set the requirements of path following commands
+    );
+
     // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    //return autoChooser.getSelected();
+    return pathPlannerOnePieceChargeCommand;
   }
 }

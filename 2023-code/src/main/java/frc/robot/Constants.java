@@ -136,6 +136,10 @@ public final class Constants {
     public static final double BLINKIN_RAINBOW_WAVE = -0.45;
     public static final double BLINKIN_RAINBOW_SINELON = -0.45;
     public static final double BLINKIN_CONFETTI = -0.87;
+    public static final double BLINKIN_FIRE = -0.59;
+    public static final double BLINKIN_GLITTER = -0.89;
+    public static final double BLINKIN_PARTY_WAVE = -0.43;
+    public static final double BLINKIN_SHOT_RED = -0.85;
   }
 
   public static class DriveConstants {

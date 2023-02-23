@@ -111,7 +111,10 @@ public class DriveSubsystem extends SubsystemBase {
 
       SmartDashboard.putData("drive", this);
 
-      SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
+      SmartDashboard.putNumber("Front Left Speed", frontLeft.getDriveMotorVelocity());
+      SmartDashboard.putNumber("Front Right Speed", frontRight.getDriveMotorVelocity());
+      SmartDashboard.putNumber("Back Left Speed", backLeft.getDriveMotorVelocity());
+      SmartDashboard.putNumber("Back Right Speed", backRight.getDriveMotorVelocity());
   }
 
 

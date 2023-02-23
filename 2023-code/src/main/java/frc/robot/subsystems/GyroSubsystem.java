@@ -33,6 +33,7 @@ public class GyroSubsystem extends SubsystemBase {
   {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Current Gyro Rotation", getYawAngle().getDegrees());
+    SmartDashboard.putNumber("Gyro rate radians/s", Math.toRadians(getGyroRate()));
   }
 
   /**

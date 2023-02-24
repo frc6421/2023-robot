@@ -252,9 +252,9 @@ public class DriveSubsystem extends SubsystemBase {
       rotationInput = 0;
     }
 
-    xSpeed = (xSpeed + Math.signum(xSpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    ySpeed = (ySpeed + Math.signum(ySpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double rotation = (rotationInput + Math.signum(rotationInput) * .095) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    xSpeed = -1 * (xSpeed + Math.signum(xSpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    ySpeed = -1 * (ySpeed + Math.signum(ySpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double rotation = -1 * (rotationInput + Math.signum(rotationInput) * .095) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     // xSpeed = driveFeedForward.calculate(xSpeed);
     // ySpeed = driveFeedForward.calculate(ySpeed);

@@ -306,7 +306,7 @@ public class RobotContainer {
     );
 
     // An example command will be run in autonomous
-    //return autoChooser.getSelected();
-    return pathPlannerOnePieceChargeCommand;
+    return autoChooser.getSelected();
+    //return pathPlannerOnePieceChargeCommand;
   }
 }

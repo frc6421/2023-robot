@@ -42,7 +42,7 @@ public class SwerveModule{
     driveMotor.configFactoryDefault();
     steerMotor.configFactoryDefault();
 
-    driveMotor.setInverted(false);
+    driveMotor.setInverted(true);
     steerMotor.setInverted(true);
 
     driveMotor.setNeutralMode(NeutralMode.Brake);

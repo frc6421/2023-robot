@@ -131,21 +131,6 @@ public class DriveSubsystem extends SubsystemBase {
         frontRight.getModulePosition(),
         backLeft.getModulePosition(),
         backRight.getModulePosition() });
-
-    SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
-
-    SmartDashboard.putNumber("FrontLeftCANcoderAngle", Math.toDegrees(frontLeft.getCANcoderRadians()));
-    SmartDashboard.putNumber("FrontRightCANcoderAngle", Math.toDegrees(frontRight.getCANcoderRadians()));
-    SmartDashboard.putNumber("BackLeftCANcoderAngle", Math.toDegrees(backLeft.getCANcoderRadians()));
-    SmartDashboard.putNumber("BackRightCANcoderAngle", Math.toDegrees(backRight.getCANcoderRadians()));
-
-    SmartDashboard.putNumber("FrontLeftMotorEncoderAngle", frontLeft.getSteerMotorEncoderAngle());
-    SmartDashboard.putNumber("FrontRightMotorEncoderAngle", frontRight.getSteerMotorEncoderAngle());
-    SmartDashboard.putNumber("BackLeftMotorEncoderAngle", backLeft.getSteerMotorEncoderAngle());
-    SmartDashboard.putNumber("BackRightMotorEncoderAngle", backRight.getSteerMotorEncoderAngle());
-
-    SmartDashboard.putNumber("LeftY", driverController.getLeftY());
-    SmartDashboard.putNumber("LeftX", driverController.getLeftX());
   }
 
   // ODOMETRY METHODS \\
@@ -234,8 +219,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     Rotation2d speeds = new Rotation2d(ySpeedInput, xSpeedInput);
     double xSpeed;
-    double ySpeed; // TODO make command instead of method after testing the new stuff
-    boolean buttonPressed = false;
+    double ySpeed;
 
     // TODO Drive by voltage changes before Sussex
     /*
@@ -267,17 +251,15 @@ public class DriveSubsystem extends SubsystemBase {
     // turn to angle buttons
     if (driverController.y().getAsBoolean()) {
       rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 0.0);
-      buttonPressed = true;
-    } else if (driverController.b().getAsBoolean()) {
+    } 
+    else if (driverController.b().getAsBoolean()) {
       rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 90.0);
-      buttonPressed = true;
-    } else if (driverController.a().getAsBoolean()) {
+    } 
+    else if (driverController.a().getAsBoolean()) {
       rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 180.0);
-      buttonPressed = true;
-      System.out.println("aPID reading: " + rotationInput);
-    } else if (driverController.x().getAsBoolean()) {
+    } 
+    else if (driverController.x().getAsBoolean()) {
       rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 270.0);
-      buttonPressed = true;
     }
 
     double rotation = -(rotationInput + .095 * Math.signum(rotationInput))
@@ -319,7 +301,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Turns all the wheels inward to prevent pushing and sets the speed of each
     // module to 0
-    if (driverController.leftBumper().getAsBoolean()) {
+    if (driverController.povDown().getAsBoolean()) {
       swerveModuleStates[0].angle = Rotation2d.fromDegrees(45);
       swerveModuleStates[0].speedMetersPerSecond = 0;
       swerveModuleStates[1].angle = Rotation2d.fromDegrees(-45);

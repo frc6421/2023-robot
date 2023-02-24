@@ -35,7 +35,7 @@ public class DriveSubsystem extends SubsystemBase {
   // Old navx declaration
   // private final AHRS navx;
 
-  private final SwerveDriveKinematics swerveKinematics;
+  public final SwerveDriveKinematics swerveKinematics;
 
   private final SwerveDriveOdometry odometry;
 
@@ -127,10 +127,17 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     odometry.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
-        frontLeft.getModulePosition(),
-        frontRight.getModulePosition(),
-        backLeft.getModulePosition(),
-        backRight.getModulePosition() });
+      frontLeft.getModulePosition(),
+      frontRight.getModulePosition(),
+      backLeft.getModulePosition(),
+      backRight.getModulePosition()});
+
+      SmartDashboard.putData("drive", this);
+
+      SmartDashboard.putNumber("Front Left Speed", frontLeft.getDriveMotorVelocity());
+      SmartDashboard.putNumber("Front Right Speed", frontRight.getDriveMotorVelocity());
+      SmartDashboard.putNumber("Back Left Speed", backLeft.getDriveMotorVelocity());
+      SmartDashboard.putNumber("Back Right Speed", backRight.getDriveMotorVelocity());
   }
 
   // ODOMETRY METHODS \\
@@ -142,6 +149,15 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public Pose2d getPose2d() {
     return odometry.getPoseMeters();
+  }
+
+  /**
+   * Returns estimated current robot heading as a Rotation2d
+   * 
+   * @return current estimated robot heading as a Rotation2d (radians)
+   */
+  public Rotation2d getPoseHeading() {
+    return odometry.getPoseMeters().getRotation();
   }
 
   /**
@@ -173,6 +189,29 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   // TODO not currently used
+  /**
+   * Sets the desired ChassisSpeeds
+   * Used for auto
+   * 
+   * @param chassisSpeeds desired ChassisSpeeds
+   */
+  public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
+    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, GyroSubsystem.getYawAngle());
+
+    // Sets field relative speeds
+    var swerveModuleStates = 
+      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, GyroSubsystem.getYawAngle()));
+      // Ensures all wheels obey max speed
+      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
+      // Sets the swerve modules to their desired states using optimization method
+      frontLeft.setDesiredState(swerveModuleStates[0]);
+      frontRight.setDesiredState(swerveModuleStates[1]);
+      backLeft.setDesiredState(swerveModuleStates[2]);
+      backRight.setDesiredState(swerveModuleStates[3]);
+  }
+
+  //TODO not currently used
   public void resetEncoders() {
     frontLeft.resetEncoders();
     frontRight.resetEncoders();
@@ -261,6 +300,9 @@ public class DriveSubsystem extends SubsystemBase {
     else if (driverController.x().getAsBoolean()) {
       rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 270.0);
     }
+    // xSpeed = driveFeedForward.calculate(xSpeed);
+    // ySpeed = driveFeedForward.calculate(ySpeed);
+    // rotation = driveFeedForward.calculate(rotation);
 
     double rotation = -(rotationInput + .095 * Math.signum(rotationInput))
     * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
@@ -319,4 +361,31 @@ public class DriveSubsystem extends SubsystemBase {
     backRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  /** Same as drive method, but without the trigger control inputs.
+   *  This allows it to be used for drivin to targets based on vision.
+   * 
+   * @param xSpeedInput percent input from -1 to 1 (converts to meters per sec)
+   * @param ySpeedInput percent input from -1 to 1 (converts to meters per sec)
+   * @param rotationInput percent input from -1 to 1 (converts to radians per sec)
+   */
+  public void visionDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
+    double xSpeed = xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+
+    double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
+    System.out.println("XSpeed: " + xSpeed);
+    
+    // Sets field relative speeds
+    var swerveModuleStates = 
+      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle()));
+      // Ensures all wheels obey max speed
+      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
+      // Sets the swerve modules to their desired states using optimization method
+      frontLeft.setDesiredState(swerveModuleStates[0]);
+      frontRight.setDesiredState(swerveModuleStates[1]);
+      backLeft.setDesiredState(swerveModuleStates[2]);
+      backRight.setDesiredState(swerveModuleStates[3]);
+  }
 }

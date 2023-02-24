@@ -9,7 +9,7 @@ import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.commands.ElevatorCommand;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -27,6 +27,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     private double positionMinOutput;
     
     private double elevatorPositionInMeters;
+
+    private double setPoint;
 
     private ShuffleboardTab elevatorTab;
     private GenericEntry elevatorPositionEntry;
@@ -57,6 +59,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
         elevatorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
+        setPoint = ElevatorConstants.ELEVATOR_REVERSE_SOFT_LIMIT;
+
         // PID \\
         positionMaxOutput = 1; 
         positionMinOutput = -1;
@@ -81,6 +85,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         elevatorPEntry = elevatorTab.add("Elevator P: ", 0)
             .getEntry();
+
+        elevatorTab.add(this);
         
     }
 
@@ -90,6 +96,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPositionEntry.setDouble(getElevatorEncoderPosition());
         elevatorVolatgeEntry.setDouble(elevatorMotor.getBusVoltage());
         elevatorPEntry.setDouble(elevatorPIDController.getP());
+        
     }
 
     // MOTOR PID \\
@@ -110,6 +117,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void setElevatorPosition(double position)
     {
         elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition, 0, 0.02375, SparkMaxPIDController.ArbFFUnits.kPercentOut);
+        // elevatorPIDController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
 
     /**
@@ -121,6 +129,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     {
         elevatorMotor.set(FF);
     } 
+    
+    public void setPercentPosition (double controllerValue)
+    {
+        controllerValue = MathUtil.applyDeadband(controllerValue, 0.04);
+
+        double change = controllerValue * 0.02;
+
+        setPoint = (change + setPoint);
+
+        setPoint = MathUtil.clamp(setPoint, (double) ElevatorConstants.ELEVATOR_REVERSE_SOFT_LIMIT, ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS);
+        
+        setElevatorPosition(setPoint);
+    }
 
     // ENCODER \\
     public double getElelvatorPositionInMeters()
@@ -134,4 +155,9 @@ public class ElevatorSubsystem extends SubsystemBase {
     {
         return elevatorEncoder.getPosition();
     }
+
+    public void setSetPoint(double setPoint) {
+        this.setPoint = setPoint;
+    }
+
 }

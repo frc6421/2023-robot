@@ -33,69 +33,81 @@ import frc.robot.subsystems.GrabberSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class OnePieceChargeCommand extends SequentialCommandGroup {
-  private DriveSubsystem driveSubsystem;
-  private ElevatorSubsystem elevatorSubsystem;
-  private ArmSubsystem armSubsystem;
-  private GrabberSubsystem grabberSubsystem;
-  /** Creates a new OnePieceChargeCommand. */
-  public OnePieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, GrabberSubsystem grabber) {
-    driveSubsystem = drive;
-    elevatorSubsystem = elevator;
-    armSubsystem = arm;
-    grabberSubsystem = grabber;
-    addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+    private DriveSubsystem driveSubsystem;
+    private ElevatorSubsystem elevatorSubsystem;
+    private ArmSubsystem armSubsystem;
+    private GrabberSubsystem grabberSubsystem;
 
-    TrajectoryConfig forwardConfig = new TrajectoryConfig(
-        AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
-        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
-        .setKinematics(driveSubsystem.swerveKinematics);
+    /** Creates a new OnePieceChargeCommand. */
+    public OnePieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm,
+            GrabberSubsystem grabber) {
+        driveSubsystem = drive;
+        elevatorSubsystem = elevator;
+        armSubsystem = arm;
+        grabberSubsystem = grabber;
+        addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
 
-    TrajectoryConfig reverseConfig = new TrajectoryConfig(
-        AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
-        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
-        .setKinematics(driveSubsystem.swerveKinematics)
-        .setReversed(true);
+        TrajectoryConfig forwardConfig = new TrajectoryConfig(
+                AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
+                AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
+                .setKinematics(driveSubsystem.swerveKinematics);
 
-    // Starts in line with the right cone node in co-op grid
-    Trajectory chargeStationTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-        new Pose2d(TrajectoryConstants.SECOND_COOPERTITION_CONE_NODE, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.MID_POINT_OF_PIECES_AND_CHARGE_STATION, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.CENTER_OF_CHARGE_STATION, new Rotation2d(0))), forwardConfig);
+        TrajectoryConfig reverseConfig = new TrajectoryConfig(
+                AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
+                AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
+                .setKinematics(driveSubsystem.swerveKinematics)
+                .setReversed(true);
 
-    var xPIDController = new PIDController(AutoConstants.X_DRIVE_P, AutoConstants.X_DRIVE_I, AutoConstants.X_DRIVE_D);
-    var yPIDController = new PIDController(AutoConstants.Y_DRIVE_P, AutoConstants.Y_DRIVE_I, AutoConstants.Y_DRIVE_D);
+        // Starts in line with the cube node in co-op grid
+        Trajectory overChargeStationTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
+                new Pose2d(TrajectoryConstants.COOPERTITION_CUBE_NODE, new Rotation2d(0)),
+                new Pose2d(TrajectoryConstants.MID_POINT_OF_PIECES_AND_CHARGE_STATION, new Rotation2d(0))),
+                forwardConfig);
 
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,
-        new TrapezoidProfile.Constraints(AutoConstants.AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC,
-            AutoConstants.AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC));
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        Trajectory ontoChargeStationTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
+                new Pose2d(TrajectoryConstants.MID_POINT_OF_PIECES_AND_CHARGE_STATION, new Rotation2d(0)),
+                new Pose2d(TrajectoryConstants.CENTER_OF_CHARGE_STATION, new Rotation2d(0))),
+                reverseConfig);
 
-    HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
-        // Position controllers
-        new PIDController(AutoConstants.X_DRIVE_P, AutoConstants.X_DRIVE_I, AutoConstants.X_DRIVE_D),
-        new PIDController(AutoConstants.Y_DRIVE_P, AutoConstants.Y_DRIVE_I, AutoConstants.Y_DRIVE_D),
-        thetaController);
+        var thetaController = new ProfiledPIDController(
+                AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,
+                new TrapezoidProfile.Constraints(AutoConstants.AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC,
+                        AutoConstants.AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC));
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerCommand chargeStationCommand = new SwerveControllerCommand(
-        chargeStationTrajectory,
-        driveSubsystem::getPose2d,
-        driveSubsystem.swerveKinematics,
-        xPIDController,
-        yPIDController,
-        thetaController,
-        driveSubsystem::setModuleStates,
-        driveSubsystem);
+        HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
+                // Position controllers
+                new PIDController(AutoConstants.X_DRIVE_P, AutoConstants.X_DRIVE_I, AutoConstants.X_DRIVE_D),
+                new PIDController(AutoConstants.Y_DRIVE_P, AutoConstants.Y_DRIVE_I, AutoConstants.Y_DRIVE_D),
+                thetaController);
 
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-        new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH),
-        new ParallelDeadlineGroup(new WaitCommand(0.7), new InstantCommand(() -> grabberSubsystem.toggleGrabber())),
-        new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP),
-        new InstantCommand(() -> driveSubsystem.resetOdometry(chargeStationTrajectory.getInitialPose())),
-        chargeStationCommand,
-        new InstantCommand(() -> driveSubsystem.drive(0, 0, 0, 0, 0)));
-  }
+        SwerveControllerCommand overChargeStationCommand = new SwerveControllerCommand(
+                overChargeStationTrajectory,
+                driveSubsystem::getPose2d,
+                driveSubsystem.swerveKinematics,
+                holonomicDriveController,
+                driveSubsystem::autoSetModuleStates,
+                driveSubsystem);
+
+        SwerveControllerCommand ontoChargeStationCommand = new SwerveControllerCommand(
+                ontoChargeStationTrajectory,
+                driveSubsystem::getPose2d,
+                driveSubsystem.swerveKinematics,
+                holonomicDriveController,
+                driveSubsystem::autoSetModuleStates,
+                driveSubsystem);
+
+        // Add your commands in the addCommands() call, e.g.
+        // addCommands(new FooCommand(), new BarCommand());
+        addCommands(
+                new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH),
+                new ParallelDeadlineGroup(new WaitCommand(0.7),
+                        new InstantCommand(() -> grabberSubsystem.toggleGrabber())),
+                //new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID),
+                new InstantCommand(() -> driveSubsystem.resetOdometry(overChargeStationTrajectory.getInitialPose())),
+                new ParallelDeadlineGroup(overChargeStationCommand, new ArmElevatorCommand(elevator, arm, PlaceStates.HYBRID)),
+                new InstantCommand(() -> driveSubsystem.drive(0, 0, 0, 0, 0)),
+                ontoChargeStationCommand,
+                new InstantCommand(() -> driveSubsystem.drive(0, 0, 0, 0, 0)));
+    }
 }

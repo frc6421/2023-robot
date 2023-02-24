@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
@@ -13,6 +14,7 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.ctre.phoenix.sensors.WPI_CANCoder;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -26,7 +28,7 @@ public class SwerveModule{
 
   private final WPI_CANCoder steerEncoder;
 
-  // TODO Add FeedForward for steer and drive motors
+  private final SimpleMotorFeedforward feedforward;
 
   // TODO Maybe used for testing
   private double referenceVoltage = 0;
@@ -38,6 +40,8 @@ public class SwerveModule{
     steerMotor = new WPI_TalonFX(steerMotorID, ModuleConstants.CANIVORE_NAME);
 
     steerEncoder = new WPI_CANCoder(steerEncoderID, ModuleConstants.CANIVORE_NAME);
+
+    feedforward = new SimpleMotorFeedforward(DriveConstants.S_VOLTS, DriveConstants.V_VOLT_SECONDS_PER_METER, DriveConstants.A_VOLT_SECONDS_SQUARED_PER_METER);
 
     driveMotor.configFactoryDefault();
     steerMotor.configFactoryDefault();
@@ -187,6 +191,28 @@ public class SwerveModule{
     driveMotor.set(ControlMode.PercentOutput, driveOutput);
     steerMotor.set(ControlMode.Position, steerPositionOutput);
   }
+
+  /**
+   * Optimizes the swerve module outputs and applies the drive percent output and steer position
+   * Closed loop output
+   * 
+   * @param desiredState
+   */
+  public void autoSetDesiredState(SwerveModuleState desiredState) {
+    // Optimize the desired state to avoid spinning modules more than 90 degrees
+    SwerveModuleState state = customOptimize(desiredState, new Rotation2d(Math.toRadians(getSteerMotorEncoderAngle())));
+
+    // Calculate percent of max drive velocity
+    double driveOutput = state.speedMetersPerSecond / DriveConstants.DISTANCE_PER_ENCODER_COUNT / 10;
+
+    // Calculate steer motor output
+    double steerPositionOutput = state.angle.getDegrees() * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
+
+    // Apply PID outputs
+    driveMotor.set(ControlMode.Velocity, driveOutput, DemandType.ArbitraryFeedForward, feedforward.calculate(state.speedMetersPerSecond));
+    steerMotor.set(ControlMode.Position, steerPositionOutput);
+  }
+
 
   public void resetEncoders() {
     driveMotor.setSelectedSensorPosition(0);

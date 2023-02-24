@@ -164,6 +164,22 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /**
+   * Sets the swerve module states
+   * Uses closed loop control for auto
+   * 
+   * @param desiredStates the desired swerve module states
+   */
+  public void autoSetModuleStates(SwerveModuleState[] desiredStates) {
+    // Ensures all wheels obey max speed
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+    // Sets the swerve modules to their desired states using optimization method
+    frontLeft.autoSetDesiredState(desiredStates[0]);
+    frontRight.autoSetDesiredState(desiredStates[1]);
+    backLeft.autoSetDesiredState(desiredStates[2]);
+    backRight.autoSetDesiredState(desiredStates[3]);
+  }
+
+  /**
    * Sets the desired ChassisSpeeds
    * Used for auto
    * 

@@ -58,7 +58,7 @@ public class OutOfCommunityCommand extends SequentialCommandGroup {
 
     Trajectory outOfCommunityTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
         new Pose2d(TrajectoryConstants.SECOND_CONE_NODE, new Rotation2d(Units.degreesToRadians(0))),
-        new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE, new Rotation2d(Units.degreesToRadians(180)))), forwardConfig);
+        new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE, new Rotation2d(Units.degreesToRadians(0)))), forwardConfig);
     
     var xPIDController = new PIDController(AutoConstants.X_DRIVE_P, AutoConstants.X_DRIVE_I, AutoConstants.X_DRIVE_D);
     var yPIDController = new PIDController(AutoConstants.Y_DRIVE_P, AutoConstants.Y_DRIVE_I, AutoConstants.Y_DRIVE_D);

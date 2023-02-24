@@ -24,27 +24,23 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public final class Constants {
   public static class AutoConstants {
-    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 2; // TODO update 4
+    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 3; // TODO update 4
     public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1; // TODO update 8
 
     public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
     public static final double AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC = Math.PI;
 
-    public static final double X_DRIVE_P = 2.5228; // 2/23/23 SysID
+    public static final double X_DRIVE_P = 2.3; // 2/23/23 SysID 2.5-ish
     public static final double X_DRIVE_I = 0;
     public static final double X_DRIVE_D = 0;
 
-    public static final double Y_DRIVE_P = 2.5228; // 2/23/23 SysID
+    public static final double Y_DRIVE_P = 2.3; // 2/23/23 SysID (may need to go to modules, this may need to be position PID)
     public static final double Y_DRIVE_I = 0;
     public static final double Y_DRIVE_D = 0;
 
     public static final double THETA_P = 1;
     public static final double THETA_I = 0;
     public static final double THETA_D = 0;
-
-    // This is just an example event map. It would be better to have a constant, global event map
-    // in your code that will be used by all path following commands.
-    public static final HashMap<String, Command> eventMap = new HashMap<>();
 
     public static class TrajectoryConstants {
       public static final double CENTER_OF_ROBOT_LENGTH = Units.inchesToMeters(16.25);
@@ -81,11 +77,14 @@ public final class Constants {
       public static final Translation2d SECOND_COOPERTITION_CONE_NODE = new Translation2d(Units.feetToMeters(0),
           Units.inchesToMeters(86));
 
+      public static final Translation2d COOPERTITION_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
+          Units.inchesToMeters(108));
+
       public static final Translation2d CUBE_NODE = new Translation2d(Units.feetToMeters(0),
           Units.inchesToMeters(42));
 
       public static final Translation2d MID_POINT_OF_PIECES_AND_CHARGE_STATION = new Translation2d(
-          Units.feetToMeters(139.32),
+          Units.inchesToMeters(139.32),
           Units.inchesToMeters(107.39));
       public static final Translation2d CENTER_OF_CHARGE_STATION = new Translation2d(Units.inchesToMeters(96.75),
           Units.inchesToMeters(107.39));
@@ -118,6 +117,9 @@ public final class Constants {
       public static final Translation2d FLIPPED_SECOND_COOPERTITION_CONE_NODE = new Translation2d(Units.feetToMeters(0),
           -Units.inchesToMeters(86));
 
+      public static final Translation2d FLIPPED_COOPERTITION_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
+          -Units.inchesToMeters(108));
+
       public static final Translation2d FLIPPED_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
           -Units.inchesToMeters(42));
 
@@ -126,7 +128,7 @@ public final class Constants {
           -Units.inchesToMeters(107.39));
 
       public static final Translation2d FLIPPED_MID_POINT_OF_PIECES_AND_CHARGE_STATION = new Translation2d(
-          Units.feetToMeters(139.32),
+          Units.inchesToMeters(139.32),
           -Units.inchesToMeters(107.39));
     }
   }
@@ -230,7 +232,7 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_ENCODER_CAN_ID = 15;
     public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -302.43;
 
-    public static final double MODULE_DRIVE_P = 0.208;
+    public static final double MODULE_DRIVE_P = 0.208; // 2/23/23 SysID 0.398
     public static final double MODULE_DRIVE_I = 0;
     public static final double MODULE_DRIVE_D = 0;
 

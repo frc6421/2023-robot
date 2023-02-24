@@ -7,12 +7,10 @@ package frc.robot;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.autonomousCommands.FlippedOnePieceChargeCommand;
 import frc.robot.commands.autonomousCommands.FlippedOutOfCommunityCommand;
 import frc.robot.commands.autonomousCommands.FourPieceCommand;
 import frc.robot.commands.autonomousCommands.OnePieceChargeCommand;
 import frc.robot.commands.autonomousCommands.OutOfCommunityCommand;
-import frc.robot.commands.autonomousCommands.PathPlannerOnePieceChargeCommand;
 import frc.robot.commands.autonomousCommands.TestAutoCommand;
 import frc.robot.commands.SubstationVisionCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -108,13 +106,10 @@ public class RobotContainer {
   private TestAutoCommand testAutoCommand;
   private FourPieceCommand fourPieceAutoCommand;
 
-  //private OnePieceChargeCommand onePieceChargeCommand;
-  //private FlippedOnePieceChargeCommand flippedOnePieceChargeCommand;
+  private OnePieceChargeCommand onePieceChargeCommand;
 
   private OutOfCommunityCommand outOfCommunityCommand;
   private FlippedOutOfCommunityCommand flippedOutOfCommunityCommand;
-
-  private PathPlannerOnePieceChargeCommand pathPlannerOnePieceChargeCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -132,12 +127,10 @@ public class RobotContainer {
     testAutoCommand = new TestAutoCommand(driveSubsystem);
     fourPieceAutoCommand = new FourPieceCommand(driveSubsystem);
 
-    //onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
-    //flippedOnePieceChargeCommand = new FlippedOnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+    onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+    
     outOfCommunityCommand = new OutOfCommunityCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
     flippedOutOfCommunityCommand = new FlippedOutOfCommunityCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
-
-    pathPlannerOnePieceChargeCommand = new PathPlannerOnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
 
     autoChooser = new SendableChooser<>();
     
@@ -220,8 +213,7 @@ public class RobotContainer {
    
     autoChooser.setDefaultOption("TestAuto", testAutoCommand);
     autoChooser.addOption("Right Start 4 Piece", fourPieceAutoCommand);
-    //autoChooser.addOption("Right Start 1 Piece Charge", onePieceChargeCommand);
-    //autoChooser.addOption("Left Start 1 Piece Charge", flippedOnePieceChargeCommand);
+    autoChooser.addOption("1 Piece Charge", onePieceChargeCommand);
     autoChooser.addOption("Right Start Out of Community", outOfCommunityCommand);
     autoChooser.addOption("Left Start out of community", flippedOutOfCommunityCommand);
     SmartDashboard.putData("autoChooser", autoChooser);
@@ -288,25 +280,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    AutoConstants.eventMap.put("armHigh", new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH));
-    AutoConstants.eventMap.put("openGrabber", new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
-    AutoConstants.eventMap.put("armIn", new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID));
-
-    // Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
-    SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-    driveSubsystem::getPose2d, // Pose2d supplier
-    driveSubsystem::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
-    driveSubsystem.swerveKinematics, // SwerveDriveKinematics
-    new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-    new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
-    driveSubsystem::setModuleStates, // Module states consumer used to output to the drive subsystem
-    AutoConstants.eventMap,
-    true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-    driveSubsystem // The drive subsystem. Used to properly set the requirements of path following commands
-    );
-
-    // An example command will be run in autonomous
+    // Returns the selected autonomous command from the sendable chooser
     return autoChooser.getSelected();
-    //return pathPlannerOnePieceChargeCommand;
   }
 }

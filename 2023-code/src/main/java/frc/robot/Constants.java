@@ -176,9 +176,9 @@ public final class Constants {
     public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO test value instead of theoretical value
     public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.75;
 
-    public static final double S_VOLTS = 0.54903; // 0.60043
-    public static final double V_VOLT_SECONDS_PER_METER = 3.0772; // 2.2591
-    public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.41017; // 0.17289
+    public static final double S_VOLTS = 0.01690;
+    public static final double V_VOLT_SECONDS_PER_METER = 0.1791;
+    public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.05486;
 
     public static final double DRIVE_SLEW_RATE = 2.5;
 

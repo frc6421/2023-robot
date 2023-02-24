@@ -262,7 +262,7 @@ public class RobotContainer {
     driverController.back().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
 
-    driverController.b().whileTrue(substationVisionCommand);
+    driverController.leftBumper().whileTrue(substationVisionCommand);
 
     //driverController.x().whileTrue(substationGamePieceVisionCommand);
 

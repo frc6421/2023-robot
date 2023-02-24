@@ -217,7 +217,7 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_DRIVE_CAN_ID = 14;
     public static final int BACK_RIGHT_MODULE_STEER_CAN_ID = 15;
     public static final int BACK_RIGHT_MODULE_ENCODER_CAN_ID = 15;
-    public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -352.5;
+    public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -302.43;
 
     public static final double MODULE_DRIVE_P = 0.208;
     public static final double MODULE_DRIVE_I = 0;

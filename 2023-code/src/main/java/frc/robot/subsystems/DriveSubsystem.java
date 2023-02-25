@@ -130,7 +130,9 @@ public class DriveSubsystem extends SubsystemBase {
       frontLeft.getModulePosition(),
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
-      backRight.getModulePosition()});
+      backRight.getModulePosition()
+      }
+    );
 
       SmartDashboard.putData("drive", this);
 
@@ -138,6 +140,9 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Front Right Speed", frontRight.getDriveMotorVelocity());
       SmartDashboard.putNumber("Back Left Speed", backLeft.getDriveMotorVelocity());
       SmartDashboard.putNumber("Back Right Speed", backRight.getDriveMotorVelocity());
+      SmartDashboard.putNumber("X Meter", odometry.getPoseMeters().getX());
+
+      SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
   }
 
   // ODOMETRY METHODS \\
@@ -392,10 +397,10 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rotationInput percent input from -1 to 1 (converts to radians per sec)
    */
   public void autoDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
-    double xSpeed = xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double xSpeed = -1 * xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double ySpeed = -1 * ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
-    double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    double rotation = -1 * rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     System.out.println("XSpeed: " + xSpeed);
     

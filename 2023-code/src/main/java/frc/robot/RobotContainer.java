@@ -21,9 +21,11 @@ import java.time.Instant;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.LimelightSubsystem;
+import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmDownThenReleaseCommand;
 import frc.robot.commands.ArmElevatorCommand;
 import frc.robot.commands.BalanceCommand;
+import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.SubstationGamePieceVisionCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
@@ -64,7 +66,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem;
-  private final LimelightSubsystem limelightSubsystem;
+  //private final LimelightSubsystem limelightSubsystem;
 
   private final ElevatorSubsystem elevatorSubsystem;
 
@@ -123,7 +125,7 @@ public class RobotContainer {
     
     gyroSubsystem = new GyroSubsystem();
     driveSubsystem = new DriveSubsystem();
-    limelightSubsystem = new LimelightSubsystem();
+    //limelightSubsystem = new LimelightSubsystem();
 
     elevatorSubsystem = new ElevatorSubsystem();
     armSubsystem = new ArmSubsystem();
@@ -162,11 +164,11 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
-        MathUtil.clamp(driverController.getLeftY() * voltageRatio, -1.0, 1.0),
-        MathUtil.clamp(driverController.getLeftX() * voltageRatio, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightX() * voltageRatio, -1.0, 1.0),
-        MathUtil.clamp(driverController.getLeftTriggerAxis() * voltageRatio, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightTriggerAxis() * voltageRatio, 1.0, 1.0)
+        MathUtil.clamp(driverController.getLeftY() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
+        MathUtil.clamp(driverController.getLeftX() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
+        MathUtil.clamp(driverController.getRightX() * voltageRatio * 0.5, -1.0, 1.0),
+        MathUtil.clamp(driverController.getLeftTriggerAxis() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
+        MathUtil.clamp(driverController.getRightTriggerAxis() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, 1.0, 1.0)
         ),
         driveSubsystem));
       
@@ -174,11 +176,11 @@ public class RobotContainer {
     // elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
     // );
     
-      // armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentPosition(copilotController.getRightY()), armSubsystem));
+      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentPosition(copilotController.getRightY()), armSubsystem));
 
       // elevatorSubsystem.setDefaultCommand(new RunCommand(() -> elevatorSubsystem.setPercentPosition(copilotController.getLeftY()), elevatorSubsystem));
     
-      intakeSubsystem.setDefaultCommand(new RunCommand(() -> intakeSubsystem.setPercentPosition(copilotController.getRightY()), intakeSubsystem));
+      intakeSubsystem.setDefaultCommand(new RunCommand(() -> intakeSubsystem.setPercentPosition(copilotController.getLeftY()), intakeSubsystem));
       //intakeSubsystem.setDefaultCommand(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(copilotController.getRightY()), intakeSubsystem));
       
       intakeTab = Shuffleboard.getTab("Intake Tab");
@@ -278,12 +280,13 @@ public class RobotContainer {
 
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 
-    // Arm up and intake turned off then intake in
-    driverController.y().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP)
-        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
+    // Arm up and intake turned low speed then intake in
+    driverController.y().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.UP)
+        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.UP))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.5)))
         .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP)));
     // Reverse intake for hybrid
-    driverController.b().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR)
+    driverController.b().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.HYBRID)
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-1), intakeSubsystem)));
     // Intake floor pickup
     driverController.a().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR)
@@ -302,12 +305,24 @@ public class RobotContainer {
     copilotController.povLeft().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
     copilotController.povRight().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
 
-    copilotController.rightBumper().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP));
+    copilotController.rightBumper().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.UP)
+        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.UP)));
     //copilotController.leftBumper().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID));
-    copilotController.y().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH));
-    copilotController.b().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.MID));
-    copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.SUBSTATION));
-    copilotController.a().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.FLOOR));
+    copilotController.y().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH)
+        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)));
+    copilotController.b().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.MID)
+        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.MID)));
+    copilotController.x().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.SUBSTATION)
+        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.SUBSTATION)));
+    copilotController.a().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.FLOOR)
+        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.FLOOR)));
+
+        //EXPERIMENTAL UNTIL TESTED\\
+    copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.grab())
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
+        .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP))
+        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.TRANSFER))
+        .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.TRANSFER)));
   }
 
 

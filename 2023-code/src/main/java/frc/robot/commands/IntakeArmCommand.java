@@ -25,7 +25,8 @@ public class IntakeArmCommand extends CommandBase {
 
   public enum IntakePlaceStates{
     FLOOR,
-    UP
+    UP, 
+    HYBRID
   }
 
   private IntakePlaceStates intakePlaceStates;
@@ -55,6 +56,10 @@ public class IntakeArmCommand extends CommandBase {
         break;
       case UP:
         intakeArmGoal = new TrapezoidProfile.State(IntakeConstants.INTAKE_UP_ANGLE, 0);
+
+        break;
+      case HYBRID:
+        intakeArmGoal = new TrapezoidProfile.State(IntakeConstants.INTAKE_HYBRID_ANGLE, 0);
 
         break;
     }

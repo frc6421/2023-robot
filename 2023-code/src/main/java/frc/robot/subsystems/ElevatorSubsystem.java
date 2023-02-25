@@ -50,7 +50,7 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorEncoder.setPositionConversionFactor(ElevatorConstants.ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE / ElevatorConstants.ELEVATOR_GEAR_RATIO);
         elevatorEncoder.setPosition(0); //TODO Verify start position
     
-        elevatorMotor.setIdleMode(IdleMode.kBrake); 
+        elevatorMotor.setIdleMode(IdleMode.kCoast);
 
         // Set soft limits
         elevatorMotor.setSoftLimit(SoftLimitDirection.kForward, ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS);

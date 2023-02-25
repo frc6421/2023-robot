@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -21,21 +24,21 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class AutoConstants {
-    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 1; // TODO update 4
+    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 3; // TODO update 4
     public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1; // TODO update 8
 
     public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
     public static final double AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC = Math.PI;
 
-    public static final double X_DRIVE_P = 2.1821;
+    public static final double X_DRIVE_P = 2.3; // 2/23/23 SysID 2.5-ish
     public static final double X_DRIVE_I = 0;
     public static final double X_DRIVE_D = 0;
 
-    public static final double Y_DRIVE_P = 2.1821;
+    public static final double Y_DRIVE_P = 2.3; // 2/23/23 SysID (may need to go to modules, this may need to be position PID)
     public static final double Y_DRIVE_I = 0;
     public static final double Y_DRIVE_D = 0;
 
-    public static final double THETA_P = 1.2;
+    public static final double THETA_P = 1;
     public static final double THETA_I = 0;
     public static final double THETA_D = 0;
 
@@ -74,11 +77,14 @@ public final class Constants {
       public static final Translation2d SECOND_COOPERTITION_CONE_NODE = new Translation2d(Units.feetToMeters(0),
           Units.inchesToMeters(86));
 
+      public static final Translation2d COOPERTITION_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
+          Units.inchesToMeters(108));
+
       public static final Translation2d CUBE_NODE = new Translation2d(Units.feetToMeters(0),
           Units.inchesToMeters(42));
 
       public static final Translation2d MID_POINT_OF_PIECES_AND_CHARGE_STATION = new Translation2d(
-          Units.feetToMeters(139.32),
+          Units.inchesToMeters(139.32),
           Units.inchesToMeters(107.39));
       public static final Translation2d CENTER_OF_CHARGE_STATION = new Translation2d(Units.inchesToMeters(96.75),
           Units.inchesToMeters(107.39));
@@ -111,6 +117,9 @@ public final class Constants {
       public static final Translation2d FLIPPED_SECOND_COOPERTITION_CONE_NODE = new Translation2d(Units.feetToMeters(0),
           -Units.inchesToMeters(86));
 
+      public static final Translation2d FLIPPED_COOPERTITION_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
+          -Units.inchesToMeters(108));
+
       public static final Translation2d FLIPPED_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
           -Units.inchesToMeters(42));
 
@@ -119,7 +128,7 @@ public final class Constants {
           -Units.inchesToMeters(107.39));
 
       public static final Translation2d FLIPPED_MID_POINT_OF_PIECES_AND_CHARGE_STATION = new Translation2d(
-          Units.feetToMeters(139.32),
+          Units.inchesToMeters(139.32),
           -Units.inchesToMeters(107.39));
     }
   }
@@ -136,6 +145,10 @@ public final class Constants {
     public static final double BLINKIN_RAINBOW_WAVE = -0.45;
     public static final double BLINKIN_RAINBOW_SINELON = -0.45;
     public static final double BLINKIN_CONFETTI = -0.87;
+    public static final double BLINKIN_FIRE = -0.59;
+    public static final double BLINKIN_GLITTER = -0.89;
+    public static final double BLINKIN_PARTY_WAVE = -0.43;
+    public static final double BLINKIN_SHOT_RED = -0.85;
   }
 
   public static class DriveConstants {
@@ -176,9 +189,9 @@ public final class Constants {
     public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO test value instead of theoretical value
     public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.75;
 
-    public static final double S_VOLTS = 0.01690;
-    public static final double V_VOLT_SECONDS_PER_METER = 0.1791;
-    public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.05486;
+    public static final double S_VOLTS = 0.01690; // 2/23/23 SysID said 0.20283, / 12 for our values
+    public static final double V_VOLT_SECONDS_PER_METER = 0.1791; // 2/23/23 SysID said 2.1493
+    public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.05486; // 2/23/23 SysID said 0.65828
 
     public static final double DRIVE_SLEW_RATE = 2.5;
 
@@ -219,7 +232,7 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_ENCODER_CAN_ID = 15;
     public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -302.43;
 
-    public static final double MODULE_DRIVE_P = 0.208;
+    public static final double MODULE_DRIVE_P = 0.208; // 2/23/23 SysID 0.398
     public static final double MODULE_DRIVE_I = 0;
     public static final double MODULE_DRIVE_D = 0;
 

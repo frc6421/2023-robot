@@ -20,6 +20,8 @@ public class ArmElevatorCommand extends CommandBase {
   ElevatorSubsystem elevator;
   ArmSubsystem arm;
   Timer timer = new Timer();
+
+  
   
 
   private final TrapezoidProfile.Constraints elevatorConstraints =
@@ -51,9 +53,12 @@ public class ArmElevatorCommand extends CommandBase {
       addRequirements(elevatorSubsystem, armSubsystem);
       placeState = state;
       
+      
 
       elevator = elevatorSubsystem;
       arm = armSubsystem;
+
+      arm.setSetPoint(arm.getArmDegreePosition());
   }
 
   // Called when the command is initially scheduled.
@@ -103,7 +108,7 @@ public class ArmElevatorCommand extends CommandBase {
 
     }
 
-    armProfile = new TrapezoidProfile(armConstraints, armGoal, new TrapezoidProfile.State(arm.getArmDegreePosition(), 0));
+    armProfile = new TrapezoidProfile(armConstraints, armGoal, new TrapezoidProfile.State(arm.getArmDegreePosition() - 6, 0));
     elevatorProfile = new TrapezoidProfile(elevatorConstraints, elevatorGoal, new TrapezoidProfile.State(ElevatorSubsystem.getElevatorEncoderPosition(), 0));
 
   }

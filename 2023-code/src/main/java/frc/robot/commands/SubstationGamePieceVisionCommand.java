@@ -69,7 +69,7 @@ public class SubstationGamePieceVisionCommand extends CommandBase {
       xPercentAdjust = MathUtil.clamp(xPercentAdjust, -1, 1);
       yPercentAdjust = MathUtil.clamp(yPercentAdjust, -1, 1);
 
-      driveSubsystem.visionDrive(-yPercentAdjust, -xPercentAdjust, 0);
+      driveSubsystem.autoDrive(-yPercentAdjust, -xPercentAdjust, 0);
     } else {
       end(true);
     }
@@ -78,7 +78,7 @@ public class SubstationGamePieceVisionCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveSubsystem.visionDrive(0, 0, 0);
+    driveSubsystem.autoDrive(0, 0, 0);
     if(interrupted) {
       BlinkinSubsystem.blinkinConfettiSet();
     } else {

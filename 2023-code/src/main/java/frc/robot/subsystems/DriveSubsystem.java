@@ -190,6 +190,22 @@ public class DriveSubsystem extends SubsystemBase {
 
   // TODO not currently used
   /**
+   * Sets the swerve module states
+   * Uses closed loop control for auto
+   * 
+   * @param desiredStates the desired swerve module states
+   */
+  public void autoSetModuleStates(SwerveModuleState[] desiredStates) {
+    // Ensures all wheels obey max speed
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+    // Sets the swerve modules to their desired states using optimization method
+    frontLeft.autoSetDesiredState(desiredStates[0]);
+    frontRight.autoSetDesiredState(desiredStates[1]);
+    backLeft.autoSetDesiredState(desiredStates[2]);
+    backRight.autoSetDesiredState(desiredStates[3]);
+  }
+
+  /**
    * Sets the desired ChassisSpeeds
    * Used for auto
    * 
@@ -300,14 +316,21 @@ public class DriveSubsystem extends SubsystemBase {
     // else if (driverController.x().getAsBoolean()) {
     //   rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 270.0);
     // }
-    // xSpeed = driveFeedForward.calculate(xSpeed);
-    // ySpeed = driveFeedForward.calculate(ySpeed);
-    // rotation = driveFeedForward.calculate(rotation);
 
-    double rotation = -(rotationInput + .095 * Math.signum(rotationInput))
-    * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-    xSpeed = -(xSpeed + (Math.signum(xSpeed) * .095)) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    ySpeed = -(ySpeed + (Math.signum(ySpeed) * .095)) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    //Keeps the robot from moving with no joystick inputs
+    if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
+      ySpeed = 0;
+    }
+    if(Math.abs(xSpeedInput) < ModuleConstants.PERCENT_DEADBAND){
+      xSpeed = 0;
+    }
+    if(Math.abs(rotationInput) < ModuleConstants.PERCENT_DEADBAND){
+      rotationInput = 0;
+    }
+
+    xSpeed = -1 * (xSpeed + Math.signum(xSpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    ySpeed = -1 * (ySpeed + Math.signum(ySpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double rotation = -1 * (rotationInput + Math.signum(rotationInput) * .095) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     // xSpeed = driveFeedforward.calculate(xSpeed);
     // ySpeed = driveFeedforward.calculate(ySpeed);
@@ -368,7 +391,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param ySpeedInput percent input from -1 to 1 (converts to meters per sec)
    * @param rotationInput percent input from -1 to 1 (converts to radians per sec)
    */
-  public void visionDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
+  public void autoDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
     double xSpeed = xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 

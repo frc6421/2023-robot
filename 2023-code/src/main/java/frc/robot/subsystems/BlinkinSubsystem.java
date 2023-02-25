@@ -61,9 +61,71 @@ public class BlinkinSubsystem extends SubsystemBase {
     blinkinLED.set(BlinkinConstants.BLINKIN_FADE_TO_BLACK);
   }
 
+  public static void blinkinFireSet(){
+    blinkinLED.set(BlinkinConstants.BLINKIN_FIRE);
+  }
+
+  public static void blinkinGlitterSet(){
+    blinkinLED.set(BlinkinConstants.BLINKIN_GLITTER);
+  }
+
+  public static void blinkinPartyWaveSet()
+  {
+    blinkinLED.set(BlinkinConstants.BLINKIN_PARTY_WAVE);
+  }
+
+  public static void blinkinShotRedSet()
+  {
+    blinkinLED.set(BlinkinConstants.BLINKIN_SHOT_RED);
+  }
+
+
+
+  
+
   /** Gets the last PWM value set to the Blinkin */
   public static double getBlinkinColor(){
     return blinkinLED.get();
+  }
+
+  public static void blinkinRandomSet()
+  {
+    int randValue = (int) (Math.random() * 7);
+
+    if (randValue == 0)
+    {
+      blinkinConfettiSet();
+    }
+
+    if (randValue == 1)
+    {
+      blinkinRainbowSet();
+    }
+
+    if (randValue == 2)
+    {
+      blinkinRainbowSinelonSet();
+    }
+
+    if (randValue == 3)
+    {
+      blinkinGlitterSet();
+    }
+
+    if (randValue == 4)
+    {
+      blinkinFireSet();
+    }
+    
+    if (randValue == 5)
+    {
+      blinkinPartyWaveSet();
+    }
+
+    if (randValue == 6)
+    {
+      blinkinShotRedSet();
+    }
   }
 
 }

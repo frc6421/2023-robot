@@ -75,9 +75,9 @@ public class SubstationVisionCommand extends CommandBase {
       targetYDistance = VisionConstants.RED_SUBSTATION_POSE_Y + 0.3;
       targetYawAngle = 0;
 
-      xDistanceError = xTagDistance - targetXDistance;
-      yDistanceError = yTagDistance - targetYDistance;
-      yawAngleError = yawTagAngle - targetYawAngle;
+      xDistanceError = targetXDistance - xTagDistance; //TODO flip these equations if it doesn't work
+      yDistanceError = targetYDistance - yTagDistance;
+      yawAngleError = targetYawAngle - yawTagAngle;
 
     } else if (DriverStation.getAlliance() == Alliance.Blue && tagID == 4) {
       // Set target distance based on field relative pose

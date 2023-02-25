@@ -111,34 +111,34 @@ public class LimelightSubsystem extends SubsystemBase {
   public static double[] getRed3dBotPose(String limelightHostName) {
     return LimelightHelpers.getBotPose_wpiRed(limelightHostName);
   }
-//TODO restore limelight 
+
   public static double getRedBotPoseX(String limelightHostName) {
-    double botPoseArray[] = new double[1];
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
     return botPoseArray[0];
   }
 
   public static double getRedBotPoseY(String limelightHostName) {
-    double botPoseArray[] = new double[2];
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
     return botPoseArray[1];
   }
 
   public static double getRedBotPoseZ(String limelightHostName) {
-    double botPoseArray[] = new double[3];
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
     return botPoseArray[2];
   }
 
   public static double getRedBotPoseRoll(String limelightHostName) {
-    double botPoseArray[] = new double[4];
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
     return botPoseArray[3];
   }
 
   public static double getRedBotPosePitch(String limelightHostName) {
-    double botPoseArray[] = new double[5];
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
     return botPoseArray[4];
   }
 
   public static double getRedBotPoseYaw(String limelightHostName) {
-    double botPoseArray[] = new double[6];
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
     return botPoseArray[5];
   }
 
@@ -152,32 +152,32 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
   public static double getBlueBotPoseX(String limelightHostName) {
-    double botPoseArray[] = new double[1];
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
     return botPoseArray[0];
   }
 
   public static double getBlueBotPoseY(String limelightHostName) {
-    double botPoseArray[] = new double[2];
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
     return botPoseArray[1];
   }
 
   public static double getBlueBotPoseZ(String limelightHostName) {
-    double botPoseArray[] = new double[3];
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
     return botPoseArray[2];
   }
 
   public static double getBlueBotPoseRoll(String limelightHostName) {
-    double botPoseArray[] = new double[4];
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
     return botPoseArray[3];
   }
 
   public static double getBlueBotPosePitch(String limelightHostName) {
-    double botPoseArray[] = new double[5];
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
     return botPoseArray[4];
   }
 
   public static double getBlueBotPoseYaw(String limelightHostName) {
-    double botPoseArray[] = new double[6];
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
     return botPoseArray[5];
   }
 

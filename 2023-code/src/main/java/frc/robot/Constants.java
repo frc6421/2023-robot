@@ -21,8 +21,8 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class AutoConstants {
-    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 4; // TODO update 4
-    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2; // TODO update 8
+    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 3; // TODO update 4
+    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3; // TODO update 8
 
     public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
     public static final double AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC = Math.PI;
@@ -185,9 +185,9 @@ public final class Constants {
     // Formula for calculating theoretical max velocity:
     // Motor free speed RPM / 60 * Drive reduction * Wheel diameter meters * pi
     public static final double DRIVE_REDUCTION = (14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0); // Constant for SDS MK4i Modules
-    public static final double MAX_VELOCITY_METERS_PER_SECOND = (6380.0 / 60.0) * DRIVE_REDUCTION * DriveConstants.WHEEL_CIRCUMFERENCE;
+    public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.5; //(6380.0 / 60.0) * DRIVE_REDUCTION * DriveConstants.WHEEL_CIRCUMFERENCE;
     public static final double DRIVE_VOLTAGE = 9.5; //TODO update with correct voltage
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2);
+    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = 12.2;//MAX_VELOCITY_METERS_PER_SECOND / Math.hypot(DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2, DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2);
     public static final double MAX_ANGULAR_ACCELERATION_RADIANS_PER_SECOND_SQUARED = 2 * Math.PI; //TODO test value instead of theoretical value
     public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.75;
 
@@ -348,7 +348,7 @@ public final class Constants {
 
       public static final double ARM_START_POSITION = 47.0; //Determined 02/25/23 47.0 Previously: -31.0
 
-      public static final double GRAB_FROM_SUBSTATION_ANGLE = 143.5;
+      public static final double GRAB_FROM_SUBSTATION_ANGLE = 147.5;
 
       public static final double UP_POSITION = 80;
 

@@ -164,11 +164,11 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
-        MathUtil.clamp(driverController.getLeftY() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
-        MathUtil.clamp(driverController.getLeftX() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightX() * voltageRatio * 0.5, -1.0, 1.0),
-        MathUtil.clamp(driverController.getLeftTriggerAxis() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightTriggerAxis() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, 1.0, 1.0)
+        MathUtil.clamp(driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
+        MathUtil.clamp(driverController.getLeftX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
+        MathUtil.clamp(driverController.getRightX() * 0.5, -1.0, 1.0),
+        MathUtil.clamp(driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
+        MathUtil.clamp(driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, 1.0, 1.0)
         ),
         driveSubsystem));
       

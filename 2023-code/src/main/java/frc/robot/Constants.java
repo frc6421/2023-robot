@@ -4,11 +4,8 @@
 
 package frc.robot;
 
-import java.util.HashMap;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -178,7 +175,7 @@ public final class Constants {
         / 360;
 
     public static final double DISTANCE_PER_ENCODER_COUNT = WHEEL_CIRCUMFERENCE
-        / (COUNTS_PER_ROTATION * GEAR_RATIO_MOTOR_TO_WHEEL);
+        / GEAR_RATIO_MOTOR_TO_WHEEL / COUNTS_PER_ROTATION;
 
     // Formula for calculating theoretical max velocity:
     // Motor free speed RPM / 60 * Drive reduction * Wheel diameter meters * pi
@@ -215,22 +212,34 @@ public final class Constants {
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
     public static final int FRONT_LEFT_MODULE_STEER_CAN_ID = 13;
     public static final int FRONT_LEFT_MODULE_ENCODER_CAN_ID = 13;
-    public static final double FRONT_LEFT_MODULE_ANGLE_OFFSET = -62.05; 
+    /** Competition bot */
+    //public static final double FRONT_LEFT_MODULE_ANGLE_OFFSET = -62.05; 
+    /** Practice bot */
+    public static final double FRONT_LEFT_MODULE_ANGLE_OFFSET = -171.6;
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_CAN_ID = 10;
     public static final int FRONT_RIGHT_MODULE_STEER_CAN_ID = 11;
     public static final int FRONT_RIGHT_MODULE_ENCODER_CAN_ID = 11;
-    public static final double FRONT_RIGHT_MODULE_ANGLE_OFFSET = -350.51; 
+    /** Competition bot */
+    //public static final double FRONT_RIGHT_MODULE_ANGLE_OFFSET = -350.51; 
+    /** Practice bot */
+    public static final double FRONT_RIGHT_MODULE_ANGLE_OFFSET = -137.0;
 
     public static final int BACK_LEFT_MODULE_DRIVE_CAN_ID = 16;
     public static final int BACK_LEFT_MODULE_STEER_CAN_ID = 17;
     public static final int BACK_LEFT_MODULE_ENCODER_CAN_ID = 17;
-    public static final double BACK_LEFT_MODULE_ANGLE_OFFSET = -108.2;
+    /** Competition bot */
+    //public static final double BACK_LEFT_MODULE_ANGLE_OFFSET = -108.2;
+    /** Practice bot */
+    public static final double BACK_LEFT_MODULE_ANGLE_OFFSET = -192.5;
 
     public static final int BACK_RIGHT_MODULE_DRIVE_CAN_ID = 14;
     public static final int BACK_RIGHT_MODULE_STEER_CAN_ID = 15;
     public static final int BACK_RIGHT_MODULE_ENCODER_CAN_ID = 15;
-    public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -302.43;
+    /** Competition bot */
+    //public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -302.43;
+    /** Practice bot */
+    public static final double BACK_RIGHT_MODULE_ANGLE_OFFSET = -352.5;
 
     public static final double MODULE_DRIVE_P = 0.208; // 2/23/23 SysID 0.398
     public static final double MODULE_DRIVE_I = 0;
@@ -380,8 +389,8 @@ public final class Constants {
     public static final double RED_RIGHT_GRID_CUBE_POSE_X = 0;
     public static final double RED_RIGHT_GRID_CUBE_POSE_Y = 0;
 
-    public static final double RED_SUBSTATION_POSE_X = 0;
-    public static final double RED_SUBSTATION_POSE_Y = 0;
+    public static final double RED_SUBSTATION_POSE_X = 16.18;
+    public static final double RED_SUBSTATION_POSE_Y = 6.75;
 
     public static final double BLUE_LEFT_GRID_CUBE_POSE_X = 0;
     public static final double BLUE_LEFT_GRID_CUBE_POSE_Y = 0;

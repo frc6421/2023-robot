@@ -71,9 +71,9 @@ public class SubstationVisionCommand extends CommandBase {
       yTagDistance = LimelightSubsystem.getRedBotPoseY(limelightHostName);
       yawTagAngle = LimelightSubsystem.getRedBotPoseYaw(limelightHostName);
 
-      targetXDistance = VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_OFFSET;
+      targetXDistance = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET;
       targetYDistance = VisionConstants.RED_SUBSTATION_POSE_Y;
-      targetYawAngle = 180;
+      targetYawAngle = 0;
 
       xDistanceError = xTagDistance - targetXDistance;
       yDistanceError = yTagDistance - targetYDistance;

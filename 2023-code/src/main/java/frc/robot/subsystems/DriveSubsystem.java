@@ -107,9 +107,13 @@ public class DriveSubsystem extends SubsystemBase {
       frontLeft.getModulePosition(),
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
-      backRight.getModulePosition()});
+      backRight.getModulePosition()
+      }
+    );
 
       SmartDashboard.putData("drive", this);
+
+      SmartDashboard.putNumber("X Meter", odometry.getPoseMeters().getX());
 
       SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
   }

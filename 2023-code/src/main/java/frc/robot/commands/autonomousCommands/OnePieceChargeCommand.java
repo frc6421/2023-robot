@@ -106,8 +106,8 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
                 //new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID),
                 new InstantCommand(() -> driveSubsystem.resetOdometry(overChargeStationTrajectory.getInitialPose())),
                 new ParallelDeadlineGroup(overChargeStationCommand, new ArmElevatorCommand(elevator, arm, PlaceStates.HYBRID)),
-                new InstantCommand(() -> driveSubsystem.drive(0, 0, 0, 0, 0)),
+                new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
                 ontoChargeStationCommand,
-                new InstantCommand(() -> driveSubsystem.drive(0, 0, 0, 0, 0)));
+                new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)));
     }
 }

@@ -306,7 +306,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param ySpeedInput percent input from -1 to 1 (converts to meters per sec)
    * @param rotationInput percent input from -1 to 1 (converts to radians per sec)
    */
-  public void visionDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
+  public void autoDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
     double xSpeed = xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 

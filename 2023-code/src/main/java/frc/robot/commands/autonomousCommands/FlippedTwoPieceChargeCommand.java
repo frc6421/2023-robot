@@ -32,13 +32,14 @@ import frc.robot.subsystems.GrabberSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TwoPieceChargeCommand extends SequentialCommandGroup {
+public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
   private DriveSubsystem driveSubsystem;
   private ElevatorSubsystem elevatorSubsystem;
   private ArmSubsystem armSubsystem;
   private GrabberSubsystem grabberSubsystem;
-  /** Creates a new TwoPieceChargeCommand. Scores two pieces on the high row and balances the charge station */
-  public TwoPieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, GrabberSubsystem grabber) {
+  
+  /** Creates a new FlippedTwoPieceChargeCommand. */
+  public FlippedTwoPieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, GrabberSubsystem grabber) {
     driveSubsystem = drive;
     elevatorSubsystem = elevator;
     armSubsystem = arm;
@@ -56,23 +57,23 @@ public class TwoPieceChargeCommand extends SequentialCommandGroup {
         .setKinematics(driveSubsystem.swerveKinematics)
         .setReversed(true);
 
-    // Starts at far right cone node
-    // Stage cube in far right game piece
+    // Starts at far left cone node
+    // Stage cube in far left game piece
     Trajectory firstPickUpTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-      new Pose2d(TrajectoryConstants.SECOND_CONE_NODE, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE, new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.FLIPPED_SECOND_CONE_NODE, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE, new Rotation2d(0))
     ), forwardConfig);
 
     // Return to score cube next to cone
     Trajectory firstScoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-      new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.CUBE_NODE, new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE, new Rotation2d(0))
     ), reverseConfig);
 
     // Drives on charge station
     Trajectory chargeStationTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-      new Pose2d(TrajectoryConstants.CUBE_NODE, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.CENTER_OF_CHARGE_STATION, new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_CENTER_OF_CHARGE_STATION, new Rotation2d(0))
     ), forwardConfig);
 
     var thetaController = new ProfiledPIDController(
@@ -110,7 +111,7 @@ public class TwoPieceChargeCommand extends SequentialCommandGroup {
                 holonomicDriveController,
                 driveSubsystem::autoSetModuleStates,
                 driveSubsystem);
-                
+
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(

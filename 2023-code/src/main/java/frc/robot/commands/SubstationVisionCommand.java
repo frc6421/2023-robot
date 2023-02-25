@@ -102,7 +102,7 @@ public class SubstationVisionCommand extends CommandBase {
     yPercentAdjust = MathUtil.clamp(yPercentAdjust, -1, 1);
     yawPercentAdjust = MathUtil.clamp(yawPercentAdjust, -1, 1);
 
-    driveSubsystem.visionDrive(-xPercentAdjust, -yPercentAdjust, 0);
+    driveSubsystem.autoDrive(-xPercentAdjust, -yPercentAdjust, 0);
 
   }
 
@@ -111,7 +111,7 @@ public class SubstationVisionCommand extends CommandBase {
   public void end(boolean interrupted) {
     System.out.println("Entered Substation End");
 
-    driveSubsystem.visionDrive(0, 0, 0);
+    driveSubsystem.autoDrive(0, 0, 0);
   }
 
   // Returns true when the command should end.

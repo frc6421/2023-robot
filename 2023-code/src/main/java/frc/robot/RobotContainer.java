@@ -317,7 +317,7 @@ public class RobotContainer {
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.FLOOR)));
 
         //EXPERIMENTAL UNTIL TESTED\\
-    copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.release())
+    copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.grab())
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
         .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP))
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.TRANSFER))

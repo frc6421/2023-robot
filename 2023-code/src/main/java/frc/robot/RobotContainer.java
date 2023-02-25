@@ -161,11 +161,11 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
-        MathUtil.clamp(driverController.getLeftY() * voltageRatio, -1.0, 1.0),
-        MathUtil.clamp(driverController.getLeftX() * voltageRatio, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightX() * voltageRatio, -1.0, 1.0),
-        MathUtil.clamp(driverController.getLeftTriggerAxis() * voltageRatio, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightTriggerAxis() * voltageRatio, 1.0, 1.0)
+        MathUtil.clamp(driverController.getLeftY() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
+        MathUtil.clamp(driverController.getLeftX() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
+        MathUtil.clamp(driverController.getRightX() * voltageRatio * 0.5, -1.0, 1.0),
+        MathUtil.clamp(driverController.getLeftTriggerAxis() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
+        MathUtil.clamp(driverController.getRightTriggerAxis() * voltageRatio * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, 1.0, 1.0)
         ),
         driveSubsystem));
       
@@ -173,11 +173,11 @@ public class RobotContainer {
     // elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
     // );
     
-      // armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentPosition(copilotController.getRightY()), armSubsystem));
+      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentPosition(copilotController.getRightY()), armSubsystem));
 
       // elevatorSubsystem.setDefaultCommand(new RunCommand(() -> elevatorSubsystem.setPercentPosition(copilotController.getLeftY()), elevatorSubsystem));
     
-      intakeSubsystem.setDefaultCommand(new RunCommand(() -> intakeSubsystem.setPercentPosition(copilotController.getRightY()), intakeSubsystem));
+      intakeSubsystem.setDefaultCommand(new RunCommand(() -> intakeSubsystem.setPercentPosition(copilotController.getLeftY()), intakeSubsystem));
       //intakeSubsystem.setDefaultCommand(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(copilotController.getRightY()), intakeSubsystem));
       
       intakeTab = Shuffleboard.getTab("Intake Tab");
@@ -282,7 +282,7 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
         .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP)));
     // Reverse intake for hybrid
-    driverController.b().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR)
+    driverController.b().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.HYBRID)
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-1), intakeSubsystem)));
     // Intake floor pickup
     driverController.a().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR)

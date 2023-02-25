@@ -130,7 +130,9 @@ public class DriveSubsystem extends SubsystemBase {
       frontLeft.getModulePosition(),
       frontRight.getModulePosition(),
       backLeft.getModulePosition(),
-      backRight.getModulePosition()});
+      backRight.getModulePosition()
+      }
+    );
 
       SmartDashboard.putData("drive", this);
 
@@ -138,6 +140,9 @@ public class DriveSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("Front Right Speed", frontRight.getDriveMotorVelocity());
       SmartDashboard.putNumber("Back Left Speed", backLeft.getDriveMotorVelocity());
       SmartDashboard.putNumber("Back Right Speed", backRight.getDriveMotorVelocity());
+      SmartDashboard.putNumber("X Meter", odometry.getPoseMeters().getX());
+
+      SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
   }
 
   // ODOMETRY METHODS \\

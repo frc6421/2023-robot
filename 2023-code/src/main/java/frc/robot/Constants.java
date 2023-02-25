@@ -318,7 +318,7 @@ public final class Constants {
       public static final double CUBE_MID_MAX_ANGLE = 155.3;
       public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
 
-      public static final double ARM_START_POSITION = -31.0; //Determined 02/18/23 -31.0
+      public static final double ARM_START_POSITION = 47.0; //Determined 02/25/23 47.0 Previously: -31.0
 
       public static final double GRAB_FROM_SUBSTATION_ANGLE = 143.5;
       
@@ -338,19 +338,38 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
-    public static final int LEFT_INTAKE_MOTOR_ID = 20;
-    public static final int RIGHT_INTAKE_MOTOR_ID = 21; 
+    public static final int ARM_INTAKE_MOTOR_ID = 20;
+    public static final int GRAB_INTAKE_MOTOR_ID = 21; 
 
     //TODO confer with other programmers for CAN and pneumatics
     public static final int INTAKE_PISTON_FORWARD_CHANNEL = 0;
     public static final int INTAKE_PISTON_REVERSE_CHANNEL = 1;
+
+    public static final double INTAKE_MOTOR_SPEED = 0; //TODO Value needs(Needs to be a value between 0 and 1)
+
+    public static final double INTAKE_FLOOR_ANGLE = -15;
+    // public static final double INTAKE_SWAP_ANGLE = 45; //TODO Value needs to be updated
+    public static final double INTAKE_UP_ANGLE = 90;
+
+    public static final float INTAKE_BOTTOM_SOFT_LIMIT = -15f;
+    public static final float INTAKE_UP_SOFT_LIMIT = 90f;
+
+    public static final double INTAKE_ARM_P = 0.015; //TODO Value needs to be updated
+    public static final double INTAKE_ARM_I = 0; //TODO Value needs to be updated
+    public static final double INTAKE_ARM_D = 0; //TODO Value needs to be updated
+    public static final double INTAKE_ARM_FF = 0; //TODO Value needs to be updated
+
+    public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
+
+    public static final double MAX_ARM_GRAVITY_FF = 0.0405;
+
+    public static final double INTAKE_ARM_SET_POS_CONVERSION_FACTOR = 1.6; //TODO Value needs to be updated
   }
 
   public static class GrabberConstants {
     public static final int FORWARD_CHANNEL = 2;
     public static final int REVERSE_CHANNEL = 3;
   }
-
   public class VisionConstants {
     // All distances are in meters \\
     // Left and right are relative to the driver's perspective in the driver station \\

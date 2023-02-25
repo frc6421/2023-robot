@@ -288,18 +288,18 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     // turn to angle buttons
-    if (driverController.y().getAsBoolean()) {
-      rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 0.0);
-    } 
-    else if (driverController.b().getAsBoolean()) {
-      rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 90.0);
-    } 
-    else if (driverController.a().getAsBoolean()) {
-      rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 180.0);
-    } 
-    else if (driverController.x().getAsBoolean()) {
-      rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 270.0);
-    }
+    // if (driverController.y().getAsBoolean()) {
+    //   rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 0.0);
+    // } 
+    // else if (driverController.b().getAsBoolean()) {
+    //   rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 90.0);
+    // } 
+    // else if (driverController.a().getAsBoolean()) {
+    //   rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 180.0);
+    // } 
+    // else if (driverController.x().getAsBoolean()) {
+    //   rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 270.0);
+    // }
     // xSpeed = driveFeedForward.calculate(xSpeed);
     // ySpeed = driveFeedForward.calculate(ySpeed);
     // rotation = driveFeedForward.calculate(rotation);

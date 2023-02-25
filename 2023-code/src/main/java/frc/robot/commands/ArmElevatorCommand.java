@@ -35,8 +35,6 @@ public class ArmElevatorCommand extends CommandBase {
   TrapezoidProfile armProfile;
   TrapezoidProfile elevatorProfile;
   
-
-
   public enum PlaceStates {
     FLOOR,
     INTAKE,

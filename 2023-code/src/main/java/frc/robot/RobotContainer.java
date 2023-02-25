@@ -19,8 +19,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.commands.ArmElevatorCommand;
+import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.SubstationGamePieceVisionCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
+import frc.robot.commands.IntakeArmCommand.IntakePlaceStates;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.BlinkinSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -86,7 +88,8 @@ public class RobotContainer {
   private GenericEntry armSetPTestEntry;
 
   private ShuffleboardTab armTab;
-  private ShuffleboardTab intakeGrabberTab;
+  private ShuffleboardTab intakeTab;
+  private GenericEntry intakeSetFF;
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
   //private final ArmElevatorCommand armElevatorCommand;
@@ -172,10 +175,18 @@ public class RobotContainer {
     // elevatorSubsystem.goToPosition(-driverController.getRightY()), elevatorSubsystem)
     // );
     
-      armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentPosition(copilotController.getRightY()), armSubsystem));
+      // armSubsystem.setDefaultCommand(new RunCommand(() -> armSubsystem.setPercentPosition(copilotController.getRightY()), armSubsystem));
 
-      elevatorSubsystem.setDefaultCommand(new RunCommand(() -> elevatorSubsystem.setPercentPosition(copilotController.getLeftY()), elevatorSubsystem));
+      // elevatorSubsystem.setDefaultCommand(new RunCommand(() -> elevatorSubsystem.setPercentPosition(copilotController.getLeftY()), elevatorSubsystem));
     
+      intakeSubsystem.setDefaultCommand(new RunCommand(() -> intakeSubsystem.setPercentPosition(copilotController.getRightY()), intakeSubsystem));
+      //intakeSubsystem.setDefaultCommand(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(copilotController.getRightY()), intakeSubsystem));
+      
+      intakeTab = Shuffleboard.getTab("Intake Tab");
+
+      intakeSetFF = intakeTab.add("Set Intake Arm FF: ", 0)
+        .getEntry();
+      
       armTab = Shuffleboard.getTab("Arm Tab");
         
       armSetFFTestEntry = armTab.add("Set Arm FF: ", 0) 
@@ -268,16 +279,22 @@ public class RobotContainer {
 
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 
+    driverController.x().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR));
+    driverController.y().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP));
+    //driverController.a().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.SWAP));
+    //driverController.b().whileTrue(new RunCommand(() -> intakeSubsystem.setIntakeArmAngleWithGrav(intakeSetFF.getDouble(0)), intakeSubsystem));
+
     // driverController.y().onTrue(
     //   new InstantCommand(() -> armSubsystem.setSetPoint(armSubsystem.getArmDegreePosition() + 5))
     //   .andThen(new RunCommand(() -> armSubsystem.setPosition(armSubsystem.getSetPoint()), armSubsystem))
     //   .andThen(new InstantCommand(() -> grabberSubsystem.toggleGrabber(), grabberSubsystem)));
 
+    //copilotController.start().whileTrue(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(copilotController.getRightY()), intakeSubsystem));
     copilotController.povLeft().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
     copilotController.povRight().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
 
     copilotController.rightBumper().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP));
-    copilotController.leftBumper().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID));
+    //copilotController.leftBumper().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID));
     copilotController.y().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH));
     copilotController.b().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.MID));
     copilotController.x().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.SUBSTATION));

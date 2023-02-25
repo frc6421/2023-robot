@@ -8,31 +8,23 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ArmConstants.ArmAngleConstants;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-public class ArmElevatorCommand extends CommandBase {
+public class ElevatorCommand extends CommandBase {
   /** Creates a new ArmElevatorCommand. */
   ElevatorSubsystem elevator;
-  ArmSubsystem arm;
   Timer timer = new Timer();
-
-  
-  
 
   private final TrapezoidProfile.Constraints elevatorConstraints =
       new TrapezoidProfile.Constraints(4, 2);
   private TrapezoidProfile.State elevatorGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State elevatorSetpoint = new TrapezoidProfile.State();
-
-  private final TrapezoidProfile.Constraints armConstraints =
-      new TrapezoidProfile.Constraints(100, 100);
-  private TrapezoidProfile.State armGoal = new TrapezoidProfile.State();
-  private TrapezoidProfile.State armSetpoint = new TrapezoidProfile.State();
   
-  TrapezoidProfile armProfile;
   TrapezoidProfile elevatorProfile;
   
   public enum PlaceStates {
@@ -47,17 +39,12 @@ public class ArmElevatorCommand extends CommandBase {
   }
   private PlaceStates placeState;
 
-  public ArmElevatorCommand(ElevatorSubsystem elevatorSubsystem, ArmSubsystem armSubsystem, PlaceStates state) {
+  public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, PlaceStates state) {
     // Use addRequirements() here to declare subsystem dependencies.
-      addRequirements(elevatorSubsystem, armSubsystem);
+      addRequirements(elevatorSubsystem);
       placeState = state;
       
-      
-
       elevator = elevatorSubsystem;
-      arm = armSubsystem;
-
-      arm.setSetPoint(arm.getArmDegreePosition());
   }
 
   // Called when the command is initially scheduled.
@@ -70,49 +57,40 @@ public class ArmElevatorCommand extends CommandBase {
     switch(placeState)
     {
       case FLOOR:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.FLOOR_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         
         break;
 
       case INTAKE:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.GRAB_FROM_INTAKE_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 
       case MID:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_MID_TOP_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 
       case HIGH:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_HIGH_TOP_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS, 0);
         break;
 
       case SUBSTATION:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.GRAB_FROM_SUBSTATION_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_SUBSTATION_LENGTH, 0);
         break;
       
       case UP:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.UP_POSITION, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 
       case HYBRID:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.GRAB_FROM_INTAKE_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 
       case TRANSFER:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.TRANSFER_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_TRANSFER_LENGTH, 0);
         break;
 
     }
 
-    armProfile = new TrapezoidProfile(armConstraints, armGoal, new TrapezoidProfile.State(arm.getArmDegreePosition() - 6, 0));
     elevatorProfile = new TrapezoidProfile(elevatorConstraints, elevatorGoal, new TrapezoidProfile.State(ElevatorSubsystem.getElevatorEncoderPosition(), 0));
 
   }
@@ -122,12 +100,9 @@ public class ArmElevatorCommand extends CommandBase {
   public void execute() 
 
   {
-    armSetpoint = armProfile.calculate(timer.get());
     elevatorSetpoint = elevatorProfile.calculate(timer.get());
     
     elevator.setElevatorPosition(elevatorSetpoint.position);
-    arm.setPosition(armSetpoint.position);
-    SmartDashboard.putNumber("Arm Goal", armSetpoint.position);
     SmartDashboard.putNumber("Elevator Goal", elevatorSetpoint.position);
   }
 
@@ -135,8 +110,6 @@ public class ArmElevatorCommand extends CommandBase {
   @Override
   public void end(boolean interrupted) 
   {
-    arm.setPosition(armSetpoint.position);
-    arm.setSetPoint(armSetpoint.position);
     elevator.setElevatorPosition(elevatorSetpoint.position);
     elevator.setSetPoint(elevatorSetpoint.position);
   }
@@ -144,6 +117,6 @@ public class ArmElevatorCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ((timer.get() > armProfile.totalTime()) && (timer.get() > elevatorProfile.totalTime()));
+    return (timer.get() > elevatorProfile.totalTime());
   }
 }

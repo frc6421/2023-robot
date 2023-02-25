@@ -15,6 +15,9 @@ import frc.robot.commands.autonomousCommands.TwoPieceCommand;
 import frc.robot.commands.SubstationVisionCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+
+import java.time.Instant;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -274,8 +277,17 @@ public class RobotContainer {
 
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 
-    driverController.x().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR));
-    driverController.y().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP));
+    // Arm up and intake turned off then intake in
+    driverController.y().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP)
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
+        .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP)));
+    // Reverse intake for hybrid
+    driverController.b().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR)
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-1), intakeSubsystem)));
+    // Intake floor pickup
+    driverController.a().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR)
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1), intakeSubsystem)));
+
     //driverController.a().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.SWAP));
     //driverController.b().whileTrue(new RunCommand(() -> intakeSubsystem.setIntakeArmAngleWithGrav(intakeSetFF.getDouble(0)), intakeSubsystem));
 
@@ -283,7 +295,7 @@ public class RobotContainer {
     //   new InstantCommand(() -> armSubsystem.setSetPoint(armSubsystem.getArmDegreePosition() + 5))
     //   .andThen(new RunCommand(() -> armSubsystem.setPosition(armSubsystem.getSetPoint()), armSubsystem))
     //   .andThen(new InstantCommand(() -> grabberSubsystem.toggleGrabber(), grabberSubsystem)));
-    driverController.a().whileTrue(new ArmDownThenReleaseCommand(armSubsystem, grabberSubsystem));
+    driverController.x().whileTrue(new ArmDownThenReleaseCommand(armSubsystem, grabberSubsystem));
 
     //copilotController.start().whileTrue(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(copilotController.getRightY()), intakeSubsystem));
     copilotController.povLeft().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));

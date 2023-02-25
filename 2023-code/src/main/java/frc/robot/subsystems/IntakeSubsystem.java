@@ -62,7 +62,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.setInverted(false);
     intakeArmMotor.setInverted(false);
 
-    intakeMotor.setSmartCurrentLimit(40);
+    intakeMotor.setSmartCurrentLimit(60);
     intakeArmMotor.setSmartCurrentLimit(50);
 
     intakeArmPIDController = intakeArmMotor.getPIDController();

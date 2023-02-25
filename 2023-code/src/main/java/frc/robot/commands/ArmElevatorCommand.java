@@ -97,7 +97,7 @@ public class ArmElevatorCommand extends CommandBase {
         break;
       
       case UP:
-        armGoal = new TrapezoidProfile.State(95, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.UP_POSITION, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 

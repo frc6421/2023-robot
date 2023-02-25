@@ -334,6 +334,8 @@ public final class Constants {
       public static final double ARM_START_POSITION = 47.0; //Determined 02/25/23 47.0 Previously: -31.0
 
       public static final double GRAB_FROM_SUBSTATION_ANGLE = 143.5;
+
+      public static final double UP_POSITION = 80;
       
       
       //TODO: Not final angle

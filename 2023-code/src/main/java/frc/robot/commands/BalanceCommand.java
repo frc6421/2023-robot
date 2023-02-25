@@ -22,10 +22,10 @@ public class BalanceCommand extends CommandBase {
   private final TrapezoidProfile.Constraints constraints;
   private final ProfiledPIDController profiledPIDController;
   private double currentGyroAngle; 
-  private double gyroPValue = .03;
+  private double gyroPValue = .015;
   private double allowableAngleError = 1.5;
   private double angleAdjust;
-  private SwerveModuleState[] states;
+  private SwerveModuleState[] states = new SwerveModuleState[4];
 
   /** Creates a new BalanceCommand. */
   public BalanceCommand(DriveSubsystem drive) {
@@ -58,14 +58,14 @@ public class BalanceCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    states = driveSubsystem.setWheelsIn();
+    //states = driveSubsystem.setWheelsIn();
     driveSubsystem.setModuleStates(states);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !DriverStation.isAutonomousEnabled();
+    return false;
 
   }
 }

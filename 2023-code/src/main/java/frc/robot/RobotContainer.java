@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.commands.ArmDownThenReleaseCommand;
 import frc.robot.commands.ArmElevatorCommand;
+import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.SubstationGamePieceVisionCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
@@ -295,8 +296,8 @@ public class RobotContainer {
     //   new InstantCommand(() -> armSubsystem.setSetPoint(armSubsystem.getArmDegreePosition() + 5))
     //   .andThen(new RunCommand(() -> armSubsystem.setPosition(armSubsystem.getSetPoint()), armSubsystem))
     //   .andThen(new InstantCommand(() -> grabberSubsystem.toggleGrabber(), grabberSubsystem)));
-    driverController.x().whileTrue(new ArmDownThenReleaseCommand(armSubsystem, grabberSubsystem));
-
+   // driverController.x().whileTrue(new ArmDownThenReleaseCommand(armSubsystem, grabberSubsystem));
+    driverController.x().whileTrue(new BalanceCommand(driveSubsystem));
     //copilotController.start().whileTrue(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(copilotController.getRightY()), intakeSubsystem));
     copilotController.povLeft().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
     copilotController.povRight().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));

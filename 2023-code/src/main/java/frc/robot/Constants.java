@@ -21,8 +21,8 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class AutoConstants {
-    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 3; // TODO update 4
-    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1; // TODO update 8
+    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 4; // TODO update 4
+    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 2; // TODO update 8
 
     public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
     public static final double AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC = Math.PI;
@@ -82,7 +82,7 @@ public final class Constants {
 
       public static final Translation2d MID_POINT_OF_PIECES_AND_CHARGE_STATION = new Translation2d(
           Units.inchesToMeters(139.32),
-          Units.inchesToMeters(107.39));
+          Units.inchesToMeters(214.78)); //107.39
       public static final Translation2d CENTER_OF_CHARGE_STATION = new Translation2d(Units.inchesToMeters(96.75),
           Units.inchesToMeters(107.39));
 

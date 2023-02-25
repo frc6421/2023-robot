@@ -279,10 +279,10 @@ public class RobotContainer {
 
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 
-    // Arm up and intake turned off then intake in
+    // Arm up and intake turned low speed then intake in
     driverController.y().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.UP)
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.UP))
-        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.5)))
         .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP)));
     // Reverse intake for hybrid
     driverController.b().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.HYBRID)

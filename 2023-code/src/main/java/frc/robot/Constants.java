@@ -133,6 +133,11 @@ public final class Constants {
     }
   }
 
+  public static class ChargeStationConstants {
+    public static final double CHARGE_MAX_VELOCITY = 1; //TODO update with actual values
+    public static final double CHARGE_MAX_ACCELERATION = .5; //TODO update with actual values
+  }
+
   public static class BlinkinConstants {
     public static final double BLINKIN_RED = 0.61;
     public static final double BLINKIN_BLUE = 0.87;

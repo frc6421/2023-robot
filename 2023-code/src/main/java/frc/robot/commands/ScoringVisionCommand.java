@@ -71,8 +71,6 @@ public class ScoringVisionCommand extends CommandBase {
   @Override
   public void initialize() {
     timer = new Timer();
-    timer.reset();
-    timer.start();
 
     if (DriverStation.getAlliance() == Alliance.Red) {
       currentRobotPose = LimelightHelpers.getBotPose2d_wpiRed(limelightHostName);
@@ -100,9 +98,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             } else if (!RobotContainer.isLeftCone) {
               targetRobotPose = new Pose2d(
                   (VisionConstants.RED_LEFT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
@@ -110,9 +105,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             }
           } else if (BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET) {
             targetRobotPose = new Pose2d(
@@ -121,9 +113,6 @@ public class ScoringVisionCommand extends CommandBase {
                 (VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y),
                 new Rotation2d(0));
 
-            scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                currentRobotPose,
-                targetRobotPose), config);
           }
           break;
         // Middle grid (from driver perspective) on red alliance
@@ -136,9 +125,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.RED_CENTER_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             } else if (!RobotContainer.isLeftCone) {
               targetRobotPose = new Pose2d(
                   (VisionConstants.RED_CENTER_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
@@ -146,9 +132,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.RED_CENTER_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             }
           } else if (BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET) {
             targetRobotPose = new Pose2d(
@@ -157,9 +140,6 @@ public class ScoringVisionCommand extends CommandBase {
                 (VisionConstants.RED_CENTER_GRID_CUBE_POSE_Y),
                 new Rotation2d(0));
 
-            scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                currentRobotPose,
-                targetRobotPose), config);
           }
           break;
         // Right grid (from driver perspective) on red alliance
@@ -172,9 +152,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.RED_RIGHT_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             } else if (!RobotContainer.isLeftCone) {
               targetRobotPose = new Pose2d(
                   (VisionConstants.RED_RIGHT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
@@ -182,9 +159,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.RED_RIGHT_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             }
           } else if (BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET) {
             targetRobotPose = new Pose2d(
@@ -193,9 +167,6 @@ public class ScoringVisionCommand extends CommandBase {
                 (VisionConstants.RED_RIGHT_GRID_CUBE_POSE_Y),
                 new Rotation2d(0));
 
-            scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                currentRobotPose,
-                targetRobotPose), config);
           }
           break;
       }
@@ -212,9 +183,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             } else if (!RobotContainer.isLeftCone) {
               targetRobotPose = new Pose2d(
                   (VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
@@ -222,9 +190,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             }
           } else if (BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET) {
             targetRobotPose = new Pose2d(
@@ -233,9 +198,6 @@ public class ScoringVisionCommand extends CommandBase {
                 (VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_Y),
                 new Rotation2d(0));
 
-            scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                currentRobotPose,
-                targetRobotPose), config);
           }
           break;
         // Middle grid (from driver perspective) on blue alliance
@@ -248,9 +210,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             } else if (!RobotContainer.isLeftCone) {
               targetRobotPose = new Pose2d(
                   (VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
@@ -258,9 +217,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             }
           } else if (BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET) {
             targetRobotPose = new Pose2d(
@@ -269,9 +225,6 @@ public class ScoringVisionCommand extends CommandBase {
                 (VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_Y),
                 new Rotation2d(0));
 
-            scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                currentRobotPose,
-                targetRobotPose), config);
           }
           break;
         // Right grid (from driver perspective) on blue alliance
@@ -284,9 +237,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             } else if (!RobotContainer.isLeftCone) {
               targetRobotPose = new Pose2d(
                   (VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
@@ -294,9 +244,6 @@ public class ScoringVisionCommand extends CommandBase {
                   (VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET),
                   new Rotation2d(0));
 
-              scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                  currentRobotPose,
-                  targetRobotPose), config);
             }
           } else if (BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET) {
             targetRobotPose = new Pose2d(
@@ -304,14 +251,14 @@ public class ScoringVisionCommand extends CommandBase {
                     + VisionConstants.GRID_OFFSET),
                 (VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_Y),
                 new Rotation2d(0));
-
-            scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                currentRobotPose,
-                targetRobotPose), config);
           }
           break;
       }
     }
+
+    scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
+                currentRobotPose,
+                targetRobotPose), config);
 
     thetaController = new ProfiledPIDController(
         AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,
@@ -332,6 +279,9 @@ public class ScoringVisionCommand extends CommandBase {
         holonomicDriveController,
         driveSubsystem::autoSetModuleStates,
         driveSubsystem);
+
+    timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

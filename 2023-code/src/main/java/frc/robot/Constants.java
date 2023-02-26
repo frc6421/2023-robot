@@ -278,7 +278,7 @@ public final class Constants {
     public static final double ELEVATOR_DEFULT_NERF = 0.01;
 
     public static final double ELEVATOR_SUBSTATION_LENGTH = 0.27;
-    public static final double ELEVATOR_TRANSFER_LENGTH = 0.46;
+    public static final double ELEVATOR_TRANSFER_LENGTH = 0.489;
 
     /**
      * In meters
@@ -336,7 +336,7 @@ public final class Constants {
       public static final double CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
       public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
 
-      public static final double ARM_START_POSITION = 55; //Determined 02/25/23 47.0 Previously: -31.0
+      public static final double ARM_START_POSITION = 47; //Determined 02/25/23 47.0 Previously: -31.0
       public static final double GRAB_FROM_SUBSTATION_ANGLE = 148;
       public static final double TRANSFER_ANGLE = -5;
 
@@ -369,9 +369,9 @@ public final class Constants {
 
     public static final double INTAKE_FLOOR_ANGLE = -15;
     // public static final double INTAKE_SWAP_ANGLE = 45; //TODO Value needs to be updated
-    public static final double INTAKE_DRIVE_ANGLE = 90.5;
+    public static final double INTAKE_DRIVE_ANGLE = 87.5; //90.5
     public static final double INTAKE_HYBRID_ANGLE = -5;
-    public static final double INTAKE_START_POSITION = 95;
+    public static final double INTAKE_START_POSITION = 90;
 
     public static final float INTAKE_BOTTOM_SOFT_LIMIT = -15f;
     public static final float INTAKE_UP_SOFT_LIMIT = 98f;

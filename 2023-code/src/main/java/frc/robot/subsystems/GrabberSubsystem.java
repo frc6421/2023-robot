@@ -19,7 +19,7 @@ public class GrabberSubsystem extends SubsystemBase {
     
     //Constructs the double solenoid for the grabber
     grabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.FORWARD_CHANNEL, GrabberConstants.REVERSE_CHANNEL);
-    release(); //TODO see if we want to start grabbed or released for toggle to work
+    grab(); //TODO see if we want to start grabbed or released for toggle to work
   }
 
 

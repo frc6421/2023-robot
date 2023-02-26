@@ -81,12 +81,12 @@ public class ArmElevatorCommand extends CommandBase {
         break;
 
       case MID:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_MID_TOP_ANGLE, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_MID_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 
       case HIGH:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_HIGH_TOP_ANGLE, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_HIGH_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS, 0);
         break;
 
@@ -96,7 +96,7 @@ public class ArmElevatorCommand extends CommandBase {
         break;
       
       case UP:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.UP_POSITION, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.DRIVE_ANGLE, 0);
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 

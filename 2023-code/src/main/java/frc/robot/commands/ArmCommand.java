@@ -25,13 +25,12 @@ public class ArmCommand extends CommandBase {
   
   public enum PlaceStates {
     FLOOR,
-    INTAKE,
     MID,
     HIGH,
     SUBSTATION,
-    UP,
     HYBRID, 
-    TRANSFER
+    TRANSFER,
+    DRIVE
   }
   private PlaceStates placeState;
 
@@ -58,32 +57,28 @@ public class ArmCommand extends CommandBase {
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.FLOOR_ANGLE, 0);
         break;
 
-      case INTAKE:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.GRAB_FROM_INTAKE_ANGLE, 0);
-        break;
-
       case MID:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_MID_TOP_ANGLE, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_MID_ANGLE, 0);
         break;
 
       case HIGH:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_HIGH_TOP_ANGLE, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_HIGH_ANGLE, 0);
         break;
 
       case SUBSTATION:
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.GRAB_FROM_SUBSTATION_ANGLE, 0);
         break;
-      
-      case UP:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.UP_POSITION, 0);
-        break;
 
       case HYBRID:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.GRAB_FROM_INTAKE_ANGLE, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.DRIVE_ANGLE, 0);
         break;
 
       case TRANSFER:
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.TRANSFER_ANGLE, 0);
+        break;
+
+      case DRIVE:
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.DRIVE_ANGLE, 0);
         break;
 
     }

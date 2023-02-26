@@ -69,7 +69,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     intakeArmPIDController.setFeedbackDevice(intakeArmEncoder);
 
-    intakeArmEncoder.setPosition(IntakeConstants.INTAKE_UP_ANGLE);
+    intakeArmEncoder.setPosition(IntakeConstants.INTAKE_START_POSITION);
 
     intakeArmMotor.setSoftLimit(SoftLimitDirection.kForward, IntakeConstants.INTAKE_UP_SOFT_LIMIT);
     intakeArmMotor.setSoftLimit(SoftLimitDirection.kReverse, IntakeConstants.INTAKE_BOTTOM_SOFT_LIMIT);
@@ -158,7 +158,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
       setPoint = change + setPoint;
 
-      setPoint = MathUtil.clamp(setPoint, (double) IntakeConstants.INTAKE_FLOOR_ANGLE, IntakeConstants.INTAKE_UP_ANGLE);
+      setPoint = MathUtil.clamp(setPoint, (double) IntakeConstants.INTAKE_FLOOR_ANGLE, IntakeConstants.INTAKE_DRIVE_ANGLE);
       
       setPosition(setPoint);
   }

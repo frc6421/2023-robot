@@ -281,13 +281,13 @@ public class RobotContainer {
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 
     // Arm up and intake turned low speed then intake in
-    driverController.y().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.UP)
-        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.UP))
+    driverController.y().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE)
+        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.5)))
-        .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP)));
+        .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.DRIVE)));
     // Reverse intake for hybrid
     driverController.b().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.HYBRID)
-        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-1), intakeSubsystem)));
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.5), intakeSubsystem)));
     // Intake floor pickup
     driverController.a().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR)
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1), intakeSubsystem)));
@@ -305,8 +305,8 @@ public class RobotContainer {
     copilotController.povLeft().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
     copilotController.povRight().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
 
-    copilotController.rightBumper().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.UP)
-        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.UP)));
+    copilotController.rightBumper().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE)
+        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)));
     //copilotController.leftBumper().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID));
     copilotController.y().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH)
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)));
@@ -318,9 +318,9 @@ public class RobotContainer {
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.FLOOR)));
 
         //EXPERIMENTAL UNTIL TESTED\\
-    copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.grab())
+    copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.release())
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
-        .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP))
+        .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.DRIVE))
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.TRANSFER))
         .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.TRANSFER)));
   }

@@ -29,13 +29,12 @@ public class ElevatorCommand extends CommandBase {
   
   public enum PlaceStates {
     FLOOR,
-    INTAKE,
     MID,
     HIGH,
     SUBSTATION,
-    UP,
     HYBRID, 
-    TRANSFER
+    TRANSFER,
+    DRIVE
   }
   private PlaceStates placeState;
 
@@ -61,10 +60,6 @@ public class ElevatorCommand extends CommandBase {
         
         break;
 
-      case INTAKE:
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
-        break;
-
       case MID:
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
@@ -76,19 +71,18 @@ public class ElevatorCommand extends CommandBase {
       case SUBSTATION:
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_SUBSTATION_LENGTH, 0);
         break;
-      
-      case UP:
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
-        break;
 
       case HYBRID:
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
 
       case TRANSFER:
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_TRANSFER_LENGTH, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS, 0);
         break;
 
+      case DRIVE:
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
+        break;
     }
 
     elevatorProfile = new TrapezoidProfile(elevatorConstraints, elevatorGoal, new TrapezoidProfile.State(ElevatorSubsystem.getElevatorEncoderPosition(), 0));

@@ -119,6 +119,9 @@ public class RobotContainer {
   //Creates a double that takes the desired drive voltage and divides it by the current voltage
   private double voltageRatio;
 
+  // Boolean to determine if we should go to the left or right cone node
+  public static boolean isLeftCone;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -305,6 +308,9 @@ public class RobotContainer {
     copilotController.povLeft().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
     copilotController.povRight().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
 
+    copilotController.leftTrigger(0.2).onTrue(new InstantCommand(() -> isLeftCone = true));
+    copilotController.rightTrigger(0.2).onTrue(new InstantCommand(() -> isLeftCone = false));
+
     copilotController.rightBumper().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.UP)
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.UP)));
     //copilotController.leftBumper().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID));
@@ -318,6 +324,7 @@ public class RobotContainer {
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.FLOOR)));
 
         //EXPERIMENTAL UNTIL TESTED\\
+        // Transfer button
     copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.grab())
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
         .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.UP))

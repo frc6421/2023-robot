@@ -408,35 +408,44 @@ public final class Constants {
     // Left and right are relative to the driver's perspective in the driver station \\
 
     /** Y offset from center of the cube AprilTag */
-    public static final double LEFT_CONE_OFFSET = -0.5715;
-    /** Y offset from center of the cube AprilTag */
-    public static final double RIGHT_CONE_OFFSET = 0.5715;
+    public static final double CONE_OFFSET = 0.5715;
     /** X offset from substation AprilTag */
     public static final double SUBSTATION_OFFSET = 1.08;
 
+    /** X offset from AprilTag to end of grids */
+    public static final double GRID_OFFSET = 0.36;
+
     public static final double SUBSTATION_GAME_PIECE_Y_ANGLE = 0;
 
-    public static final double RED_LEFT_GRID_CUBE_POSE_X = 0;
-    public static final double RED_LEFT_GRID_CUBE_POSE_Y = 0;
+    // Tag 1
+    public static final double RED_LEFT_GRID_CUBE_POSE_X = 1.03;
+    public static final double RED_LEFT_GRID_CUBE_POSE_Y = 6.94;
 
-    public static final double RED_CENTER_GRID_CUBE_POSE_X = 0;
-    public static final double RED_CENTER_GRID_CUBE_POSE_Y = 0;
+    // Tag 2
+    public static final double RED_CENTER_GRID_CUBE_POSE_X = 1.03;
+    public static final double RED_CENTER_GRID_CUBE_POSE_Y = 5.27;
 
-    public static final double RED_RIGHT_GRID_CUBE_POSE_X = 0;
-    public static final double RED_RIGHT_GRID_CUBE_POSE_Y = 0;
+    // Tag 3
+    public static final double RED_RIGHT_GRID_CUBE_POSE_X = 1.03;
+    public static final double RED_RIGHT_GRID_CUBE_POSE_Y = 3.59;
 
+    // Tag 5
     public static final double RED_SUBSTATION_POSE_X = 16.18;
-    public static final double RED_SUBSTATION_POSE_Y = 1.27;
+    public static final double RED_SUBSTATION_POSE_Y = 1.26;
 
-    public static final double BLUE_LEFT_GRID_CUBE_POSE_X = 0;
-    public static final double BLUE_LEFT_GRID_CUBE_POSE_Y = 0;
+    // Tag 6
+    public static final double BLUE_LEFT_GRID_CUBE_POSE_X = 1.03;
+    public static final double BLUE_LEFT_GRID_CUBE_POSE_Y = 4.42;
 
-    public static final double BLUE_CENTER_GRID_CUBE_POSE_X = 0;
-    public static final double BLUE_CENTER_GRID_CUBE_POSE_Y = 0;
+    // Tag 7
+    public static final double BLUE_CENTER_GRID_CUBE_POSE_X = 1.03;
+    public static final double BLUE_CENTER_GRID_CUBE_POSE_Y = 2.75;
 
-    public static final double BLUE_RIGHT_GRID_CUBE_POSE_X = 0;
-    public static final double BLUE_RIGHT_GRID_CUBE_POSE_Y = 0;
+    // Tag 8
+    public static final double BLUE_RIGHT_GRID_CUBE_POSE_X = 1.03;
+    public static final double BLUE_RIGHT_GRID_CUBE_POSE_Y = 1.07;
 
+    // Tag 4
     public static final double BLUE_SUBSTATION_POSE_X = 16.18;
     public static final double BLUE_SUBSTATION_POSE_Y = 6.75;
   }

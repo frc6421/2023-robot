@@ -282,12 +282,14 @@ public class ScoringVisionCommand extends CommandBase {
 
     timer.reset();
     timer.start();
+
+    scoreCommandGroup.addCommands(scoreCommand);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    scoreCommandGroup.addCommands(scoreCommand);
+    
   }
 
   // Called once the command ends or is interrupted.

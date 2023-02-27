@@ -337,32 +337,19 @@ public class DriveSubsystem extends SubsystemBase {
     ySpeed = -1 * (ySpeed + Math.signum(ySpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     double rotation = -1 * (rotationInput + Math.signum(rotationInput) * .095) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
+    // Input squaring
+    // xSpeed = -1 * Math.signum(xSpeed) * (xSpeed * xSpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    // ySpeed = -1 * Math.signum(ySpeed) * (ySpeed * ySpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    // double rotation = -1 * Math.signum(rotationInput) * (rotationInput * rotationInput) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+
     // xSpeed = driveFeedforward.calculate(xSpeed);
     // ySpeed = driveFeedforward.calculate(ySpeed);
     // rotation = driveFeedforward.calculate(rotation);
 
-    // Corrects the natural rotational drift of the swerve
+    // Sets chassis speeds
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation,
         GyroSubsystem.getYawAngle());
-    // double xy = Math.abs(chassisSpeeds.vxMetersPerSecond) +
-    // Math.abs(chassisSpeeds.vyMetersPerSecond);
-    // if(Math.abs(chassisSpeeds.omegaRadiansPerSecond) > 0.0 || pXY <= 0){
-    // targetAngle = GyroSubsystem.getYawAngle().getDegrees();
-    // }
-    // else if(xy > 0 && !buttonPressed){
-    // chassisSpeeds.omegaRadiansPerSecond +=
-    // driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(),
-    // targetAngle);
-    // }
-    // pXY = xy;
-
-    // chassisSpeeds.vxMetersPerSecond =
-    // driveFeedforward.calculate(chassisSpeeds.vxMetersPerSecond);
-    // chassisSpeeds.vyMetersPerSecond =
-    // driveFeedforward.calculate(chassisSpeeds.vyMetersPerSecond);
-    // chassisSpeeds.omegaRadiansPerSecond =
-    // driveFeedforward.calculate(chassisSpeeds.omegaRadiansPerSecond);
-
+  
     // Sets field relative speeds to the swerve module states
     var swerveModuleStates = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 

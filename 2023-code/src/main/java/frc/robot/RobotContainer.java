@@ -52,6 +52,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -121,6 +122,9 @@ public class RobotContainer {
   //Creates a double that takes the desired drive voltage and divides it by the current voltage
   private double voltageRatio;
 
+  private static double driveNerf = 0.75;
+  private static double steerNerf = 0.5;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -166,11 +170,11 @@ public class RobotContainer {
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
-        MathUtil.clamp(driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
-        MathUtil.clamp(driverController.getLeftX() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightX() * 0.5, -1.0, 1.0),
-        MathUtil.clamp(driverController.getLeftTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightTriggerAxis() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, 1.0, 1.0)
+        MathUtil.clamp(driverController.getLeftY() * driveNerf, -1.0, 1.0),
+        MathUtil.clamp(driverController.getLeftX() * driveNerf, -1.0, 1.0),
+        MathUtil.clamp(driverController.getRightX() * steerNerf, -1.0, 1.0),
+        MathUtil.clamp(driverController.getLeftTriggerAxis() * driveNerf, -1.0, 1.0),
+        MathUtil.clamp(driverController.getRightTriggerAxis() * driveNerf, 1.0, 1.0)
         ),
         driveSubsystem));
       
@@ -283,7 +287,8 @@ public class RobotContainer {
     driverController.rightBumper().whileTrue(new InstantCommand(() -> grabberSubsystem.toggleGrabber()));
 
     // Arm up and intake turned low speed then intake in
-    driverController.y().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE)
+    driverController.y().onTrue(new ParallelCommandGroup(new InstantCommand(() -> driveNerf = 0.75), new InstantCommand(() -> steerNerf = 0.5))
+        .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE))
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.5)))
         .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.DRIVE)));
@@ -291,7 +296,8 @@ public class RobotContainer {
     driverController.b().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.HYBRID)
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.5), intakeSubsystem)));
     // Intake floor pickup
-    driverController.a().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR)
+    driverController.a().onTrue(new ParallelCommandGroup(new InstantCommand(() -> driveNerf = 0.5), new InstantCommand(() -> steerNerf = 0.25))
+        .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1), intakeSubsystem)));
         // .andThen(new InstantCommand(() -> driveSubsystem.drive(MathUtil.clamp(driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
         //   MathUtil.clamp(driverController.getLeftX() * 0.5, -1.0, 1.0),

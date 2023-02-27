@@ -308,7 +308,7 @@ public final class Constants {
      */
     public static final double DEGREES_PER_MOTOR_ROTATION = (360 / ARM_GEAR_RATIO);
 
-    public static final float ARM_IN_SOFT_LIMIT = -29;
+    public static final float ARM_IN_SOFT_LIMIT = -8; // previously -29 before hard stop
 
     public static final float ARM_OUT_SOFT_LIMIT = 224;
 
@@ -338,7 +338,7 @@ public final class Constants {
 
       public static final double ARM_START_POSITION = 47; //Determined 02/25/23 47.0 Previously: -31.0
       public static final double GRAB_FROM_SUBSTATION_ANGLE = 148;
-      public static final double TRANSFER_ANGLE = -5;
+      public static final double TRANSFER_ANGLE = -8;
 
       public static final double DRIVE_ANGLE = 65;
       
@@ -369,7 +369,7 @@ public final class Constants {
 
     public static final double INTAKE_FLOOR_ANGLE = -15;
     // public static final double INTAKE_SWAP_ANGLE = 45; //TODO Value needs to be updated
-    public static final double INTAKE_DRIVE_ANGLE = 87.5; //90.5
+    public static final double INTAKE_DRIVE_ANGLE = 88.5; //90.5
     public static final double INTAKE_HYBRID_ANGLE = -5;
     public static final double INTAKE_START_POSITION = 90;
 

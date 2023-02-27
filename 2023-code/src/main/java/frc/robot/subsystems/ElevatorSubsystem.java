@@ -44,6 +44,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         elevatorMotor.setInverted(true);
 
+        elevatorMotor.setSmartCurrentLimit(30);
+        
         elevatorEncoder = elevatorMotor.getEncoder();
 
         // Degrees per motor rotation

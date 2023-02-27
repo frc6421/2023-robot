@@ -52,7 +52,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -291,6 +293,11 @@ public class RobotContainer {
     // Intake floor pickup
     driverController.a().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR)
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1), intakeSubsystem)));
+        // .andThen(new InstantCommand(() -> driveSubsystem.drive(MathUtil.clamp(driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
+        //   MathUtil.clamp(driverController.getLeftX() * 0.5, -1.0, 1.0),
+        //   MathUtil.clamp(driverController.getRightX() * 0.25, -1.0, 1.0),
+        //   MathUtil.clamp(driverController.getLeftTriggerAxis() * 0.5, -1.0, 1.0),
+        //   MathUtil.clamp(driverController.getRightTriggerAxis() * 0.5, 1.0, 1.0)), driveSubsystem)));
 
     //driverController.a().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.SWAP));
     //driverController.b().whileTrue(new RunCommand(() -> intakeSubsystem.setIntakeArmAngleWithGrav(intakeSetFF.getDouble(0)), intakeSubsystem));
@@ -300,7 +307,7 @@ public class RobotContainer {
     //   .andThen(new RunCommand(() -> armSubsystem.setPosition(armSubsystem.getSetPoint()), armSubsystem))
     //   .andThen(new InstantCommand(() -> grabberSubsystem.toggleGrabber(), grabberSubsystem)));
    // driverController.x().whileTrue(new ArmDownThenReleaseCommand(armSubsystem, grabberSubsystem));
-    driverController.x().whileTrue(new BalanceCommand(driveSubsystem));
+    driverController.x().whileTrue(new ArmDownThenReleaseCommand(armSubsystem, grabberSubsystem));
     //copilotController.start().whileTrue(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(copilotController.getRightY()), intakeSubsystem));
     copilotController.povLeft().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
     copilotController.povRight().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
@@ -322,7 +329,9 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
         .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.DRIVE))
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.TRANSFER))
-        .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.TRANSFER)));
+        .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.TRANSFER))
+        .andThen(new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> grabberSubsystem.grab())))
+        .andThen(new ParallelDeadlineGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.1))))));
   }
 
 

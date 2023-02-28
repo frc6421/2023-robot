@@ -17,7 +17,7 @@ public class IntakeArmCommand extends CommandBase {
   Timer timer = new Timer();
 
   private final TrapezoidProfile.Constraints intakeArmConstraints =
-      new TrapezoidProfile.Constraints(75, 75); // 105, 53
+      new TrapezoidProfile.Constraints(1260, 1260); // 105, 53
   private TrapezoidProfile.State intakeArmGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State intakeArmSetPoint = new TrapezoidProfile.State();
 

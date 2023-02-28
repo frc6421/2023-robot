@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.BlinkinConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceChargeCommand;
@@ -296,7 +297,7 @@ public class RobotContainer {
     driverController.b().onTrue(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.HYBRID)
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.5), intakeSubsystem)));
     // Intake floor pickup
-    driverController.a().onTrue(new ParallelCommandGroup(new InstantCommand(() -> driveNerf = 0.5), new InstantCommand(() -> steerNerf = 0.25))
+    driverController.a().onTrue(new ParallelCommandGroup(new InstantCommand(() -> driveNerf = 0.25), new InstantCommand(() -> steerNerf = 0.25))
         .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1), intakeSubsystem)));
         // .andThen(new InstantCommand(() -> driveSubsystem.drive(MathUtil.clamp(driverController.getLeftY() * DriveConstants.DRIVE_NERF_JOYSTICK_MULTIPLIER, -1.0, 1.0),
@@ -321,8 +322,9 @@ public class RobotContainer {
     copilotController.rightBumper().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE)
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)));
     //copilotController.leftBumper().onTrue(new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID));
-    copilotController.y().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH)
-        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)));
+    copilotController.y().onTrue(new ParallelDeadlineGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH),
+      new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)));
+
     copilotController.b().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.MID)
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.MID)));
     copilotController.x().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.SUBSTATION)
@@ -331,13 +333,28 @@ public class RobotContainer {
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.FLOOR)));
 
         //EXPERIMENTAL UNTIL TESTED\\
-    copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.release())
+    if(BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET) {
+      copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.release())
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
         .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.DRIVE))
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.TRANSFER))
         .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.TRANSFER))
         .andThen(new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> grabberSubsystem.grab())))
-        .andThen(new ParallelDeadlineGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.1))))));
+        .andThen(new ParallelDeadlineGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.1)))))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0))));
+    } else if(BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_YELLOW) {
+      copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.release())
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
+        .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.DRIVE))
+        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.TRANSFER))
+        .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.TRANSFER))
+        .andThen(new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.1))))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
+        .andThen(new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> grabberSubsystem.grab())))
+        .andThen(new ParallelDeadlineGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.1)))))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0))));
+    }
+    
   }
 
 

@@ -21,8 +21,11 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class AutoConstants {
-    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 3; // TODO update 4
+    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 4; // TODO update 4
     public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3; // TODO update 8
+
+    public static final double AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND = 2;
+    public static final double AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1;
 
     public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
     public static final double AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC = Math.PI;
@@ -50,13 +53,13 @@ public final class Constants {
 
       // First game piece is farthest to the left when standing in driver station,
       // fourth is farthest to the right
-      public static final Translation2d FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
           Units.feetToMeters(3));
-      public static final Translation2d THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
           Units.feetToMeters(7));
-      public static final Translation2d SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
           Units.feetToMeters(11));
-      public static final Translation2d FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
           Units.feetToMeters(15));
 
       /** In line with fourth game piece */
@@ -81,8 +84,8 @@ public final class Constants {
           Units.inchesToMeters(42));
 
       public static final Translation2d MID_POINT_OF_PIECES_AND_CHARGE_STATION = new Translation2d(
-          Units.inchesToMeters(139.32),
-          Units.inchesToMeters(214.78)); //107.39
+          Units.inchesToMeters(199.32),
+          Units.inchesToMeters(107.39));
       public static final Translation2d CENTER_OF_CHARGE_STATION = new Translation2d(Units.inchesToMeters(96.75),
           Units.inchesToMeters(107.39));
 
@@ -90,13 +93,13 @@ public final class Constants {
 
       // First game piece is farthest to the left when standing in driver station,
       // fourth is farthest to the right
-      public static final Translation2d FLIPPED_FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FLIPPED_FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
           -Units.feetToMeters(3));
-      public static final Translation2d FLIPPED_THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FLIPPED_THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
           -Units.feetToMeters(7));
-      public static final Translation2d FLIPPED_SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FLIPPED_SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
           -Units.feetToMeters(11));
-      public static final Translation2d FLIPPED_FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FLIPPED_FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
           -Units.feetToMeters(15));
 
       /** In line with fourth game piece */

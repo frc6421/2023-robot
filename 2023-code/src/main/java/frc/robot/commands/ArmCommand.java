@@ -17,7 +17,7 @@ public class ArmCommand extends CommandBase {
   Timer timer = new Timer();
 
   private final TrapezoidProfile.Constraints armConstraints =
-      new TrapezoidProfile.Constraints(100, 100);
+      new TrapezoidProfile.Constraints(600, 600);
   private TrapezoidProfile.State armGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State armSetpoint = new TrapezoidProfile.State();
   

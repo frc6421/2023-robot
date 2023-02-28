@@ -21,7 +21,7 @@ public class ElevatorCommand extends CommandBase {
   Timer timer = new Timer();
 
   private final TrapezoidProfile.Constraints elevatorConstraints =
-      new TrapezoidProfile.Constraints(4, 2);
+      new TrapezoidProfile.Constraints(8, 4);
   private TrapezoidProfile.State elevatorGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State elevatorSetpoint = new TrapezoidProfile.State();
   

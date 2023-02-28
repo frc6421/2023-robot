@@ -16,13 +16,17 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
+import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmElevatorCommand;
+import frc.robot.commands.BalanceCommand;
+import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -48,13 +52,13 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
         addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
 
         TrajectoryConfig forwardConfig = new TrajectoryConfig(
-                AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
-                AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
+                AutoConstants.AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND,
+                AutoConstants.AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
                 .setKinematics(driveSubsystem.swerveKinematics);
 
         TrajectoryConfig reverseConfig = new TrajectoryConfig(
-                AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
-                AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
+                AutoConstants.AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND,
+                AutoConstants.AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
                 .setKinematics(driveSubsystem.swerveKinematics)
                 .setReversed(true);
 
@@ -100,14 +104,17 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
-                new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH),
+                new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
                 new ParallelDeadlineGroup(new WaitCommand(0.7),
                         new InstantCommand(() -> grabberSubsystem.toggleGrabber())),
-                //new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HYBRID),
                 new InstantCommand(() -> driveSubsystem.resetOdometry(overChargeStationTrajectory.getInitialPose())),
-                new ParallelDeadlineGroup(overChargeStationCommand, new ArmElevatorCommand(elevator, arm, PlaceStates.UP)),
+                new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
+                new WaitCommand(0.7),
+                overChargeStationCommand,
                 new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
+                new WaitCommand(0.7),
                 ontoChargeStationCommand,
-                new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)));
+                new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
+                new BalanceCommand(driveSubsystem));
     }
 }

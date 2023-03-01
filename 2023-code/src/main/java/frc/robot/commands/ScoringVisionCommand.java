@@ -73,9 +73,19 @@ public class ScoringVisionCommand extends CommandBase {
     timer = new Timer();
 
     if (DriverStation.getAlliance() == Alliance.Red) {
-      currentRobotPose = LimelightHelpers.getBotPose2d_wpiRed(limelightHostName);
+      if(LimelightHelpers.getTV(limelightHostName)) {
+        currentRobotPose = LimelightHelpers.getBotPose2d_wpiRed(limelightHostName);
+      } else {
+        currentRobotPose = driveSubsystem.getPose2d();
+      }
+      
     } else if (DriverStation.getAlliance() == Alliance.Blue) {
-      currentRobotPose = LimelightHelpers.getBotPose2d_wpiBlue(limelightHostName);
+      if(LimelightHelpers.getTV(limelightHostName)) {
+        currentRobotPose = LimelightHelpers.getBotPose2d_wpiBlue(limelightHostName);
+      } else {
+        currentRobotPose = driveSubsystem.getPose2d();
+      }
+      
     }
 
     config = new TrajectoryConfig(
@@ -112,8 +122,11 @@ public class ScoringVisionCommand extends CommandBase {
                     + VisionConstants.GRID_OFFSET),
                 (VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y),
                 new Rotation2d(0));
-
           }
+
+          scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
+                  LimelightHelpers.getBotPose2d_wpiRed(limelightHostName),
+                  targetRobotPose), config);
           break;
         // Middle grid (from driver perspective) on red alliance
         case 2:
@@ -256,9 +269,13 @@ public class ScoringVisionCommand extends CommandBase {
       }
     }
 
-    scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                currentRobotPose,
-                targetRobotPose), config);
+    if (targetRobotPose == null) {
+      targetRobotPose = currentRobotPose;
+    }
+
+    // scoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
+    //             currentRobotPose,
+    //             targetRobotPose), config);
 
     thetaController = new ProfiledPIDController(
         AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,

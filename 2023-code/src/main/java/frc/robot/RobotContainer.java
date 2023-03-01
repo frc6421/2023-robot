@@ -27,6 +27,7 @@ import frc.robot.commands.ArmElevatorCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.IntakeArmCommand;
+import frc.robot.commands.ScoringVisionCommand;
 import frc.robot.commands.SubstationGamePieceVisionCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
 import frc.robot.commands.IntakeArmCommand.IntakePlaceStates;
@@ -106,6 +107,7 @@ public class RobotContainer {
 
   private final SubstationVisionCommand substationVisionCommand;
   private final SubstationGamePieceVisionCommand substationGamePieceVisionCommand;
+  private final ScoringVisionCommand scoringVisionCommand;
 
   private SendableChooser<Command> autoChooser;
 
@@ -147,6 +149,7 @@ public class RobotContainer {
 
     substationVisionCommand = new SubstationVisionCommand(driveSubsystem);
     substationGamePieceVisionCommand = new SubstationGamePieceVisionCommand(driveSubsystem);
+    scoringVisionCommand = new ScoringVisionCommand(driveSubsystem);
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -277,7 +280,7 @@ public class RobotContainer {
     driverController.back().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
 
-    driverController.leftBumper().whileTrue(substationVisionCommand);
+    driverController.leftBumper().whileTrue(scoringVisionCommand);
 
     //driverController.x().whileTrue(substationGamePieceVisionCommand);
 

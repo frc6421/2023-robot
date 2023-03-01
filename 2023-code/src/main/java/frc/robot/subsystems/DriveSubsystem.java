@@ -333,14 +333,14 @@ public class DriveSubsystem extends SubsystemBase {
       rotationInput = 0;
     }
 
-    xSpeed = -1 * (xSpeed + Math.signum(xSpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    ySpeed = -1 * (ySpeed + Math.signum(ySpeed) * .095) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double rotation = -1 * (rotationInput + Math.signum(rotationInput) * .095) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    xSpeed = -1 * (xSpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    ySpeed = -1 * (ySpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    //double rotation = -1 * (rotationInput + Math.signum(rotationInput) * .095) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     // Input squaring
-    // xSpeed = -1 * Math.signum(xSpeed) * (xSpeed * xSpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    // ySpeed = -1 * Math.signum(ySpeed) * (ySpeed * ySpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    // double rotation = -1 * Math.signum(rotationInput) * (rotationInput * rotationInput) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    //xSpeed = -1 * Math.signum(xSpeed) * (xSpeed * xSpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    //ySpeed = -1 * Math.signum(ySpeed) * (ySpeed * ySpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double rotation = -1 * Math.signum(rotationInput) * (rotationInput * rotationInput) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     // xSpeed = driveFeedforward.calculate(xSpeed);
     // ySpeed = driveFeedforward.calculate(ySpeed);

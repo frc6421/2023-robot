@@ -198,7 +198,7 @@ public final class Constants {
     public static final double V_VOLT_SECONDS_PER_METER = 0.1791; // 2/23/23 SysID said 2.1493
     public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.05486; // 2/23/23 SysID said 0.65828
 
-    public static final double DRIVE_SLEW_RATE = 2.5;
+    public static final double DRIVE_SLEW_RATE = 3; //2.5
 
     public static final double ANGLE_CONTROLLER_KP = 0.0014;
 
@@ -313,7 +313,7 @@ public final class Constants {
 
     public static final float ARM_IN_SOFT_LIMIT = -8; // previously -29 before hard stop
 
-    public static final float ARM_OUT_SOFT_LIMIT = 224;
+    public static final float ARM_OUT_SOFT_LIMIT = 204; // previously 224 before hard stop
 
     public static final float ARM_ELEVATOR_OUT_SOFT_LIMIT = 270;
 
@@ -339,7 +339,7 @@ public final class Constants {
       public static final double CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
       public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
 
-      public static final double ARM_START_POSITION = 47; //Determined 02/25/23 47.0 Previously: -31.0
+      public static final double ARM_START_POSITION = 52; //Determined 02/28/23 Previously: 47.0
       public static final double GRAB_FROM_SUBSTATION_ANGLE = 148;
       public static final double TRANSFER_ANGLE = -8;
 
@@ -374,7 +374,7 @@ public final class Constants {
     // public static final double INTAKE_SWAP_ANGLE = 45; //TODO Value needs to be updated
     public static final double INTAKE_DRIVE_ANGLE = 88.5; //90.5
     public static final double INTAKE_HYBRID_ANGLE = -5;
-    public static final double INTAKE_START_POSITION = 90;
+    public static final double INTAKE_START_POSITION = 95;
 
     public static final float INTAKE_BOTTOM_SOFT_LIMIT = -15f;
     public static final float INTAKE_UP_SOFT_LIMIT = 98f;

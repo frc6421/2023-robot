@@ -12,9 +12,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -38,8 +35,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private ShuffleboardTab intakeTab;
   private GenericEntry intakeAngle;
   private GenericEntry intakeFF;
-
-  //TODO Maybe an encoder here later
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {

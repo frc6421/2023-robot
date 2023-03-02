@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,7 +23,6 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.driverControlSystem;
-import frc.robot.commands.DriveCommand;
 
 public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule frontLeft;
@@ -32,18 +30,12 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule backLeft;
   private final SwerveModule backRight;
 
-  // Old navx declaration
-  // private final AHRS navx;
-
   public final SwerveDriveKinematics swerveKinematics;
 
   private final SwerveDriveOdometry odometry;
 
   private final PIDController angleController;
   private final PIDController driftCorrector;
-
-  private double targetAngle;
-  private double pXY;
 
   // Creates a sendable chooser on smartdashboard to select the desired control
   // system
@@ -55,10 +47,6 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter yDriveSlew;
 
   private CommandXboxController driverController;
-
-  private final SimpleMotorFeedforward driveFeedforward;
-
-  // TODO organize everything in and out of constructor and remove reduncancies
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -102,11 +90,7 @@ public class DriveSubsystem extends SubsystemBase {
     driftCorrector = new PIDController(.001, 0, 0); // TODO implement Feed Forward for functionality
     driftCorrector.enableContinuousInput(0, 360);
 
-    targetAngle = GyroSubsystem.getYawAngle().getDegrees();
-
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
-
-    pXY = 0;
 
     // Sets up the sendable chooser on SmartDashboard to select control system
     controlSystem = new SendableChooser<>();
@@ -118,9 +102,6 @@ public class DriveSubsystem extends SubsystemBase {
     magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
     xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
     yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
-
-    driveFeedforward = new SimpleMotorFeedforward(.60043, 2.2591, .17289);
-    // TODO make these constants
   }
 
   @Override
@@ -133,16 +114,6 @@ public class DriveSubsystem extends SubsystemBase {
       backRight.getModulePosition()
       }
     );
-
-      SmartDashboard.putData("drive", this);
-
-      SmartDashboard.putNumber("Front Left Speed", frontLeft.getDriveMotorVelocity());
-      SmartDashboard.putNumber("Front Right Speed", frontRight.getDriveMotorVelocity());
-      SmartDashboard.putNumber("Back Left Speed", backLeft.getDriveMotorVelocity());
-      SmartDashboard.putNumber("Back Right Speed", backRight.getDriveMotorVelocity());
-      SmartDashboard.putNumber("X Meter", odometry.getPoseMeters().getX());
-
-      SmartDashboard.putNumber("gyro", GyroSubsystem.getYawAngle().getDegrees());
   }
 
   // ODOMETRY METHODS \\
@@ -281,12 +252,6 @@ public class DriveSubsystem extends SubsystemBase {
     double xSpeed;
     double ySpeed;
 
-    // TODO Drive by voltage changes before Sussex
-    /*
-     * Sets the speed as a percentage of our max velocity using either trigger for
-     * magintude, or joysticks
-     * for both magnitude and steering
-     */
     switch (controlSystem.getSelected()) {
 
       case RIGHT_TRIGGER:
@@ -308,20 +273,6 @@ public class DriveSubsystem extends SubsystemBase {
         break;
     }
 
-    // turn to angle buttons
-    // if (driverController.y().getAsBoolean()) {
-    //   rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 0.0);
-    // } 
-    // else if (driverController.b().getAsBoolean()) {
-    //   rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 90.0);
-    // } 
-    // else if (driverController.a().getAsBoolean()) {
-    //   rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 180.0);
-    // } 
-    // else if (driverController.x().getAsBoolean()) {
-    //   rotationInput = driftCorrector.calculate(GyroSubsystem.getYawAngle().getDegrees(), 270.0);
-    // }
-
     //Keeps the robot from moving with no joystick inputs
     if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
       ySpeed = 0;
@@ -341,10 +292,6 @@ public class DriveSubsystem extends SubsystemBase {
     //xSpeed = -1 * Math.signum(xSpeed) * (xSpeed * xSpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     //ySpeed = -1 * Math.signum(ySpeed) * (ySpeed * ySpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     double rotation = -1 * Math.signum(rotationInput) * (rotationInput * rotationInput) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-
-    // xSpeed = driveFeedforward.calculate(xSpeed);
-    // ySpeed = driveFeedforward.calculate(ySpeed);
-    // rotation = driveFeedforward.calculate(rotation);
 
     // Sets chassis speeds
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation,

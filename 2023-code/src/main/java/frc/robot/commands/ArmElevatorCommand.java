@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.ArmConstants.ArmAngleConstants;
@@ -127,8 +126,6 @@ public class ArmElevatorCommand extends CommandBase {
     
     elevator.setElevatorPosition(elevatorSetpoint.position);
     arm.setPosition(armSetpoint.position);
-    SmartDashboard.putNumber("Arm Goal", armSetpoint.position);
-    SmartDashboard.putNumber("Elevator Goal", elevatorSetpoint.position);
   }
 
   // Called once the command ends or is interrupted.

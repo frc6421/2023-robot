@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.Constants.BlinkinConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceChargeCommand;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceCommand;
@@ -16,39 +14,24 @@ import frc.robot.commands.autonomousCommands.TwoPieceCommand;
 import frc.robot.commands.SubstationVisionCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
-
-import java.time.Instant;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmDownThenReleaseCommand;
-import frc.robot.commands.ArmElevatorCommand;
-import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.SubstationGamePieceVisionCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
 import frc.robot.commands.IntakeArmCommand.IntakePlaceStates;
-import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.BlinkinSubsystem;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
-
-import edu.wpi.first.networktables.GenericEntry;
 import frc.robot.subsystems.GyroSubsystem;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.subsystems.GyroSubsystem;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -58,7 +41,6 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -80,24 +62,10 @@ public class RobotContainer {
 
   // Set up controller with CommandXboxController
   private final CommandXboxController driverController;
-
-  private ShuffleboardTab elevatorTab;
-  private GenericEntry elevatorFFTestingEntry;
-  private GenericEntry elevatorPositionTestEntry;
-  private GenericEntry elevatorPTestingEntry;
   
   private final CommandXboxController copilotController;
 
   private final ArmSubsystem armSubsystem;
-
-  private GenericEntry armSetFFTestEntry;
-  private GenericEntry armSetPosTestEntry;
-  private GenericEntry armSetPowerTestEntry;
-  private GenericEntry armSetPTestEntry;
-
-  private ShuffleboardTab armTab;
-  private ShuffleboardTab intakeTab;
-  private GenericEntry intakeSetFF;
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
   //private final ArmElevatorCommand armElevatorCommand;
@@ -119,9 +87,6 @@ public class RobotContainer {
   private FlippedTwoPieceCommand flippedTwoPieceCommand;
   private TwoPieceChargeCommand twoPieceChargeCommand;
   private FlippedTwoPieceChargeCommand flippedTwoPieceChargeCommand;
-
-  //Creates a double that takes the desired drive voltage and divides it by the current voltage
-  private double voltageRatio;
 
   private static double driveNerf = 0.75;
   private static double steerNerf = 0.8; //0.5
@@ -157,17 +122,7 @@ public class RobotContainer {
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
 
-    //used to make modify controller inputs TODO see if this is what we want + test + pass in or modify here?
-    voltageRatio = DriveConstants.DRIVE_VOLTAGE / PDP.getVoltage();
     copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
-
-
-    SmartDashboard.putNumber("LeftY", driverController.getLeftY());
-    SmartDashboard.putNumber("LeftX", driverController.getLeftX());
-    SmartDashboard.putNumber("RightX", driverController.getRightX());
-
-    SmartDashboard.putNumber("Arm Degree Position: ", armSubsystem.getArmDegreePosition());
-    SmartDashboard.putNumber("Arm Feed Forward: ", armSubsystem.getFeedForward());
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
@@ -189,25 +144,6 @@ public class RobotContainer {
     
       intakeSubsystem.setDefaultCommand(new RunCommand(() -> intakeSubsystem.setPercentPosition(copilotController.getLeftY()), intakeSubsystem));
       //intakeSubsystem.setDefaultCommand(new RunCommand(() -> intakeSubsystem.setIntakeSpeed(copilotController.getRightY()), intakeSubsystem));
-      
-      intakeTab = Shuffleboard.getTab("Intake Tab");
-
-      intakeSetFF = intakeTab.add("Set Intake Arm FF: ", 0)
-        .getEntry();
-      
-      armTab = Shuffleboard.getTab("Arm Tab");
-        
-      armSetFFTestEntry = armTab.add("Set Arm FF: ", 0) 
-              .getEntry();
-    
-      armSetPosTestEntry = armTab.add("Set Arm Degree Position: ", 0) 
-              .getEntry();
-
-      armSetPowerTestEntry = armTab.add("Set Arm Power: ", 0) 
-              .getEntry();
-
-      armSetPTestEntry = armTab.add("Set Arm P Value: ", 0) 
-              .getEntry();
 
       armElevatorPos = new SendableChooser<>();
       armElevatorPos.setDefaultOption("Mid", PlaceStates.MID);
@@ -215,33 +151,9 @@ public class RobotContainer {
       armElevatorPos.addOption("Floor", PlaceStates.FLOOR);
       armElevatorPos.addOption("High", PlaceStates.HIGH);
       armElevatorPos.addOption("Substation", PlaceStates.SUBSTATION);
-      SmartDashboard.putData("Arm elevator position", armElevatorPos);
     
-      //TODO: Testing purposes only
-      //copilotController.x().whileTrue(new RunCommand(()-> armSubsystem.setArmAngleWithGrav(armSetPosTestEntry.getDouble(0))));
-      //copilotController.a().whileTrue(new RunCommand(()-> armSubsystem.setPercentArmPowerNoLimit(armSetPowerTestEntry.getDouble(0)), armSubsystem));
-      //copilotController.y().whileTrue(new RunCommand(()-> armSubsystem.setArmP(armSetPTestEntry.getDouble(0)), armSubsystem));
-
-
-    elevatorTab = Shuffleboard.getTab("Elevator Tab");
-
-    elevatorFFTestingEntry = elevatorTab.add("Set Elevator FF: ", 0)
-      .getEntry();
-
-    elevatorPTestingEntry = elevatorTab.add("Set Elevator P: ", 0)
-      .getEntry();
-
-    elevatorPositionTestEntry = elevatorTab.add("Set Elevator Pos: ", 0)
-      .getEntry();
-    
-    //driverController.x().whileTrue(new RunCommand(() -> elevatorSubsystem.goToPosition(elevatorFFTestingEntry.getDouble(0)), elevatorSubsystem));
-    
-    //driverController.y().whileTrue(new RunCommand(() -> elevatorSubsystem.setP(elevatorPTestingEntry.getDouble(0)), elevatorSubsystem));
-    
-    //driverController.b().whileTrue(new RunCommand(() -> elevatorSubsystem.setElevatorPosition(elevatorPositionTestEntry.getDouble(0)), elevatorSubsystem));
-   
     //autoChooser.addOption("Right Start 4 Piece", fourPieceAutoCommand);
-    autoChooser.addOption("1 Piece Charge", onePieceChargeCommand);
+    autoChooser.setDefaultOption("1 Piece Charge", onePieceChargeCommand);
     autoChooser.addOption("Left Start 2 Piece", flippedTwoPieceCommand);
     autoChooser.addOption("Right Start 2 Piece", twoPieceCommand);
     autoChooser.addOption("Left Start 2 Piece Charge", flippedTwoPieceChargeCommand);
@@ -270,14 +182,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() { 
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-//TODO turn to angle buttons
     driverController.back().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
 
@@ -330,7 +235,6 @@ public class RobotContainer {
     copilotController.x().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.SUBSTATION)
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.SUBSTATION)));
 
-        //EXPERIMENTAL UNTIL TESTED\\
     //if(BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET) {
       copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.release())
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))

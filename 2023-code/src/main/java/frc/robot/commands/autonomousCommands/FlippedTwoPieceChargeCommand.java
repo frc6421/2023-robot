@@ -26,8 +26,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
 import frc.robot.commands.ArmCommand;
-import frc.robot.commands.ArmElevatorCommand;
-import frc.robot.commands.ArmElevatorCommand.PlaceStates;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.ArmSubsystem;

@@ -216,7 +216,6 @@ public final class Constants {
 
     public static final double PERCENT_DEADBAND = 0.045;
     
-    //TODO update angle offsets on competition robot
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
     public static final int FRONT_LEFT_MODULE_STEER_CAN_ID = 13;
     public static final int FRONT_LEFT_MODULE_ENCODER_CAN_ID = 13;
@@ -319,9 +318,6 @@ public final class Constants {
 
     public static final double ARM_MAX_TEST_PERCENT_OUTPUT = 0.15;
 
-    // public static final int ARM_POS_HORIZONTAL = 840; // TODO update with correct
-    // value(May use later)
-
     public static final double MAX_ARM_GRAVITY_FF = 0.0375; // Determined on 2/7/2023
 
     public static final double FLOOR_MIN_INCH_DISTANCE = 12.1;
@@ -345,8 +341,6 @@ public final class Constants {
 
       public static final double DRIVE_ANGLE = 65;
       
-      
-      //TODO: Not final angle
       public static final double GRAB_FROM_INTAKE_ANGLE = -26.9;
 
       public static final double FLOOR_ANGLE = 210.7;
@@ -364,14 +358,12 @@ public final class Constants {
     public static final int ARM_INTAKE_MOTOR_ID = 20;
     public static final int GRAB_INTAKE_MOTOR_ID = 21; 
 
-    //TODO confer with other programmers for CAN and pneumatics
     public static final int INTAKE_PISTON_FORWARD_CHANNEL = 0;
     public static final int INTAKE_PISTON_REVERSE_CHANNEL = 1;
 
-    public static final double INTAKE_MOTOR_SPEED = 0; //TODO Value needs(Needs to be a value between 0 and 1)
+    public static final double INTAKE_MOTOR_SPEED = 0;
 
     public static final double INTAKE_FLOOR_ANGLE = -15;
-    // public static final double INTAKE_SWAP_ANGLE = 45; //TODO Value needs to be updated
     public static final double INTAKE_DRIVE_ANGLE = 88.5; //90.5
     public static final double INTAKE_HYBRID_ANGLE = -5;
     public static final double INTAKE_START_POSITION = 95;

@@ -115,10 +115,10 @@ public class TwoPieceCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new InstantCommand(() -> driveSubsystem.resetOdometry(firstPickUpTrajectory.getInitialPose())),
       //TODO determine which height we will score on in auto
       new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH),
       new ParallelDeadlineGroup(new WaitCommand(0.7), new InstantCommand(() -> grabberSubsystem.toggleGrabber())),
-      new InstantCommand(() -> driveSubsystem.resetOdometry(firstPickUpTrajectory.getInitialPose())),
       //TODO turn on intake in deadline group
       new ParallelDeadlineGroup(firstPickUpCommand, new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP)),
       new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),

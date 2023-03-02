@@ -21,7 +21,7 @@ public class BalanceCommand extends CommandBase {
   private final TrapezoidProfile.Constraints constraints;
   private final ProfiledPIDController profiledPIDController;
   private double currentGyroAngle; 
-  private double gyroPValue = .015;
+  private double gyroPValue = .011;
   private double allowableAngleError = 1.5;
   private double angleAdjust;
   private SwerveModuleState[] states = new SwerveModuleState[4];

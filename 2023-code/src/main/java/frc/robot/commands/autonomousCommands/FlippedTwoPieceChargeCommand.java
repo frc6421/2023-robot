@@ -123,6 +123,7 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+        new InstantCommand(() -> driveSubsystem.resetOdometry(firstPickUpTrajectory.getInitialPose())),
         // TODO determine which height we will score on in auto
         new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH),
             new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
@@ -131,7 +132,6 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
         new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE),
             new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
         new WaitCommand(0.5),
-        new InstantCommand(() -> driveSubsystem.resetOdometry(firstPickUpTrajectory.getInitialPose())),
         firstPickUpCommand,
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new InstantCommand(() -> grabberSubsystem.grab()),

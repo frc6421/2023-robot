@@ -58,11 +58,7 @@ public class SubstationVisionCommand extends CommandBase {
   public void initialize() {
     LimelightSubsystem.setAprilTagPipeline(limelightHostName);
     LimelightSubsystem.setPipelineLEDControl(limelightHostName);
-  }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
     tagID = LimelightSubsystem.getAprilTagID(limelightHostName);
 
     if (DriverStation.getAlliance() == Alliance.Red && tagID == 5) {
@@ -75,10 +71,6 @@ public class SubstationVisionCommand extends CommandBase {
       targetYDistance = VisionConstants.RED_SUBSTATION_POSE_Y + 0.3;
       targetYawAngle = 0;
 
-      xDistanceError = targetXDistance - xTagDistance; //TODO flip these equations if it doesn't work
-      yDistanceError = targetYDistance - yTagDistance;
-      yawAngleError = targetYawAngle - yawTagAngle;
-
     } else if (DriverStation.getAlliance() == Alliance.Blue && tagID == 4) {
       // Set target distance based on field relative pose
       xTagDistance = LimelightSubsystem.getBlueBotPoseX(limelightHostName);
@@ -88,12 +80,16 @@ public class SubstationVisionCommand extends CommandBase {
       targetXDistance = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET;
       targetYDistance = VisionConstants.BLUE_SUBSTATION_POSE_Y + 0.3;
       targetYawAngle = 0;
-
-      xDistanceError = targetXDistance - xTagDistance;
-      yDistanceError = targetYDistance - yTagDistance;
-      yawAngleError = targetYawAngle - yawTagAngle;
     }
 
+    xDistanceError = targetXDistance - xTagDistance;
+    yDistanceError = targetYDistance - yTagDistance;
+    yawAngleError = targetYawAngle - yawTagAngle;
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     xPercentAdjust = (xDistanceError * xP) + (Math.signum(xDistanceError) * feedForward);
     yPercentAdjust = (yDistanceError * yP) + (Math.signum(yDistanceError) * feedForward);
     yawPercentAdjust = (yawAngleError * yawP) + (Math.signum(yawAngleError) * feedForward);

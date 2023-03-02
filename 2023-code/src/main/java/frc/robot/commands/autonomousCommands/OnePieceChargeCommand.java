@@ -11,10 +11,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -63,11 +65,11 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
         // Starts in line with the cube node in co-op grid
         Trajectory overChargeStationTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
                 new Pose2d(TrajectoryConstants.COOPERTITION_CUBE_NODE, new Rotation2d(0)),
-                new Pose2d(TrajectoryConstants.MID_POINT_OF_PIECES_AND_CHARGE_STATION, new Rotation2d(0))),
+                new Pose2d(TrajectoryConstants.MID_POINT_OF_PIECES_AND_CHARGE_STATION.plus(new Translation2d(Units.feetToMeters(2), 0)), new Rotation2d(0))),
                 forwardConfig);
 
         Trajectory ontoChargeStationTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-                new Pose2d(TrajectoryConstants.MID_POINT_OF_PIECES_AND_CHARGE_STATION, new Rotation2d(0)),
+                new Pose2d(TrajectoryConstants.MID_POINT_OF_PIECES_AND_CHARGE_STATION.plus(new Translation2d(Units.feetToMeters(2), 0)), new Rotation2d(0)),
                 new Pose2d(TrajectoryConstants.CENTER_OF_CHARGE_STATION, new Rotation2d(0))),
                 reverseConfig);
 
@@ -102,10 +104,10 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
+                new InstantCommand(() -> driveSubsystem.resetOdometry(overChargeStationTrajectory.getInitialPose())),
                 new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
                 new ParallelDeadlineGroup(new WaitCommand(0.7),
                         new InstantCommand(() -> grabberSubsystem.toggleGrabber())),
-                new InstantCommand(() -> driveSubsystem.resetOdometry(overChargeStationTrajectory.getInitialPose())),
                 new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
                 new WaitCommand(0.7),
                 overChargeStationCommand,

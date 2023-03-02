@@ -66,7 +66,6 @@ public class ArmDownThenReleaseCommand extends CommandBase {
   public void end(boolean interrupted) {
     arm.setPosition(armSetpoint.position);
     arm.setSetPoint(armSetpoint.position);
-    grab.release();
   }
 
   // Returns true when the command should end.

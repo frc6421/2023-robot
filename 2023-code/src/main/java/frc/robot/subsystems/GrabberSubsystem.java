@@ -13,12 +13,13 @@ import frc.robot.Constants.GrabberConstants;
 public class GrabberSubsystem extends SubsystemBase {
 
   private DoubleSolenoid grabberPiston;
+  //private DoubleSolenoid rightGrabberPiston;
 
   /** Creates a new GrabberSubsystem. */
   public GrabberSubsystem() {
-    
     //Constructs the double solenoid for the grabber
     grabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.FORWARD_CHANNEL, GrabberConstants.REVERSE_CHANNEL);
+    //rightGrabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.RIGHT_FORWARD_CHANNEL, GrabberConstants.RIGHT_REVERSE_CHANNEL);
     grab();
   }
 
@@ -33,6 +34,7 @@ public class GrabberSubsystem extends SubsystemBase {
    */
   public void grab(){
     grabberPiston.set(Value.kForward);
+    //rightGrabberPiston.set(Value.kForward);
   }
 
   /**
@@ -40,6 +42,7 @@ public class GrabberSubsystem extends SubsystemBase {
    */
   public void release(){
     grabberPiston.set(Value.kReverse);
+    //rightGrabberPiston.set(Value.kReverse);
   }
 
   /**
@@ -47,5 +50,6 @@ public class GrabberSubsystem extends SubsystemBase {
    */
   public void toggleGrabber(){
     grabberPiston.toggle();
+    //rightGrabberPiston.toggle();
   }
 }

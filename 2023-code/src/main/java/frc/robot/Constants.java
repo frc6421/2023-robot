@@ -363,7 +363,7 @@ public final class Constants {
 
     public static final double INTAKE_MOTOR_SPEED = 0;
 
-    public static final double INTAKE_FLOOR_ANGLE = -15;
+    public static final double INTAKE_FLOOR_ANGLE = -12;
     public static final double INTAKE_DRIVE_ANGLE = 88.5; //90.5
     public static final double INTAKE_HYBRID_ANGLE = -5;
     public static final double INTAKE_START_POSITION = 95;
@@ -378,7 +378,7 @@ public final class Constants {
 
     public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
 
-    public static final double MAX_ARM_GRAVITY_FF = 0.0405;
+    public static final double MAX_ARM_GRAVITY_FF = 0.0810;
 
     public static final double INTAKE_ARM_SET_POS_CONVERSION_FACTOR = 1.6; //TODO Value needs to be updated
   }
@@ -386,6 +386,8 @@ public final class Constants {
   public static class GrabberConstants {
     public static final int FORWARD_CHANNEL = 3;
     public static final int REVERSE_CHANNEL = 2;
+    public static final int RIGHT_FORWARD_CHANNEL = 4;
+    public static final int RIGHT_REVERSE_CHANNEL = 5;
   }
   public class VisionConstants {
     // All distances are in meters \\

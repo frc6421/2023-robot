@@ -62,34 +62,37 @@ public class SubstationVisionCommand extends CommandBase {
     tagID = LimelightSubsystem.getAprilTagID(limelightHostName);
 
     if (DriverStation.getAlliance() == Alliance.Red && tagID == 5) {
-      // Set target distance based on field relative pose
-      xTagDistance = LimelightSubsystem.getRedBotPoseX(limelightHostName);
-      yTagDistance = LimelightSubsystem.getRedBotPoseY(limelightHostName);
-      yawTagAngle = LimelightSubsystem.getRedBotPoseYaw(limelightHostName);
-
       targetXDistance = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET;
       targetYDistance = VisionConstants.RED_SUBSTATION_POSE_Y + 0.3;
       targetYawAngle = 0;
 
     } else if (DriverStation.getAlliance() == Alliance.Blue && tagID == 4) {
-      // Set target distance based on field relative pose
-      xTagDistance = LimelightSubsystem.getBlueBotPoseX(limelightHostName);
-      yTagDistance = LimelightSubsystem.getBlueBotPoseY(limelightHostName);
-      yawTagAngle = LimelightSubsystem.getBlueBotPoseYaw(limelightHostName);
-
       targetXDistance = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET;
       targetYDistance = VisionConstants.BLUE_SUBSTATION_POSE_Y + 0.3;
       targetYawAngle = 0;
     }
-
-    xDistanceError = targetXDistance - xTagDistance;
-    yDistanceError = targetYDistance - yTagDistance;
-    yawAngleError = targetYawAngle - yawTagAngle;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
+    if (DriverStation.getAlliance() == Alliance.Red && tagID == 5) {
+      // Set current distance based on field relative pose
+      xTagDistance = LimelightSubsystem.getRedBotPoseX(limelightHostName);
+      yTagDistance = LimelightSubsystem.getRedBotPoseY(limelightHostName);
+      yawTagAngle = LimelightSubsystem.getRedBotPoseYaw(limelightHostName);
+    } else if (DriverStation.getAlliance() == Alliance.Blue && tagID == 4) {
+      // Set current distance based on field relative pose
+      xTagDistance = LimelightSubsystem.getBlueBotPoseX(limelightHostName);
+      yTagDistance = LimelightSubsystem.getBlueBotPoseY(limelightHostName);
+      yawTagAngle = LimelightSubsystem.getBlueBotPoseYaw(limelightHostName);
+    }
+
+    xDistanceError = targetXDistance - xTagDistance;
+    yDistanceError = targetYDistance - yTagDistance;
+    yawAngleError = targetYawAngle - yawTagAngle;
+
     xPercentAdjust = (xDistanceError * xP) + (Math.signum(xDistanceError) * feedForward);
     yPercentAdjust = (yDistanceError * yP) + (Math.signum(yDistanceError) * feedForward);
     yawPercentAdjust = (yawAngleError * yawP) + (Math.signum(yawAngleError) * feedForward);
@@ -114,12 +117,14 @@ public class SubstationVisionCommand extends CommandBase {
   @Override
   public boolean isFinished() {
     if (DriverStation.getAlliance() == Alliance.Red) {
-      return Math.abs(xTagDistance - (VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_OFFSET)) <= allowableXError
+      return Math.abs(
+          xTagDistance - (VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_OFFSET)) <= allowableXError
           && Math.abs(yTagDistance - VisionConstants.RED_SUBSTATION_POSE_Y) <= allowableYError
           && Math.abs(yawTagAngle - targetYawAngle) <= allowableYawError;
 
     } else if (DriverStation.getAlliance() == Alliance.Blue) {
-      return Math.abs(xTagDistance - (VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET)) <= allowableXError
+      return Math
+          .abs(xTagDistance - (VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET)) <= allowableXError
           && Math.abs(yTagDistance - VisionConstants.BLUE_SUBSTATION_POSE_Y) <= allowableYError
           && Math.abs(yawTagAngle - targetYawAngle) <= allowableYawError;
 

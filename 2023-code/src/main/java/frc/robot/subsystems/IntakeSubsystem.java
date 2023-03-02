@@ -9,11 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -31,10 +27,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private double setPoint;
 
   private double intakeArmDynamicFF;
-
-  private ShuffleboardTab intakeTab;
-  private GenericEntry intakeAngle;
-  private GenericEntry intakeFF;
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -82,21 +74,11 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeArmPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
 
     setPoint = IntakeConstants.INTAKE_UP_SOFT_LIMIT;
-
-    intakeTab = Shuffleboard.getTab("Intake Tab");
-
-    intakeAngle = intakeTab.add("Intake Angle: ", 0)
-      .getEntry();
-    
-    intakeFF = intakeTab.add("Intake FF", 0)
-      .getEntry();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    intakeAngle.setDouble(getIntakeArmDegreePosition());
-    intakeFF.setDouble(intakeArmPIDController.getFF());
   }
 
 

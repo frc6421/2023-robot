@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.BlinkinConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceChargeCommand;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceCommand;
@@ -167,6 +168,7 @@ public class RobotContainer {
     //configures the compressor
     compressor = new Compressor(PneumaticsModuleType.REVPH);
     compressor.enableAnalog(95, 120);
+    SmartDashboard.putNumber("Air pressure", compressor.getPressure());
 
     // Configure the trigger bindings
     configureBindings();
@@ -235,27 +237,15 @@ public class RobotContainer {
     copilotController.x().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.SUBSTATION)
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.SUBSTATION)));
 
-    //if(BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET) {
-      copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.release())
+    copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.release())
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
         .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.DRIVE))
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.TRANSFER))
         .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.TRANSFER))
+        .andThen(new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed((BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_VIOLET)  ? 0.0 : -0.2))))
         .andThen(new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> grabberSubsystem.grab())))
-        .andThen(new ParallelDeadlineGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.1)))))
+        .andThen(new ParallelDeadlineGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.1))))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0))));
-    // } else if(BlinkinSubsystem.getBlinkinColor() == BlinkinConstants.BLINKIN_YELLOW) {
-    //   copilotController.leftBumper().onTrue(new InstantCommand(() -> grabberSubsystem.release())
-    //     .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
-    //     .andThen(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.DRIVE))
-    //     .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.TRANSFER))
-    //     .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.TRANSFER))
-    //     .andThen(new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.1))))
-    //     .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))
-    //     .andThen(new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> grabberSubsystem.grab())))
-    //     .andThen(new ParallelDeadlineGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ParallelDeadlineGroup(new WaitCommand(0.5), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.1)))))
-    //     .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0))));
-    // }
     
   }
 

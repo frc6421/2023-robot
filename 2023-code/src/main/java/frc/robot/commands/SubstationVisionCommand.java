@@ -63,12 +63,12 @@ public class SubstationVisionCommand extends CommandBase {
 
     if (DriverStation.getAlliance() == Alliance.Red && tagID == 5) {
       targetXDistance = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET;
-      targetYDistance = VisionConstants.RED_SUBSTATION_POSE_Y + 0.3;
+      targetYDistance = VisionConstants.RED_SUBSTATION_POSE_Y + 0.5;
       targetYawAngle = 0;
 
     } else if (DriverStation.getAlliance() == Alliance.Blue && tagID == 4) {
       targetXDistance = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET;
-      targetYDistance = VisionConstants.BLUE_SUBSTATION_POSE_Y + 0.3;
+      targetYDistance = VisionConstants.BLUE_SUBSTATION_POSE_Y + 0.5;
       targetYawAngle = 0;
     }
   }

@@ -10,6 +10,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -20,6 +21,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private SparkMaxPIDController intakeArmPIDController;
   private static RelativeEncoder intakeArmEncoder;
+  private static RelativeEncoder intakeEncoder;
 
   private double positionMaxOutput; 
   private double positionMinOutput; 
@@ -40,6 +42,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeArmMotor.restoreFactoryDefaults();
 
     intakeArmEncoder = intakeArmMotor.getEncoder();
+    intakeEncoder = intakeMotor.getEncoder();
 
     intakeArmEncoder.setPositionConversionFactor(IntakeConstants.DEGREES_PER_MOTOR_ROTATION);
 
@@ -79,6 +82,8 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Intake Arm Angle", getIntakeArmDegreePosition());
+    SmartDashboard.putNumber("Intake spin velocity RPM", intakeEncoder.getVelocity());
   }
 
 
@@ -135,7 +140,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
       setPoint = change + setPoint;
 
-      setPoint = MathUtil.clamp(setPoint, (double) IntakeConstants.INTAKE_FLOOR_ANGLE, IntakeConstants.INTAKE_DRIVE_ANGLE);
+      setPoint = MathUtil.clamp(setPoint, (double) IntakeConstants.INTAKE_BOTTOM_SOFT_LIMIT, IntakeConstants.INTAKE_UP_SOFT_LIMIT);
       
       setPosition(setPoint);
   }

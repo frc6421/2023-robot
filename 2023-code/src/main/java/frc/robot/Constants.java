@@ -81,7 +81,7 @@ public final class Constants {
           Units.inchesToMeters(108));
 
       public static final Translation2d CUBE_NODE = new Translation2d(Units.feetToMeters(0),
-          Units.inchesToMeters(42));
+          Units.inchesToMeters(48));
 
       public static final Translation2d MID_POINT_OF_PIECES_AND_CHARGE_STATION = new Translation2d(
           Units.inchesToMeters(199.32),
@@ -121,7 +121,7 @@ public final class Constants {
           -Units.inchesToMeters(108));
 
       public static final Translation2d FLIPPED_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
-          -Units.inchesToMeters(42));
+          -Units.inchesToMeters(48));
 
       public static final Translation2d FLIPPED_CENTER_OF_CHARGE_STATION = new Translation2d(
           Units.inchesToMeters(96.75),
@@ -363,7 +363,7 @@ public final class Constants {
 
     public static final double INTAKE_MOTOR_SPEED = 0;
 
-    public static final double INTAKE_FLOOR_ANGLE = -12;
+    public static final double INTAKE_FLOOR_ANGLE = -14;
     public static final double INTAKE_DRIVE_ANGLE = 88.5; //90.5
     public static final double INTAKE_HYBRID_ANGLE = -5;
     public static final double INTAKE_START_POSITION = 95;
@@ -378,7 +378,7 @@ public final class Constants {
 
     public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
 
-    public static final double MAX_ARM_GRAVITY_FF = 0.0810;
+    public static final double MAX_ARM_GRAVITY_FF = 0.045;
 
     public static final double INTAKE_ARM_SET_POS_CONVERSION_FACTOR = 1.6; //TODO Value needs to be updated
   }

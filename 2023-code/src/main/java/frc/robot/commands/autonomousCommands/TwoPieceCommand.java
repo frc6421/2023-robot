@@ -16,6 +16,9 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -45,6 +48,8 @@ public class TwoPieceCommand extends SequentialCommandGroup {
   private ArmSubsystem armSubsystem;
   private GrabberSubsystem grabberSubsystem;
   private IntakeSubsystem intakeSubsystem;
+
+  private Field2d field;
 
   /** Creates a new TwoPieceCommand. */
   public TwoPieceCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, GrabberSubsystem grabber, IntakeSubsystem intake) {
@@ -86,6 +91,20 @@ public class TwoPieceCommand extends SequentialCommandGroup {
       new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(0))
     ), forwardConfig);
+
+    // Simulation
+    field = new Field2d();
+
+    if (RobotBase.isSimulation()) {
+      SmartDashboard.putData(field);
+
+      field.setRobotPose(firstPickUpTrajectory.getInitialPose());
+      
+      field.getObject("Pick Up Trajectory 1").setTrajectory(firstPickUpTrajectory);
+      field.getObject("Score Trajectory 1").setTrajectory(firstScoreTrajectory);
+      field.getObject("Out of Community Trajectory").setTrajectory(edgeOfCommunityTrajectory);
+    }
+
 
     var thetaController = new ProfiledPIDController(
                 AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,

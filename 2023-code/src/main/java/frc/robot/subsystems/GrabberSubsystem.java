@@ -12,14 +12,14 @@ import frc.robot.Constants.GrabberConstants;
 
 public class GrabberSubsystem extends SubsystemBase {
 
-  private DoubleSolenoid grabberPiston;
-  //private DoubleSolenoid rightGrabberPiston;
+  private DoubleSolenoid leftGrabberPiston;
+  private DoubleSolenoid rightGrabberPiston;
 
   /** Creates a new GrabberSubsystem. */
   public GrabberSubsystem() {
     //Constructs the double solenoid for the grabber
-    grabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.FORWARD_CHANNEL, GrabberConstants.REVERSE_CHANNEL);
-    //rightGrabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.RIGHT_FORWARD_CHANNEL, GrabberConstants.RIGHT_REVERSE_CHANNEL);
+    leftGrabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.LEFT_FORWARD_CHANNEL, GrabberConstants.LEFT_REVERSE_CHANNEL);
+    rightGrabberPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, GrabberConstants.RIGHT_FORWARD_CHANNEL, GrabberConstants.RIGHT_REVERSE_CHANNEL);
     grab();
   }
 
@@ -33,23 +33,23 @@ public class GrabberSubsystem extends SubsystemBase {
    * Extends the grabber piston and closes the grabber
    */
   public void grab(){
-    grabberPiston.set(Value.kForward);
-    //rightGrabberPiston.set(Value.kForward);
+    leftGrabberPiston.set(Value.kForward);
+    rightGrabberPiston.set(Value.kForward);
   }
 
   /**
    * Retracts the grabber piston and opens the grabber
    */
   public void release(){
-    grabberPiston.set(Value.kReverse);
-    //rightGrabberPiston.set(Value.kReverse);
+    leftGrabberPiston.set(Value.kReverse);
+    rightGrabberPiston.set(Value.kReverse);
   }
 
   /**
    * Toggles the grabber piston
    */
   public void toggleGrabber(){
-    grabberPiston.toggle();
-    //rightGrabberPiston.toggle();
+    leftGrabberPiston.toggle();
+    rightGrabberPiston.toggle();
   }
 }

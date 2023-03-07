@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -163,6 +164,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setArmIntakeSpeed(double speed){
     intakeArmMotor.set(speed);
+  }
+
+  public double getIntakeVelocity()
+  {
+    return intakeEncoder.getVelocity();
   }
 
 }

@@ -335,7 +335,7 @@ public final class Constants {
       public static final double CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
       public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
 
-      public static final double ARM_START_POSITION = 52; //Determined 02/28/23 Previously: 47.0
+      public static final double ARM_START_POSITION = 50.1; //Determined 03/2/23 Previously: 52.0
       public static final double GRAB_FROM_SUBSTATION_ANGLE = 148;
       public static final double TRANSFER_ANGLE = -8;
 
@@ -364,12 +364,12 @@ public final class Constants {
     public static final double INTAKE_MOTOR_SPEED = 0;
 
     public static final double INTAKE_FLOOR_ANGLE = -14;
-    public static final double INTAKE_DRIVE_ANGLE = 88.5; //90.5
+    public static final double INTAKE_DRIVE_ANGLE = 96; //90.5, 88.5 TODO un-mess up this value
     public static final double INTAKE_HYBRID_ANGLE = -5;
-    public static final double INTAKE_START_POSITION = 95;
+    public static final double INTAKE_START_POSITION = 90;
 
     public static final float INTAKE_BOTTOM_SOFT_LIMIT = -15f;
-    public static final float INTAKE_UP_SOFT_LIMIT = 98f;
+    public static final float INTAKE_UP_SOFT_LIMIT = 97f;
 
     public static final double INTAKE_ARM_P = 0.015; //TODO Value needs to be updated
     public static final double INTAKE_ARM_I = 0; //TODO Value needs to be updated
@@ -384,10 +384,10 @@ public final class Constants {
   }
 
   public static class GrabberConstants {
-    public static final int FORWARD_CHANNEL = 3;
-    public static final int REVERSE_CHANNEL = 2;
-    public static final int RIGHT_FORWARD_CHANNEL = 4;
-    public static final int RIGHT_REVERSE_CHANNEL = 5;
+    public static final int LEFT_FORWARD_CHANNEL = 3;
+    public static final int LEFT_REVERSE_CHANNEL = 2;
+    public static final int RIGHT_FORWARD_CHANNEL = 5;
+    public static final int RIGHT_REVERSE_CHANNEL = 4;
   }
   public class VisionConstants {
     // All distances are in meters \\

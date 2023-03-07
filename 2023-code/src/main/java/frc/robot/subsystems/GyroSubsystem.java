@@ -8,7 +8,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -30,11 +29,7 @@ public class GyroSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() 
-  {
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Current Gyro Rotation", getYawAngle().getDegrees());
-    SmartDashboard.putNumber("Gyro rate radians/s", Math.toRadians(getGyroRate()));
-  }
+  {}
 
   /**
    * Get the current Rotation2D rotation of the robot

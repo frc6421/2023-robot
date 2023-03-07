@@ -32,12 +32,7 @@ public class SwerveModule{
 
   private CommandXboxController driverController;
 
-  // TODO Add FeedForward for steer and drive motors
   private final SimpleMotorFeedforward feedforward;
-
-  // TODO Maybe used for testing
-  private double referenceVoltage = 0;
-  private double referenceAngle = 0;
 
   /** Creates a new ModuleSubsystem. */
   public SwerveModule(int driveMotorID, int steerMotorID, int steerEncoderID, double angleOffset) {
@@ -77,10 +72,10 @@ public class SwerveModule{
     steerEncoder.configMagnetOffset(angleOffset);
     steerEncoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
 
-    driveMotor.configNeutralDeadband(ModuleConstants.PERCENT_DEADBAND); // TODO determine experimentally
+    driveMotor.configNeutralDeadband(ModuleConstants.PERCENT_DEADBAND);
     steerMotor.configNeutralDeadband(ModuleConstants.PERCENT_DEADBAND);
 
-    driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1)); // TODO verify current
+    driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
     steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 25, 40, 0.1));
 
     Timer.delay(1.0);
@@ -194,9 +189,9 @@ public class SwerveModule{
     // Calculate steer motor output
     double steerPositionOutput = state.angle.getDegrees() * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
 
-    if(driverController.povLeft().getAsBoolean()){ 
-      steerPositionOutput =  (state.angle.getDegrees() + 90 - state.angle.getDegrees() % 360) * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
-    }
+    // if(driverController.povLeft().getAsBoolean()){ 
+    //   steerPositionOutput =  (state.angle.getDegrees() + 90 - state.angle.getDegrees() % 360) * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
+    // }
 
     // Apply PID outputs
     driveMotor.set(ControlMode.PercentOutput, driveOutput);

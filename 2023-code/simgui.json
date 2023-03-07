@@ -26,8 +26,6 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/SmartDashboard/Control system": "String Chooser",
-      "/SmartDashboard/drive": "Subsystem",
       "/LiveWindow/ElevatorSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
@@ -44,9 +42,11 @@
       "/LiveWindow/Ungrouped/Talon FX [15]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [16]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [17]": "Motor Controller",
+      "/Shuffleboard/Elevator Tab/ElevatorSubsystem": "Subsystem",
       "/SmartDashboard/Control system": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/autoChooser": "String Chooser"
+      "/SmartDashboard/autoChooser": "String Chooser",
+      "/SmartDashboard/drive": "Subsystem"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -85,7 +85,13 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "Compressor": {
+          "open": true
+        },
         "Field": {
+          "open": true
+        },
+        "autoChooser": {
           "open": true
         },
         "open": true

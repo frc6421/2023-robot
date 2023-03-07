@@ -6,18 +6,12 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-
-import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
-    
-    //TODO IMPORTANT: SPARK MAX POSITION IN ROTATIONS
 
     private CANSparkMax elevatorMotor;
     private SparkMaxPIDController elevatorPIDController;
@@ -30,11 +24,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private double setPoint;
 
-    private ShuffleboardTab elevatorTab;
-    private GenericEntry elevatorPositionEntry;
-    private GenericEntry elevatorVolatgeEntry;
-    private GenericEntry elevatorPEntry;
-
     /** Creates a new ElevatorSubsystem. */
     public ElevatorSubsystem()
     {
@@ -44,11 +33,13 @@ public class ElevatorSubsystem extends SubsystemBase {
 
         elevatorMotor.setInverted(true);
 
+        elevatorMotor.setSmartCurrentLimit(30);
+        
         elevatorEncoder = elevatorMotor.getEncoder();
 
         // Degrees per motor rotation
         elevatorEncoder.setPositionConversionFactor(ElevatorConstants.ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE / ElevatorConstants.ELEVATOR_GEAR_RATIO);
-        elevatorEncoder.setPosition(0); //TODO Verify start position
+        elevatorEncoder.setPosition(0);
     
         elevatorMotor.setIdleMode(IdleMode.kCoast);
 
@@ -74,29 +65,12 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPIDController.setD(ElevatorConstants.ELEVATOR_D, 0);
         elevatorPIDController.setFF(ElevatorConstants.ELEVATOR_FF, 0);
         elevatorPIDController.setOutputRange(positionMinOutput, positionMaxOutput, 0);
-
-        elevatorTab = Shuffleboard.getTab("Elevator Tab");
-
-        elevatorPositionEntry = elevatorTab.add("Encoder Position: ", 0) 
-            .getEntry();
-
-        elevatorVolatgeEntry = elevatorTab.add("Elevator Voltage: ", 0)
-            .getEntry();
-
-        elevatorPEntry = elevatorTab.add("Elevator P: ", 0)
-            .getEntry();
-
-        elevatorTab.add(this);
-        
     }
 
     @Override
     public void periodic()
     {
-        elevatorPositionEntry.setDouble(getElevatorEncoderPosition());
-        elevatorVolatgeEntry.setDouble(elevatorMotor.getBusVoltage());
-        elevatorPEntry.setDouble(elevatorPIDController.getP());
-        
+        //SmartDashboard.putNumber("elevator pos", getElelvatorPositionInMeters());
     }
 
     // MOTOR PID \\

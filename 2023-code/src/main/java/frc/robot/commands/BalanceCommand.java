@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.ChargeStationConstants;
 import frc.robot.Constants.DriveConstants;
@@ -22,7 +21,7 @@ public class BalanceCommand extends CommandBase {
   private final TrapezoidProfile.Constraints constraints;
   private final ProfiledPIDController profiledPIDController;
   private double currentGyroAngle; 
-  private double gyroPValue = .015;
+  private double gyroPValue = .011;
   private double allowableAngleError = 1.5;
   private double angleAdjust;
   private SwerveModuleState[] states = new SwerveModuleState[4];

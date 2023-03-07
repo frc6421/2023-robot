@@ -6,11 +6,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmConstants.ArmAngleConstants;
@@ -31,12 +27,6 @@ public class ArmSubsystem extends SubsystemBase
     private double armDynamicFF;
 
     private double setPoint;
-
-    private ShuffleboardTab armTab;
-    private GenericEntry armAngleEntry;
-    private GenericEntry armFFEntry;
-    private GenericEntry armPEntry;
-
 
      /** Creates a new ArmSubsystem. */
     public ArmSubsystem()
@@ -79,27 +69,12 @@ public class ArmSubsystem extends SubsystemBase
         armPIDController.setFF(ArmConstants.ARM_DEFAULT_FF);
         
         armPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
-
-        armTab = Shuffleboard.getTab("Arm Tab");
-        
-        armAngleEntry = armTab.add("Arm Encoder Position: ", 0) 
-            .getEntry();
-
-        armFFEntry = armTab.add("Arm Feed Forward: ", 0) 
-            .getEntry();
-
-        armPEntry = armTab.add("Arm P: ", 0) 
-            .getEntry();
         
     }
     
     @Override
   public void periodic() 
-    {
-        armAngleEntry.setDouble(getArmDegreePosition());
-        armFFEntry.setDouble(armDynamicFF);
-        armPEntry.setDouble(armPIDController.getP());
-    }
+    {}
 
 
     ////MOTOR AND PID METHODS////

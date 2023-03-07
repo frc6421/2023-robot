@@ -9,14 +9,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
@@ -27,6 +22,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private SparkMaxPIDController intakeArmPIDController;
   private static RelativeEncoder intakeArmEncoder;
+  private static RelativeEncoder intakeEncoder;
 
   private double positionMaxOutput; 
   private double positionMinOutput; 
@@ -34,12 +30,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private double setPoint;
 
   private double intakeArmDynamicFF;
-
-  private ShuffleboardTab intakeTab;
-  private GenericEntry intakeAngle;
-  private GenericEntry intakeFF;
-
-  //TODO Maybe an encoder here later
 
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
@@ -53,6 +43,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeArmMotor.restoreFactoryDefaults();
 
     intakeArmEncoder = intakeArmMotor.getEncoder();
+    intakeEncoder = intakeMotor.getEncoder();
 
     intakeArmEncoder.setPositionConversionFactor(IntakeConstants.DEGREES_PER_MOTOR_ROTATION);
 
@@ -60,7 +51,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
     intakeMotor.setInverted(false);
-    intakeArmMotor.setInverted(false);
+    intakeArmMotor.setInverted(true);
 
     intakeMotor.setSmartCurrentLimit(60);
     intakeArmMotor.setSmartCurrentLimit(50);
@@ -69,7 +60,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     intakeArmPIDController.setFeedbackDevice(intakeArmEncoder);
 
-    intakeArmEncoder.setPosition(IntakeConstants.INTAKE_UP_ANGLE);
+    intakeArmEncoder.setPosition(IntakeConstants.INTAKE_START_POSITION);
 
     intakeArmMotor.setSoftLimit(SoftLimitDirection.kForward, IntakeConstants.INTAKE_UP_SOFT_LIMIT);
     intakeArmMotor.setSoftLimit(SoftLimitDirection.kReverse, IntakeConstants.INTAKE_BOTTOM_SOFT_LIMIT);
@@ -87,21 +78,13 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeArmPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
 
     setPoint = IntakeConstants.INTAKE_UP_SOFT_LIMIT;
-
-    intakeTab = Shuffleboard.getTab("Intake Tab");
-
-    intakeAngle = intakeTab.add("Intake Angle: ", 0)
-      .getEntry();
-    
-    intakeFF = intakeTab.add("Intake FF", 0)
-      .getEntry();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    intakeAngle.setDouble(getIntakeArmDegreePosition());
-    intakeFF.setDouble(intakeArmPIDController.getFF());
+    SmartDashboard.putNumber("Intake Arm Angle", getIntakeArmDegreePosition());
+    SmartDashboard.putNumber("Intake spin velocity RPM", intakeEncoder.getVelocity());
   }
 
 
@@ -158,7 +141,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
       setPoint = change + setPoint;
 
-      setPoint = MathUtil.clamp(setPoint, (double) IntakeConstants.INTAKE_FLOOR_ANGLE, IntakeConstants.INTAKE_UP_ANGLE);
+      setPoint = MathUtil.clamp(setPoint, (double) IntakeConstants.INTAKE_BOTTOM_SOFT_LIMIT, IntakeConstants.INTAKE_UP_SOFT_LIMIT);
       
       setPosition(setPoint);
   }
@@ -181,6 +164,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void setArmIntakeSpeed(double speed){
     intakeArmMotor.set(speed);
+  }
+
+  public double getIntakeVelocity()
+  {
+    return intakeEncoder.getVelocity();
+  }
+
+  public void setEncoderPosition(double position){
+    intakeArmEncoder.setPosition(position);
   }
 
 }

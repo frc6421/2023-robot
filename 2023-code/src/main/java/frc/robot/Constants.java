@@ -21,8 +21,11 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class AutoConstants {
-    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 3; // TODO update 4
+    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 4; // TODO update 4
     public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3; // TODO update 8
+
+    public static final double AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND = 2;
+    public static final double AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1;
 
     public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
     public static final double AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC = Math.PI;
@@ -50,13 +53,13 @@ public final class Constants {
 
       // First game piece is farthest to the left when standing in driver station,
       // fourth is farthest to the right
-      public static final Translation2d FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(3));
-      public static final Translation2d THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(7));
-      public static final Translation2d SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(11));
-      public static final Translation2d FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(15));
 
       /** In line with fourth game piece */
@@ -78,11 +81,14 @@ public final class Constants {
           Units.inchesToMeters(108));
 
       public static final Translation2d CUBE_NODE = new Translation2d(Units.feetToMeters(0),
-          Units.inchesToMeters(42));
+          Units.inchesToMeters(45));
+
+      public static final Translation2d AROUND_CHARGE_STATION = new Translation2d(Units.feetToMeters(6),
+          Units.feetToMeters(6));
 
       public static final Translation2d MID_POINT_OF_PIECES_AND_CHARGE_STATION = new Translation2d(
-          Units.inchesToMeters(139.32),
-          Units.inchesToMeters(214.78)); //107.39
+          Units.inchesToMeters(199.32),
+          Units.inchesToMeters(107.39));
       public static final Translation2d CENTER_OF_CHARGE_STATION = new Translation2d(Units.inchesToMeters(96.75),
           Units.inchesToMeters(107.39));
 
@@ -90,13 +96,13 @@ public final class Constants {
 
       // First game piece is farthest to the left when standing in driver station,
       // fourth is farthest to the right
-      public static final Translation2d FLIPPED_FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FLIPPED_FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(3));
-      public static final Translation2d FLIPPED_THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FLIPPED_THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(7));
-      public static final Translation2d FLIPPED_SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FLIPPED_SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(11));
-      public static final Translation2d FLIPPED_FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(18.67),
+      public static final Translation2d FLIPPED_FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(15));
 
       /** In line with fourth game piece */
@@ -118,7 +124,10 @@ public final class Constants {
           -Units.inchesToMeters(108));
 
       public static final Translation2d FLIPPED_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
-          -Units.inchesToMeters(42));
+          -Units.inchesToMeters(45));
+
+      public static final Translation2d FLIPPED_AROUND_CHARGE_STATION = new Translation2d(Units.feetToMeters(6),
+          -Units.feetToMeters(3));
 
       public static final Translation2d FLIPPED_CENTER_OF_CHARGE_STATION = new Translation2d(
           Units.inchesToMeters(96.75),
@@ -195,7 +204,7 @@ public final class Constants {
     public static final double V_VOLT_SECONDS_PER_METER = 0.1791; // 2/23/23 SysID said 2.1493
     public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.05486; // 2/23/23 SysID said 0.65828
 
-    public static final double DRIVE_SLEW_RATE = 2.5;
+    public static final double DRIVE_SLEW_RATE = 3; //2.5
 
     public static final double ANGLE_CONTROLLER_KP = 0.0014;
 
@@ -213,7 +222,6 @@ public final class Constants {
 
     public static final double PERCENT_DEADBAND = 0.045;
     
-    //TODO update angle offsets on competition robot
     public static final int FRONT_LEFT_MODULE_DRIVE_CAN_ID = 12;
     public static final int FRONT_LEFT_MODULE_STEER_CAN_ID = 13;
     public static final int FRONT_LEFT_MODULE_ENCODER_CAN_ID = 13;
@@ -278,7 +286,7 @@ public final class Constants {
     public static final double ELEVATOR_DEFULT_NERF = 0.01;
 
     public static final double ELEVATOR_SUBSTATION_LENGTH = 0.27;
-    public static final double ELEVATOR_TRANSFER_LENGTH = 0.46;
+    public static final double ELEVATOR_TRANSFER_LENGTH = 0.489;
 
     /**
      * In meters
@@ -308,16 +316,13 @@ public final class Constants {
      */
     public static final double DEGREES_PER_MOTOR_ROTATION = (360 / ARM_GEAR_RATIO);
 
-    public static final float ARM_IN_SOFT_LIMIT = -29;
+    public static final float ARM_IN_SOFT_LIMIT = -8; // previously -29 before hard stop
 
-    public static final float ARM_OUT_SOFT_LIMIT = 224;
+    public static final float ARM_OUT_SOFT_LIMIT = 204; // previously 224 before hard stop
 
     public static final float ARM_ELEVATOR_OUT_SOFT_LIMIT = 270;
 
     public static final double ARM_MAX_TEST_PERCENT_OUTPUT = 0.15;
-
-    // public static final int ARM_POS_HORIZONTAL = 840; // TODO update with correct
-    // value(May use later)
 
     public static final double MAX_ARM_GRAVITY_FF = 0.0375; // Determined on 2/7/2023
 
@@ -330,32 +335,18 @@ public final class Constants {
     public static final double ARM_SET_POS_CONVERSION_FACTOR = 1.6;
 
     public static class ArmAngleConstants {
-      public static final double CONE_HIGH_MIN_ANGLE = 155.0;
-      public static final double CONE_HIGH_MAX_ANGLE = 142.3;
-      public static final double CONE_HIGH_TOP_ANGLE = 130.0;
-      
-      public static final double CONE_MID_MIN_ANGLE = 153.5;
-      public static final double CONE_MID_MAX_ANGLE = 141.8;
-      public static final double CONE_MID_TOP_ANGLE = 135.0;
+      public static final double CONE_HIGH_ANGLE = 138.0;
+      public static final double CONE_MID_ANGLE = 143.0;
 
-      public static final double CUBE_HIGH_MIN_ANGLE = 181.9;
-      public static final double CUBE_HIGH_MAX_ANGLE = 155.3;
       public static final double CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
-
-      public static final double CUBE_MID_MIN_ANGLE = 182.7;
-      public static final double CUBE_MID_MAX_ANGLE = 155.3;
       public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
 
-      public static final double ARM_START_POSITION = 47.0; //Determined 02/25/23 47.0 Previously: -31.0
+      public static final double ARM_START_POSITION = 50; //Determined 03/2/23 Previously: 52.0
+      public static final double GRAB_FROM_SUBSTATION_ANGLE = 148;
+      public static final double TRANSFER_ANGLE = -8;
 
-      public static final double GRAB_FROM_SUBSTATION_ANGLE = 147.5;
-
-      public static final double UP_POSITION = 80;
-
-      public static final double TRANSFER_ANGLE = -5;
+      public static final double DRIVE_ANGLE = 65;
       
-      
-      //TODO: Not final angle
       public static final double GRAB_FROM_INTAKE_ANGLE = -26.9;
 
       public static final double FLOOR_ANGLE = 210.7;
@@ -373,19 +364,19 @@ public final class Constants {
     public static final int ARM_INTAKE_MOTOR_ID = 20;
     public static final int GRAB_INTAKE_MOTOR_ID = 21; 
 
-    //TODO confer with other programmers for CAN and pneumatics
     public static final int INTAKE_PISTON_FORWARD_CHANNEL = 0;
     public static final int INTAKE_PISTON_REVERSE_CHANNEL = 1;
 
-    public static final double INTAKE_MOTOR_SPEED = 0; //TODO Value needs(Needs to be a value between 0 and 1)
+    public static final double INTAKE_MOTOR_SPEED = 0;
 
-    public static final double INTAKE_FLOOR_ANGLE = -15;
-    // public static final double INTAKE_SWAP_ANGLE = 45; //TODO Value needs to be updated
-    public static final double INTAKE_UP_ANGLE = 90;
-    public static final double INTAKE_HYBRID_ANGLE = 0;
+    public static final double INTAKE_FLOOR_ANGLE = -11;
+    public static final double INTAKE_DRIVE_ANGLE = 96; //90.5, 88.5 TODO un-mess up this value
+    public static final double INTAKE_HYBRID_ANGLE = -5;
+    public static final double INTAKE_SINGLE_ANGLE = 45;
+    public static final double INTAKE_START_POSITION = 90;
 
     public static final float INTAKE_BOTTOM_SOFT_LIMIT = -15f;
-    public static final float INTAKE_UP_SOFT_LIMIT = 90f;
+    public static final float INTAKE_UP_SOFT_LIMIT = 97f;
 
     public static final double INTAKE_ARM_P = 0.015; //TODO Value needs to be updated
     public static final double INTAKE_ARM_I = 0; //TODO Value needs to be updated
@@ -394,14 +385,16 @@ public final class Constants {
 
     public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
 
-    public static final double MAX_ARM_GRAVITY_FF = 0.0405;
+    public static final double MAX_ARM_GRAVITY_FF = 0.045;
 
     public static final double INTAKE_ARM_SET_POS_CONVERSION_FACTOR = 1.6; //TODO Value needs to be updated
   }
 
   public static class GrabberConstants {
-    public static final int FORWARD_CHANNEL = 2;
-    public static final int REVERSE_CHANNEL = 3;
+    public static final int LEFT_FORWARD_CHANNEL = 3;
+    public static final int LEFT_REVERSE_CHANNEL = 2;
+    public static final int RIGHT_FORWARD_CHANNEL = 5;
+    public static final int RIGHT_REVERSE_CHANNEL = 4;
   }
   public class VisionConstants {
     // All distances are in meters \\

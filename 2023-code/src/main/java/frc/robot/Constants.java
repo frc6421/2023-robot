@@ -53,13 +53,13 @@ public final class Constants {
 
       // First game piece is farthest to the left when standing in driver station,
       // fourth is farthest to the right
-      public static final Translation2d FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
+      public static final Translation2d FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(3));
-      public static final Translation2d THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
+      public static final Translation2d THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(7));
-      public static final Translation2d SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
+      public static final Translation2d SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(11));
-      public static final Translation2d FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
+      public static final Translation2d FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(15));
 
       /** In line with fourth game piece */
@@ -81,7 +81,10 @@ public final class Constants {
           Units.inchesToMeters(108));
 
       public static final Translation2d CUBE_NODE = new Translation2d(Units.feetToMeters(0),
-          Units.inchesToMeters(48));
+          Units.inchesToMeters(45));
+
+      public static final Translation2d AROUND_CHARGE_STATION = new Translation2d(Units.feetToMeters(6),
+          Units.feetToMeters(6));
 
       public static final Translation2d MID_POINT_OF_PIECES_AND_CHARGE_STATION = new Translation2d(
           Units.inchesToMeters(199.32),
@@ -93,13 +96,13 @@ public final class Constants {
 
       // First game piece is farthest to the left when standing in driver station,
       // fourth is farthest to the right
-      public static final Translation2d FLIPPED_FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
+      public static final Translation2d FLIPPED_FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(3));
-      public static final Translation2d FLIPPED_THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
+      public static final Translation2d FLIPPED_THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(7));
-      public static final Translation2d FLIPPED_SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
+      public static final Translation2d FLIPPED_SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(11));
-      public static final Translation2d FLIPPED_FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(16),
+      public static final Translation2d FLIPPED_FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(15));
 
       /** In line with fourth game piece */
@@ -121,7 +124,10 @@ public final class Constants {
           -Units.inchesToMeters(108));
 
       public static final Translation2d FLIPPED_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
-          -Units.inchesToMeters(48));
+          -Units.inchesToMeters(45));
+
+      public static final Translation2d FLIPPED_AROUND_CHARGE_STATION = new Translation2d(Units.feetToMeters(6),
+          -Units.feetToMeters(3));
 
       public static final Translation2d FLIPPED_CENTER_OF_CHARGE_STATION = new Translation2d(
           Units.inchesToMeters(96.75),
@@ -335,7 +341,7 @@ public final class Constants {
       public static final double CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
       public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
 
-      public static final double ARM_START_POSITION = 50.1; //Determined 03/2/23 Previously: 52.0
+      public static final double ARM_START_POSITION = 50; //Determined 03/2/23 Previously: 52.0
       public static final double GRAB_FROM_SUBSTATION_ANGLE = 148;
       public static final double TRANSFER_ANGLE = -8;
 
@@ -363,9 +369,10 @@ public final class Constants {
 
     public static final double INTAKE_MOTOR_SPEED = 0;
 
-    public static final double INTAKE_FLOOR_ANGLE = -14;
+    public static final double INTAKE_FLOOR_ANGLE = -11;
     public static final double INTAKE_DRIVE_ANGLE = 96; //90.5, 88.5 TODO un-mess up this value
     public static final double INTAKE_HYBRID_ANGLE = -5;
+    public static final double INTAKE_SINGLE_ANGLE = 45;
     public static final double INTAKE_START_POSITION = 90;
 
     public static final float INTAKE_BOTTOM_SOFT_LIMIT = -15f;

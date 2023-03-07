@@ -189,9 +189,9 @@ public class SwerveModule{
     // Calculate steer motor output
     double steerPositionOutput = state.angle.getDegrees() * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
 
-    if(driverController.povLeft().getAsBoolean()){ 
-      steerPositionOutput =  (state.angle.getDegrees() + 90 - state.angle.getDegrees() % 360) * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
-    }
+    // if(driverController.povLeft().getAsBoolean()){ 
+    //   steerPositionOutput =  (state.angle.getDegrees() + 90 - state.angle.getDegrees() % 360) * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
+    // }
 
     // Apply PID outputs
     driveMotor.set(ControlMode.PercentOutput, driveOutput);

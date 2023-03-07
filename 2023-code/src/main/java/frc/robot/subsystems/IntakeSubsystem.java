@@ -171,4 +171,8 @@ public class IntakeSubsystem extends SubsystemBase {
     return intakeEncoder.getVelocity();
   }
 
+  public void setEncoderPosition(double position){
+    intakeArmEncoder.setPosition(position);
+  }
+
 }

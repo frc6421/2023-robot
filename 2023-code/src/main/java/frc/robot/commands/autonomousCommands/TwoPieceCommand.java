@@ -4,6 +4,7 @@
 
 package frc.robot.commands.autonomousCommands;
 
+import java.time.Instant;
 import java.util.List;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -16,18 +17,24 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
+import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ArmElevatorCommand;
+import frc.robot.commands.IntakeArmCommand;
 import frc.robot.commands.ArmElevatorCommand.PlaceStates;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.IntakeArmCommand.IntakePlaceStates;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GrabberSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -37,14 +44,16 @@ public class TwoPieceCommand extends SequentialCommandGroup {
   private ElevatorSubsystem elevatorSubsystem;
   private ArmSubsystem armSubsystem;
   private GrabberSubsystem grabberSubsystem;
+  private IntakeSubsystem intakeSubsystem;
 
   /** Creates a new TwoPieceCommand. */
-  public TwoPieceCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, GrabberSubsystem grabber) {
+  public TwoPieceCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, GrabberSubsystem grabber, IntakeSubsystem intake) {
     driveSubsystem = drive;
     elevatorSubsystem = elevator;
     armSubsystem = arm;
     grabberSubsystem = grabber;
-    addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+    intakeSubsystem = intake;
+    addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem, intakeSubsystem);
 
     TrajectoryConfig forwardConfig = new TrajectoryConfig(
         AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
@@ -67,12 +76,14 @@ public class TwoPieceCommand extends SequentialCommandGroup {
     // Return to score cube next to cone
     Trajectory firstScoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
       new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.CUBE_NODE, new Rotation2d(0))
     ), reverseConfig);
 
     // Gets the robot in a good position to start tele-op
     Trajectory edgeOfCommunityTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
       new Pose2d(TrajectoryConstants.CUBE_NODE, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(0))
     ), forwardConfig);
 
@@ -116,18 +127,24 @@ public class TwoPieceCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(() -> driveSubsystem.resetOdometry(firstPickUpTrajectory.getInitialPose())),
-      //TODO determine which height we will score on in auto
       new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH),
-      new ParallelDeadlineGroup(new WaitCommand(0.7), new InstantCommand(() -> grabberSubsystem.toggleGrabber())),
-      //TODO turn on intake in deadline group
-      new ParallelDeadlineGroup(firstPickUpCommand, new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP)),
+      new ParallelDeadlineGroup(new WaitCommand(0.7), new InstantCommand(() -> grabberSubsystem.release())),
+      new ParallelDeadlineGroup(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.FLOOR), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1))),
+      new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
+      firstPickUpCommand,
       new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
-      new InstantCommand(() -> grabberSubsystem.toggleGrabber()),
+      new ParallelDeadlineGroup(new IntakeArmCommand(intakeSubsystem, IntakePlaceStates.DRIVE), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.2))),
       firstScoreCommand,
       new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
-      new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.HIGH),
-      new ParallelDeadlineGroup(new WaitCommand(0.7), new InstantCommand(() -> grabberSubsystem.toggleGrabber())),
-      new ParallelDeadlineGroup(edgeOfCommunityCommand, new ArmElevatorCommand(elevatorSubsystem, armSubsystem, PlaceStates.UP)),
+      // Start of transfer sequence
+      new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.TRANSFER),
+      new ArmCommand(armSubsystem, ArmCommand.PlaceStates.TRANSFER),
+      new ParallelDeadlineGroup(new WaitCommand(0.6), new InstantCommand(() -> grabberSubsystem.grab())),
+      // End of transfer sequence
+      new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
+      new ParallelDeadlineGroup(new WaitCommand(0.7), new InstantCommand(() -> grabberSubsystem.release())),
+      edgeOfCommunityCommand,
+      new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ElevatorCommand(elevator, ElevatorCommand.PlaceStates.DRIVE)),
       new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0))
     );
   }

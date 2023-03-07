@@ -305,16 +305,16 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Turns all the wheels inward to prevent pushing and sets the speed of each
     // module to 0
-    if (driverController.povDown().getAsBoolean()) {
-      swerveModuleStates[0].angle = Rotation2d.fromDegrees(45);
-      swerveModuleStates[0].speedMetersPerSecond = 0;
-      swerveModuleStates[1].angle = Rotation2d.fromDegrees(-45);
-      swerveModuleStates[1].speedMetersPerSecond = 0;
-      swerveModuleStates[2].angle = Rotation2d.fromDegrees(-45);
-      swerveModuleStates[2].speedMetersPerSecond = 0;
-      swerveModuleStates[3].angle = Rotation2d.fromDegrees(45);
-      swerveModuleStates[3].speedMetersPerSecond = 0;
-    }
+    // if (driverController.povDown().getAsBoolean()) {
+    //   swerveModuleStates[0].angle = Rotation2d.fromDegrees(45);
+    //   swerveModuleStates[0].speedMetersPerSecond = 0;
+    //   swerveModuleStates[1].angle = Rotation2d.fromDegrees(-45);
+    //   swerveModuleStates[1].speedMetersPerSecond = 0;
+    //   swerveModuleStates[2].angle = Rotation2d.fromDegrees(-45);
+    //   swerveModuleStates[2].speedMetersPerSecond = 0;
+    //   swerveModuleStates[3].angle = Rotation2d.fromDegrees(45);
+    //   swerveModuleStates[3].speedMetersPerSecond = 0;
+    // }
 
     // Sets the swerve modules to their desired states using optimization method
     frontLeft.setDesiredState(swerveModuleStates[0]);

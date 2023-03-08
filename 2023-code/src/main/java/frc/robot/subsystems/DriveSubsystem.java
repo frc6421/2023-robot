@@ -164,7 +164,6 @@ public class DriveSubsystem extends SubsystemBase {
     backRight.setDesiredState(desiredStates[3]);
   }
 
-  // TODO not currently used
   /**
    * Sets the swerve module states
    * Uses closed loop control for auto

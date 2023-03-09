@@ -297,6 +297,7 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int COPILOT_CONTROLLER_PORT = 1;
+    public static final int TESTING_CONTROLLER_PORT = 2;
   }
 
   public static class ArmConstants {
@@ -403,7 +404,10 @@ public final class Constants {
     /** Y offset from center of the cube AprilTag */
     public static final double CONE_OFFSET = 0.5715;
     /** X offset from substation AprilTag */
-    public static final double SUBSTATION_OFFSET = 1.08;
+    public static final double SUBSTATION_X_OFFSET = 1.08;
+
+    /** Y offset when moving to left or right side of substation */
+    public static final double SUBSTATION_Y_OFFSET = 0.5;
 
     /** X offset from AprilTag to end of grids */
     public static final double GRID_OFFSET = 0.36;

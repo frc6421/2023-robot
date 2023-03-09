@@ -71,6 +71,8 @@ public class RobotContainer {
   
   private final CommandXboxController copilotController;
 
+  private final CommandXboxController testingController;
+
   private final ArmSubsystem armSubsystem;
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
@@ -99,6 +101,10 @@ public class RobotContainer {
   private static double steerNerf = 0.8; //0.5
 
   public static boolean isLeftCone;
+  public static boolean isRightCone;
+  public static boolean isCube;
+
+  public static boolean isLeftSubstation;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -133,6 +139,8 @@ public class RobotContainer {
     PDP.clearStickyFaults();
 
     copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
+
+    testingController = new CommandXboxController(OperatorConstants.TESTING_CONTROLLER_PORT);
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
@@ -294,7 +302,19 @@ public class RobotContainer {
         .andThen(new ParallelDeadlineGroup(new WaitCommand(0.15), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(BlinkinSubsystem.isPurpled() ? 0.2 : -0.2))))
         .andThen(new ParallelDeadlineGroup(new WaitCommand(0.6), /*new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)),*/ new InstantCommand(() -> grabberSubsystem.grab())))
         .andThen(new ParallelDeadlineGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)))));
-    
+
+
+    // Set left cone
+    testingController.leftBumper().onTrue(new ParallelCommandGroup(new InstantCommand(() -> isLeftCone = true), new InstantCommand(() -> isRightCone = false), new InstantCommand(() -> isCube = false)));
+    // Set right cone
+    testingController.rightBumper().onTrue(new ParallelCommandGroup(new InstantCommand(() -> isLeftCone = false), new InstantCommand(() -> isRightCone = true), new InstantCommand(() -> isCube = false)));
+    // Set cube
+    testingController.back().onTrue(new ParallelCommandGroup(new InstantCommand(() -> isLeftCone = false), new InstantCommand(() -> isRightCone = false), new InstantCommand(() -> isCube = true)));
+    // Set left substation
+    testingController.povLeft().onTrue(new InstantCommand(() -> isLeftSubstation = true));
+    // Set right substation
+    testingController.povRight().onTrue(new InstantCommand(() -> isLeftSubstation = false));
+
   }
 
 

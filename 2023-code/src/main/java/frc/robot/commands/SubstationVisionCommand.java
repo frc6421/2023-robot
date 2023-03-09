@@ -62,12 +62,12 @@ public class SubstationVisionCommand extends CommandBase {
     tagID = LimelightSubsystem.getAprilTagID(limelightHostName);
 
     if (DriverStation.getAlliance() == Alliance.Red && tagID == 5) {
-      targetXDistance = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET;
+      targetXDistance = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
       targetYDistance = VisionConstants.RED_SUBSTATION_POSE_Y + 0.5;
       targetYawAngle = 0;
 
     } else if (DriverStation.getAlliance() == Alliance.Blue && tagID == 4) {
-      targetXDistance = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET;
+      targetXDistance = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
       targetYDistance = VisionConstants.BLUE_SUBSTATION_POSE_Y + 0.5;
       targetYawAngle = 0;
     }
@@ -118,13 +118,13 @@ public class SubstationVisionCommand extends CommandBase {
   public boolean isFinished() {
     if (DriverStation.getAlliance() == Alliance.Red) {
       return Math.abs(
-          xTagDistance - (VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_OFFSET)) <= allowableXError
+          xTagDistance - (VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET)) <= allowableXError
           && Math.abs(yTagDistance - VisionConstants.RED_SUBSTATION_POSE_Y) <= allowableYError
           && Math.abs(yawTagAngle - targetYawAngle) <= allowableYawError;
 
     } else if (DriverStation.getAlliance() == Alliance.Blue) {
       return Math
-          .abs(xTagDistance - (VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_OFFSET)) <= allowableXError
+          .abs(xTagDistance - (VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET)) <= allowableXError
           && Math.abs(yTagDistance - VisionConstants.BLUE_SUBSTATION_POSE_Y) <= allowableYError
           && Math.abs(yawTagAngle - targetYawAngle) <= allowableYawError;
 

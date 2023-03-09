@@ -14,6 +14,7 @@ import frc.robot.commands.autonomousCommands.OnePieceChargeCommand;
 import frc.robot.commands.autonomousCommands.TwoPieceChargeCommand;
 import frc.robot.commands.autonomousCommands.TwoPieceCommand;
 import frc.robot.commands.SubstationVisionCommand;
+import frc.robot.commands.VisionCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.MathUtil;
@@ -87,6 +88,7 @@ public class RobotContainer {
   private final SubstationVisionCommand substationVisionCommand;
   private final SubstationGamePieceVisionCommand substationGamePieceVisionCommand;
   private final ScoringVisionCommand scoringVisionCommand;
+  private final VisionCommand visionCommand;
 
   private SendableChooser<Command> autoChooser;
 
@@ -132,6 +134,7 @@ public class RobotContainer {
     substationVisionCommand = new SubstationVisionCommand(driveSubsystem);
     substationGamePieceVisionCommand = new SubstationGamePieceVisionCommand(driveSubsystem);
     scoringVisionCommand = new ScoringVisionCommand(driveSubsystem);
+    visionCommand = new VisionCommand(driveSubsystem);
 
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -314,6 +317,9 @@ public class RobotContainer {
     testingController.povLeft().onTrue(new InstantCommand(() -> isLeftSubstation = true));
     // Set right substation
     testingController.povRight().onTrue(new InstantCommand(() -> isLeftSubstation = false));
+
+    // Run vision command
+    testingController.b().whileTrue(visionCommand);
 
   }
 

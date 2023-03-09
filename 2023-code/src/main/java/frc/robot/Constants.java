@@ -410,7 +410,7 @@ public final class Constants {
     public static final double SUBSTATION_Y_OFFSET = 0.5;
 
     /** X offset from AprilTag to end of grids */
-    public static final double GRID_OFFSET = 0.36;
+    public static final double GRID_OFFSET = 0.86; // 0.36
 
     public static final double SUBSTATION_GAME_PIECE_Y_ANGLE = 0;
 

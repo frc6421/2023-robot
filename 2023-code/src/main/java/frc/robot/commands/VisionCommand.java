@@ -19,6 +19,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
 
 public class VisionCommand extends CommandBase {
@@ -163,12 +164,12 @@ public class VisionCommand extends CommandBase {
         if (RobotContainer.isLeftSubstation) {
           targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
           targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 0;
+          targetYawAngle = 180;
 
         } else if (!RobotContainer.isLeftSubstation) {
           targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
           targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 0;
+          targetYawAngle = 180;
 
         }
 
@@ -178,12 +179,12 @@ public class VisionCommand extends CommandBase {
         if (RobotContainer.isLeftSubstation) {
           targetXPose = VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
           targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 0;
+          targetYawAngle = 180;
 
         } else if (!RobotContainer.isLeftSubstation) {
           targetXPose = VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
           targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 0;
+          targetYawAngle = 180;
 
         }
 
@@ -265,9 +266,9 @@ public class VisionCommand extends CommandBase {
     System.out.println("Yaw Target: " + targetYawAngle);
 
     if (allianceColor == "Red") {
-      driveSubsystem.resetOdometry(LimelightHelpers.getBotPose2d_wpiRed(limelightHostName));
+      driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getRedBotPoseX(limelightHostName), LimelightSubsystem.getRedBotPoseY(limelightHostName), GyroSubsystem.getYawAngle()));
     } else if (allianceColor == "Blue") {
-      driveSubsystem.resetOdometry(LimelightHelpers.getBotPose2d_wpiBlue(limelightHostName));
+      driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getBlueBotPoseX(limelightHostName), LimelightSubsystem.getBlueBotPoseY(limelightHostName), GyroSubsystem.getYawAngle()));
     }
 
     System.out.println("Total robot pose: " + driveSubsystem.getPose2d().toString());

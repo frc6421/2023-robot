@@ -80,7 +80,7 @@ public class VisionCommand extends CommandBase {
     if(LimelightSubsystem.isTargetDetected(limelightHostName)) {
       tagID = (int)LimelightSubsystem.getAprilTagID(limelightHostName);
     } else {
-      tagID = 0;
+      end(true);
     }
 
     switch (tagID) {
@@ -245,11 +245,6 @@ public class VisionCommand extends CommandBase {
           targetYawAngle = 0;
         }
         break;
-      // No AprilTag detected
-      case 0:
-        end(true);
-        break;
-
       default:
         end(true);
         break;

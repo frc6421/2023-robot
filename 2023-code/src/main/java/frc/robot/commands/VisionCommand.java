@@ -7,11 +7,15 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
@@ -38,48 +42,33 @@ public class VisionCommand extends CommandBase {
   private double targetYPose;
   private double targetYawAngle;
 
-  private final double xPValue = 1;
-  private final double yPValue = 1;
-  private final double yawPValue = 0.1;
+  private final double xPValue = 1.2;
+  private final double yPValue = 1.2;
+  private final double yawPValue = 0.015;
 
-  private final double allowableXError = 0.02;
-  private final double allowableYError = 0.02;
-  private final double allowableYawError = 1;
+  private final double allowableXError = 0.01;
+  private final double allowableYError = 0.01;
+  private final double allowableYawError = 0.5;
 
   private double xPercentAdjust;
   private double yPercentAdjust;
   private double yawPercentAdjust;
 
-  private final TrapezoidProfile.Constraints translationConstraints;
-  private final TrapezoidProfile.Constraints rotationConstraints;
-
-  private final ProfiledPIDController xProfiledPIDController;
-  private final ProfiledPIDController yProfiledPIDController;
-  private final ProfiledPIDController yawProfiledPIDController;
-
   private final PIDController xPIDController;
+  private final PIDController yPIDController;
+  private final PIDController yawPIDController;
 
   /** Creates a new VisionCommand. */
   public VisionCommand(DriveSubsystem drive) {
     driveSubsystem = drive;
 
-    // translationConstraints = new TrapezoidProfile.Constraints(AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
-    //     AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED);
-
-    translationConstraints = new TrapezoidProfile.Constraints(1, 1);
-
-    rotationConstraints = new TrapezoidProfile.Constraints(Units.radiansToDegrees(AutoConstants.AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC),
-        Units.radiansToDegrees(AutoConstants.AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC));
-
-    xProfiledPIDController = new ProfiledPIDController(xPValue, 0, 0, translationConstraints);
-    yProfiledPIDController = new ProfiledPIDController(yPValue, 0, 0, translationConstraints);
-    yawProfiledPIDController = new ProfiledPIDController(yawPValue, 0, 0, rotationConstraints);
-
     xPIDController = new PIDController(xPValue, 0, 0);
+    yPIDController = new PIDController(yPValue, 0, 0);
+    yawPIDController = new PIDController(yawPValue, 0, 0);
 
     xPIDController.setTolerance(allowableXError);
-    yProfiledPIDController.setTolerance(allowableYError);
-    yawProfiledPIDController.setTolerance(allowableYawError);
+    yPIDController.setTolerance(allowableYError);
+    yawPIDController.setTolerance(allowableYawError);
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSubsystem);
@@ -88,7 +77,11 @@ public class VisionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    tagID = (int) LimelightSubsystem.getAprilTagID(limelightHostName);
+    if(LimelightSubsystem.isTargetDetected(limelightHostName)) {
+      tagID = (int)LimelightSubsystem.getAprilTagID(limelightHostName);
+    } else {
+      tagID = 0;
+    }
 
     switch (tagID) {
       // Red alliance left grid (driver perspective)
@@ -252,63 +245,87 @@ public class VisionCommand extends CommandBase {
           targetYawAngle = 0;
         }
         break;
+      // No AprilTag detected
+      case 0:
+        end(true);
+        break;
+
       default:
         end(true);
         break;
     }
 
     xPIDController.setSetpoint(targetXPose);
-    yProfiledPIDController.setGoal(targetYPose);
-    yawProfiledPIDController.setGoal(targetYawAngle);
+    yPIDController.setSetpoint(targetYPose);
+    yawPIDController.setSetpoint(targetYawAngle);
 
-    System.out.println("X Target: " + targetXPose);
-    System.out.println("Y Target: " + targetYPose);
-    System.out.println("Yaw Target: " + targetYawAngle);
+    // System.out.println("X Target: " + targetXPose);
+    // System.out.println("Y Target: " + targetYPose);
+    // System.out.println("Yaw Target: " + targetYawAngle);
 
     if (allianceColor == "Red") {
-      driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getRedBotPoseX(limelightHostName), LimelightSubsystem.getRedBotPoseY(limelightHostName), GyroSubsystem.getYawAngle()));
+      driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getRedBotPoseX(limelightHostName),
+          LimelightSubsystem.getRedBotPoseY(limelightHostName), GyroSubsystem.getYawAngle()));
+
     } else if (allianceColor == "Blue") {
-      driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getBlueBotPoseX(limelightHostName), LimelightSubsystem.getBlueBotPoseY(limelightHostName), GyroSubsystem.getYawAngle()));
+      driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getBlueBotPoseX(limelightHostName),
+          LimelightSubsystem.getBlueBotPoseY(limelightHostName), GyroSubsystem.getYawAngle()));
+
     }
 
-    System.out.println("Total robot pose: " + driveSubsystem.getPose2d().toString());
+    // System.out.println("Total robot pose: " +
+    // driveSubsystem.getPose2d().toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentXPose = driveSubsystem.getPose2d().getX();
-    currentYPose = driveSubsystem.getPose2d().getY();
-    currentYawAngle = driveSubsystem.getPose2d().getRotation().getDegrees();
+      currentXPose = driveSubsystem.getPose2d().getX();
+      currentYPose = driveSubsystem.getPose2d().getY();
+      currentYawAngle = driveSubsystem.getPose2d().getRotation().getDegrees();
 
-    //System.out.println("Current X: " + currentXPose);
-    System.out.println("Current X: " + currentXPose);
-    // System.out.println("X Target: " + targetXPose);
+      // System.out.println("Current X: " + currentXPose);
+      // System.out.println("Current X: " + currentXPose);
+      // System.out.println("X Target: " + targetXPose);
 
-    xPercentAdjust = MathUtil.clamp(xPIDController.calculate(currentXPose), -1, 1);
-    yPercentAdjust = MathUtil.clamp(yProfiledPIDController.calculate(currentYPose), -1, 1);
-    yawPercentAdjust = MathUtil.clamp(yawProfiledPIDController.calculate(currentYawAngle), -1, 1);
+      xPercentAdjust = MathUtil.clamp(xPIDController.calculate(currentXPose), -1, 1);
+      yPercentAdjust = MathUtil.clamp(yPIDController.calculate(currentYPose), -1, 1);
+      yawPercentAdjust = MathUtil.clamp(yawPIDController.calculate(currentYawAngle), -1, 1);
 
-    System.out.println("xPercentAdjust: " + xPercentAdjust);
+      SmartDashboard.putNumber("xPercentAdjust", xPercentAdjust);
+      SmartDashboard.putNumber("yPercentAdjust", yPercentAdjust);
+      SmartDashboard.putNumber("yawPercentAdjust", yawPercentAdjust);
 
-    //driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
-    driveSubsystem.autoDrive(xPercentAdjust, 0, 0);
-    //driveSubsystem.autoDrive(0, yPercentAdjust, 0);
-    //driveSubsystem.autoDrive(0, 0, yawPercentAdjust);
+      SmartDashboard.putNumber("Current X", currentXPose);
+      SmartDashboard.putNumber("Current Y", currentYPose);
+      SmartDashboard.putNumber("Current Yaw", currentYawAngle);
+
+      SmartDashboard.putNumber("Target X", targetXPose);
+      SmartDashboard.putNumber("Target Y", targetYPose);
+      SmartDashboard.putNumber("Target Yaw", targetYawAngle);
+
+      driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
+      // driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, 0);
+      // driveSubsystem.autoDrive(0, yPercentAdjust, 0);
+      // driveSubsystem.autoDrive(0, 0, yawPercentAdjust);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    if(interrupted) {
+      System.out.println("interrupted");
+    }
+
     driveSubsystem.autoDrive(0, 0, 0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //return currentXPose <= allowableXError && currentYPose <= allowableYError && currentYawAngle <= allowableYawError;
-    return xPIDController.atSetpoint();
-    //return yProfiledPIDController.atGoal();
-    //return currentYawAngle <= allowableYawError;
+    return xPIDController.atSetpoint() && yPIDController.atSetpoint() && yawPIDController.atSetpoint();
+    // return xPIDController.atSetpoint();
+    // return yPIDController.atSetpoint();
+    // return yawPIDController.atSetpoint();
   }
 }

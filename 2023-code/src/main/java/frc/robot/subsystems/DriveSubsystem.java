@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.OperatorConstants;
@@ -47,6 +49,9 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter yDriveSlew;
 
   private CommandXboxController driverController;
+
+  // Feedforward for vision drive method
+  private SimpleMotorFeedforward feedforward;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -102,6 +107,8 @@ public class DriveSubsystem extends SubsystemBase {
     magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
     xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
     yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
+
+    feedforward = new SimpleMotorFeedforward(DriveConstants.S_VOLTS, DriveConstants.V_VOLT_SECONDS_PER_METER, DriveConstants.A_VOLT_SECONDS_SQUARED_PER_METER);
   }
 
   @Override
@@ -323,7 +330,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /** Same as drive method, but without the trigger control inputs.
-   *  This allows it to be used for drivin to targets based on vision.
+   *  This allows it to be used for driving to targets based on vision.
    * 
    * @param xSpeedInput percent input from -1 to 1 (converts to meters per sec)
    * @param ySpeedInput percent input from -1 to 1 (converts to meters per sec)
@@ -334,8 +341,6 @@ public class DriveSubsystem extends SubsystemBase {
     double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
     double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
-
-    System.out.println("YSpeed: " + ySpeed);
     
     // Sets field relative speeds
     var swerveModuleStates = 

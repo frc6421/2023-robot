@@ -201,8 +201,8 @@ public final class Constants {
     public static final double DRIVE_NERF_JOYSTICK_MULTIPLIER = 0.75;
 
     public static final double S_VOLTS = 0.01690; // 2/23/23 SysID said 0.20283, / 12 for our values
-    public static final double V_VOLT_SECONDS_PER_METER = 0.1791; // 2/23/23 SysID said 2.1493
-    public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.05486; // 2/23/23 SysID said 0.65828
+    public static final double V_VOLT_SECONDS_PER_METER = 0.1791; // 2/23/23 SysID said 2.1493, / 12 for our values
+    public static final double A_VOLT_SECONDS_SQUARED_PER_METER = 0.05486; // 2/23/23 SysID said 0.65828, / 12 for our values
 
     public static final double DRIVE_SLEW_RATE = 3; //2.5
 
@@ -410,7 +410,7 @@ public final class Constants {
     public static final double SUBSTATION_Y_OFFSET = 0.5;
 
     /** X offset from AprilTag to end of grids */
-    public static final double GRID_OFFSET = 0.86; // 0.36
+    public static final double GRID_OFFSET = 0.36;
 
     public static final double SUBSTATION_GAME_PIECE_Y_ANGLE = 0;
 

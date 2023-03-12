@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
@@ -29,7 +30,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 public class VisionCommand extends CommandBase {
   private DriveSubsystem driveSubsystem;
 
-  private String allianceColor = DriverStation.getAlliance().name();
+  private String allianceColor;
   private String limelightHostName = "limelight-two";
 
   private int tagID;
@@ -42,9 +43,9 @@ public class VisionCommand extends CommandBase {
   private double targetYPose;
   private double targetYawAngle;
 
-  private final double xPValue = 1.2;
-  private final double yPValue = 1.2;
-  private final double yawPValue = 0.015;
+  private final double xPValue = 4.9;
+  private final double yPValue = 5;
+  private final double yawPValue = 0.04;
 
   private final double allowableXError = 0.01;
   private final double allowableYError = 0.01;
@@ -77,11 +78,17 @@ public class VisionCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    allianceColor = DriverStation.getAlliance().name();
+
     if(LimelightSubsystem.isTargetDetected(limelightHostName)) {
       tagID = (int)LimelightSubsystem.getAprilTagID(limelightHostName);
+      System.out.println(tagID);
     } else {
-      end(true);
+      System.out.println("No target detected");
+      CommandScheduler.getInstance().cancel(this);
     }
+
+    System.out.println("Didn't end");
 
     switch (tagID) {
       // Red alliance left grid (driver perspective)
@@ -151,37 +158,36 @@ public class VisionCommand extends CommandBase {
 
         break;
       // Blue alliance substation
-      // TODO test y offset
-      // TODO test x offset with new intake
-      case 4:
-        if (RobotContainer.isLeftSubstation) {
-          targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
-          targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 180;
+      // TODO determine if we need substation
+      // case 4:
+      //   if (RobotContainer.isLeftSubstation) {
+      //     targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
+      //     targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
+      //     targetYawAngle = 180;
 
-        } else if (!RobotContainer.isLeftSubstation) {
-          targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
-          targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 180;
+      //   } else if (!RobotContainer.isLeftSubstation) {
+      //     targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
+      //     targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
+      //     targetYawAngle = 180;
 
-        }
+      //   }
 
-        break;
-      // Red alliance substation
-      case 5:
-        if (RobotContainer.isLeftSubstation) {
-          targetXPose = VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
-          targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 180;
+      //   break;
+      // // Red alliance substation
+      // case 5:
+      //   if (RobotContainer.isLeftSubstation) {
+      //     targetXPose = VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
+      //     targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
+      //     targetYawAngle = 180;
 
-        } else if (!RobotContainer.isLeftSubstation) {
-          targetXPose = VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
-          targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 180;
+      //   } else if (!RobotContainer.isLeftSubstation) {
+      //     targetXPose = VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
+      //     targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
+      //     targetYawAngle = 180;
 
-        }
+      //   }
 
-        break;
+      //   break;
       // Blue alliance left grid
       case 6:
         if (RobotContainer.isLeftCone) {
@@ -300,9 +306,9 @@ public class VisionCommand extends CommandBase {
       SmartDashboard.putNumber("Target Yaw", targetYawAngle);
 
       driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
-      // driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, 0);
-      // driveSubsystem.autoDrive(0, yPercentAdjust, 0);
-      // driveSubsystem.autoDrive(0, 0, yawPercentAdjust);
+      //driveSubsystem.autoDrive(xPercentAdjust, 0, 0);
+      //driveSubsystem.autoDrive(0, yPercentAdjust, 0);
+      //driveSubsystem.autoDrive(0, 0, yawPercentAdjust);
   }
 
   // Called once the command ends or is interrupted.

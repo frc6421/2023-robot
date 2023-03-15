@@ -18,10 +18,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.driverControlSystem;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -45,8 +43,6 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter magnitudeSlewRate;
   private SlewRateLimiter xDriveSlew;
   private SlewRateLimiter yDriveSlew;
-
-  private CommandXboxController driverController;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -89,8 +85,6 @@ public class DriveSubsystem extends SubsystemBase {
 
     driftCorrector = new PIDController(.001, 0, 0); // TODO implement Feed Forward for functionality
     driftCorrector.enableContinuousInput(0, 360);
-
-    driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
     // Sets up the sendable chooser on SmartDashboard to select control system
     controlSystem = new SendableChooser<>();

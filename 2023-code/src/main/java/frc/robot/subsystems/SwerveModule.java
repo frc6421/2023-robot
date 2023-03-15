@@ -19,18 +19,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.Constants.OperatorConstants;
 
 public class SwerveModule{
   private final WPI_TalonFX driveMotor;
   private final WPI_TalonFX steerMotor;
 
   private final WPI_CANCoder steerEncoder;
-
-  private CommandXboxController driverController;
 
   private final SimpleMotorFeedforward feedforward;
 
@@ -80,8 +76,6 @@ public class SwerveModule{
 
     Timer.delay(1.0);
     setSteerMotorToAbsolute();
-
-    driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
   }
 
   // @Override

@@ -27,7 +27,6 @@ public class ElevatorCommand extends CommandBase {
     FLOOR,
     MID,
     HIGH,
-    SUBSTATION,
     HYBRID, 
     TRANSFER,
     DRIVE
@@ -62,10 +61,6 @@ public class ElevatorCommand extends CommandBase {
 
       case HIGH:
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS, 0);
-        break;
-
-      case SUBSTATION:
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_SUBSTATION_LENGTH, 0);
         break;
 
       case HYBRID:

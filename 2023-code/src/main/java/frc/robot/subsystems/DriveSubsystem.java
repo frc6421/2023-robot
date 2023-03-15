@@ -20,11 +20,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.driverControlSystem;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -48,13 +45,6 @@ public class DriveSubsystem extends SubsystemBase {
   private SlewRateLimiter magnitudeSlewRate;
   private SlewRateLimiter xDriveSlew;
   private SlewRateLimiter yDriveSlew;
-
-  private CommandXboxController driverController;
-
-  // Feedforward for vision drive method
-  private SimpleMotorFeedforward feedforward;
-
-  private Field2d field;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -98,8 +88,6 @@ public class DriveSubsystem extends SubsystemBase {
     driftCorrector = new PIDController(.001, 0, 0); // TODO implement Feed Forward for functionality
     driftCorrector.enableContinuousInput(0, 360);
 
-    driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
-
     // Sets up the sendable chooser on SmartDashboard to select control system
     controlSystem = new SendableChooser<>();
     controlSystem.setDefaultOption("Left Trigger Controls", driverControlSystem.LEFT_TRIGGER);
@@ -111,10 +99,6 @@ public class DriveSubsystem extends SubsystemBase {
     xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
     yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
 
-    feedforward = new SimpleMotorFeedforward(DriveConstants.S_VOLTS, DriveConstants.V_VOLT_SECONDS_PER_METER, DriveConstants.A_VOLT_SECONDS_SQUARED_PER_METER);
-
-    field = new Field2d();
-    SmartDashboard.putData(field);
   }
 
   @Override
@@ -127,8 +111,6 @@ public class DriveSubsystem extends SubsystemBase {
       backRight.getModulePosition()
       }
     );
-
-    field.getRobotPose();
   }
 
   // ODOMETRY METHODS \\

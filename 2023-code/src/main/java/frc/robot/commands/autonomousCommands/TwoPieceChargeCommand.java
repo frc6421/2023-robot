@@ -19,7 +19,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -31,7 +30,6 @@ import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.GrabberSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -40,19 +38,16 @@ public class TwoPieceChargeCommand extends SequentialCommandGroup {
   private DriveSubsystem driveSubsystem;
   private ElevatorSubsystem elevatorSubsystem;
   private ArmSubsystem armSubsystem;
-  private GrabberSubsystem grabberSubsystem;
 
   /**
    * Creates a new TwoPieceChargeCommand. Scores two pieces on the high row and
    * balances the charge station
    */
-  public TwoPieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm,
-      GrabberSubsystem grabber) {
+  public TwoPieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm) {
     driveSubsystem = drive;
     elevatorSubsystem = elevator;
     armSubsystem = arm;
-    grabberSubsystem = grabber;
-    addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+    addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem);
 
     TrajectoryConfig forwardConfig = new TrajectoryConfig(
         AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
@@ -130,19 +125,16 @@ public class TwoPieceChargeCommand extends SequentialCommandGroup {
         // TODO determine which height we will score on in auto
         new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH),
             new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
-        new ParallelDeadlineGroup(new WaitCommand(0.7), new InstantCommand(() -> grabberSubsystem.release())),
         // TODO turn on intake in deadline group
         new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE),
             new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
         new WaitCommand(0.5),
         firstPickUpCommand,
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
-        new InstantCommand(() -> grabberSubsystem.grab()),
         firstScoreCommand,
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH),
             new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
-        new ParallelDeadlineGroup(new WaitCommand(0.7), new InstantCommand(() -> grabberSubsystem.release())),
         new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE),
             new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
         new WaitCommand(0.5),

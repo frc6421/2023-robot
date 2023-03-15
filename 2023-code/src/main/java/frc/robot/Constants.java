@@ -20,6 +20,64 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static enum driverControlSystem {
+    LEFT_TRIGGER,
+    RIGHT_TRIGGER,
+    JOYSTICK,
+  }
+
+  public static class ArmConstants {
+    public static final int ARM_CAN_ID = 40;
+
+    public static final double ARM_DEFAULT_FF = 0.04; // Determined on 2/13/23 0.04    
+    public static final double ARM_P = 0.06;// Determined on 2/7/23 0.06
+    public static final double ARM_I = 0.0;
+    public static final double ARM_D = 0.0;
+
+    public static final float ARM_SOFT_LIMIT = 0.0f;
+
+    public static final double ARM_GEAR_RATIO = 120.0;
+
+    /**
+     * Calculated degrees arm moves per motor rotation from 360 / gear ratio
+     */
+    public static final double DEGREES_PER_MOTOR_ROTATION = (360 / ARM_GEAR_RATIO);
+
+    public static final float ARM_IN_SOFT_LIMIT = -8; // previously -29 before hard stop
+
+    public static final float ARM_OUT_SOFT_LIMIT = 204; // previously 224 before hard stop
+
+    public static final float ARM_ELEVATOR_OUT_SOFT_LIMIT = 270;
+
+    public static final double ARM_MAX_TEST_PERCENT_OUTPUT = 0.15;
+
+    public static final double MAX_ARM_GRAVITY_FF = 0.0375; // Determined on 2/7/2023
+
+    public static final double FLOOR_MIN_INCH_DISTANCE = 12.1;
+
+    public static final double FLOOR_MAX_INCH_DISTANCE = 20.6;
+
+    public static final boolean ARM_IS_INVERTED = true;
+
+    public static final double ARM_SET_POS_CONVERSION_FACTOR = 1.6;
+
+    public static class ArmAngleConstants {
+      public static final double CONE_HIGH_ANGLE = 138.0;
+      public static final double CONE_MID_ANGLE = 143.0;
+
+      public static final double CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
+      public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
+
+      public static final double ARM_START_POSITION = 50; //Determined 03/2/23 Previously: 52.0
+
+      public static final double DRIVE_ANGLE = 65;
+      
+      public static final double FLOOR_ANGLE = 210.7;
+    }
+
+  }
+
   public static class AutoConstants {
     public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 4; // TODO update 4
     public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3; // TODO update 8
@@ -139,11 +197,6 @@ public final class Constants {
     }
   }
 
-  public static class ChargeStationConstants {
-    public static final double CHARGE_MAX_VELOCITY = 1; //TODO update with actual values
-    public static final double CHARGE_MAX_ACCELERATION = .5; //TODO update with actual values
-  }
-
   public static class BlinkinConstants {
     public static final double BLINKIN_RED = 0.61;
     public static final double BLINKIN_BLUE = 0.87;
@@ -160,6 +213,11 @@ public final class Constants {
     public static final double BLINKIN_GLITTER = -0.89;
     public static final double BLINKIN_PARTY_WAVE = -0.43;
     public static final double BLINKIN_SHOT_RED = -0.85;
+  }
+
+  public static class ChargeStationConstants {
+    public static final double CHARGE_MAX_VELOCITY = 1; //TODO update with actual values
+    public static final double CHARGE_MAX_ACCELERATION = .5; //TODO update with actual values
   }
 
   public static class DriveConstants {
@@ -215,6 +273,31 @@ public final class Constants {
     public static final double GYRO_YAW_OFFSET = -0.435;
   }
 
+  public static class ElevatorConstants {
+    public static final int ELEVATOR_MOTOR_CAN_ID = 50;
+
+    public static final double ELEVATOR_P = 60; // 1/21/23 tuned with no arm weight
+    public static final double ELEVATOR_I = 0; 
+    public static final double ELEVATOR_D = 0;
+
+    public static final double ELEVATOR_FF = 0.02; // 2/7/23 tuned with no arm weight
+
+    public static final double ELEVATOR_GEAR_RATIO = 15;
+
+    public static final double ELEVATOR_MAX_POS_IN = 20.375;
+    public static final double ELEVATOR_MIN_POS_IN = 0;
+
+    public static final float ELEVATOR_FORWARD_SOFT_LIMIT_METERS = (float)Units.inchesToMeters(ELEVATOR_MAX_POS_IN);
+    public static final float ELEVATOR_REVERSE_SOFT_LIMIT = 0f;
+
+    public static final double ELEVATOR_DEFULT_NERF = 0.01;
+
+    /**
+     * In meters
+     */
+    public static final double ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE = (Units.inchesToMeters(1.7567) * Math.PI);
+  }
+
   public static class ModuleConstants {
     public static final String CANIVORE_NAME = "driveBus";
 
@@ -266,137 +349,12 @@ public final class Constants {
     public static final double DEADBAND_STEER_MOTOR = 0.02;
   }
 
-  public static class ElevatorConstants {
-    public static final int ELEVATOR_MOTOR_CAN_ID = 50;
-
-    public static final double ELEVATOR_P = 60; // 1/21/23 tuned with no arm weight
-    public static final double ELEVATOR_I = 0; 
-    public static final double ELEVATOR_D = 0;
-
-    public static final double ELEVATOR_FF = 0.02; // 2/7/23 tuned with no arm weight
-
-    public static final double ELEVATOR_GEAR_RATIO = 15;
-
-    public static final double ELEVATOR_MAX_POS_IN = 20.375;
-    public static final double ELEVATOR_MIN_POS_IN = 0;
-
-    public static final float ELEVATOR_FORWARD_SOFT_LIMIT_METERS = (float)Units.inchesToMeters(ELEVATOR_MAX_POS_IN);
-    public static final float ELEVATOR_REVERSE_SOFT_LIMIT = 0f;
-
-    public static final double ELEVATOR_DEFULT_NERF = 0.01;
-
-    public static final double ELEVATOR_SUBSTATION_LENGTH = 0.27;
-    public static final double ELEVATOR_TRANSFER_LENGTH = 0.489;
-
-    /**
-     * In meters
-     */
-    public static final double ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE = (Units.inchesToMeters(1.7567) * Math.PI);
-  }
-
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int COPILOT_CONTROLLER_PORT = 1;
     public static final int TESTING_CONTROLLER_PORT = 2;
   }
 
-  public static class ArmConstants {
-    public static final int ARM_CAN_ID = 40;
-
-    public static final double ARM_DEFAULT_FF = 0.04; // Determined on 2/13/23 0.04    
-    public static final double ARM_P = 0.06;// Determined on 2/7/23 0.06
-    public static final double ARM_I = 0.0;
-    public static final double ARM_D = 0.0;
-
-    public static final float ARM_SOFT_LIMIT = 0.0f;
-
-    public static final double ARM_GEAR_RATIO = 120.0;
-
-    /**
-     * Calculated degrees arm moves per motor rotation from 360 / gear ratio
-     */
-    public static final double DEGREES_PER_MOTOR_ROTATION = (360 / ARM_GEAR_RATIO);
-
-    public static final float ARM_IN_SOFT_LIMIT = -8; // previously -29 before hard stop
-
-    public static final float ARM_OUT_SOFT_LIMIT = 204; // previously 224 before hard stop
-
-    public static final float ARM_ELEVATOR_OUT_SOFT_LIMIT = 270;
-
-    public static final double ARM_MAX_TEST_PERCENT_OUTPUT = 0.15;
-
-    public static final double MAX_ARM_GRAVITY_FF = 0.0375; // Determined on 2/7/2023
-
-    public static final double FLOOR_MIN_INCH_DISTANCE = 12.1;
-
-    public static final double FLOOR_MAX_INCH_DISTANCE = 20.6;
-
-    public static final boolean ARM_IS_INVERTED = true;
-
-    public static final double ARM_SET_POS_CONVERSION_FACTOR = 1.6;
-
-    public static class ArmAngleConstants {
-      public static final double CONE_HIGH_ANGLE = 138.0;
-      public static final double CONE_MID_ANGLE = 143.0;
-
-      public static final double CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
-      public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
-
-      public static final double ARM_START_POSITION = 50; //Determined 03/2/23 Previously: 52.0
-      public static final double GRAB_FROM_SUBSTATION_ANGLE = 148;
-      public static final double TRANSFER_ANGLE = -8;
-
-      public static final double DRIVE_ANGLE = 65;
-      
-      public static final double GRAB_FROM_INTAKE_ANGLE = -26.9;
-
-      public static final double FLOOR_ANGLE = 210.7;
-    }
-
-  }
-
-  public static enum driverControlSystem {
-    LEFT_TRIGGER,
-    RIGHT_TRIGGER,
-    JOYSTICK,
-  }
-
-  public static class IntakeConstants {
-    public static final int ARM_INTAKE_MOTOR_ID = 20;
-    public static final int GRAB_INTAKE_MOTOR_ID = 21; 
-
-    public static final int INTAKE_PISTON_FORWARD_CHANNEL = 0;
-    public static final int INTAKE_PISTON_REVERSE_CHANNEL = 1;
-
-    public static final double INTAKE_MOTOR_SPEED = 0;
-
-    public static final double INTAKE_FLOOR_ANGLE = -11;
-    public static final double INTAKE_DRIVE_ANGLE = 96; //90.5, 88.5 TODO un-mess up this value
-    public static final double INTAKE_HYBRID_ANGLE = -5;
-    public static final double INTAKE_SINGLE_ANGLE = 45;
-    public static final double INTAKE_START_POSITION = 90;
-
-    public static final float INTAKE_BOTTOM_SOFT_LIMIT = -15f;
-    public static final float INTAKE_UP_SOFT_LIMIT = 97f;
-
-    public static final double INTAKE_ARM_P = 0.015; //TODO Value needs to be updated
-    public static final double INTAKE_ARM_I = 0; //TODO Value needs to be updated
-    public static final double INTAKE_ARM_D = 0; //TODO Value needs to be updated
-    public static final double INTAKE_ARM_FF = 0; //TODO Value needs to be updated
-
-    public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
-
-    public static final double MAX_ARM_GRAVITY_FF = 0.045;
-
-    public static final double INTAKE_ARM_SET_POS_CONVERSION_FACTOR = 1.6; //TODO Value needs to be updated
-  }
-
-  public static class GrabberConstants {
-    public static final int LEFT_FORWARD_CHANNEL = 3;
-    public static final int LEFT_REVERSE_CHANNEL = 2;
-    public static final int RIGHT_FORWARD_CHANNEL = 5;
-    public static final int RIGHT_REVERSE_CHANNEL = 4;
-  }
   public class VisionConstants {
     // All distances are in meters \\
     // Left and right are relative to the driver's perspective in the driver station \\
@@ -445,5 +403,59 @@ public final class Constants {
     // Tag 4
     public static final double BLUE_SUBSTATION_POSE_X = 16.18;
     public static final double BLUE_SUBSTATION_POSE_Y = 6.75;
+  }
+
+  public static class WristConstants {
+    public static final int WRIST_CAN_ID = 40;
+
+    public static final double WRIST_DEFAULT_FF = 0.04; // Determined on 2/13/23 0.04    
+    public static final double WRIST_P = 0.06;// Determined on 2/7/23 0.06
+    public static final double WRIST_I = 0.0;
+    public static final double WRIST_D = 0.0;
+
+    public static final float WRIST_SOFT_LIMIT = 0.0f;
+
+    public static final double WRIST_GEAR_RATIO = 60 * (64/18);
+
+    /**
+     * Calculated degrees wrist moves per motor rotation from 360 / gear ratio
+     */
+    public static final double WRIST_DEGREES_PER_MOTOR_ROTATION = (360 / WRIST_GEAR_RATIO);
+
+    public static final float WRIST_IN_SOFT_LIMIT = -8; // previously -29 before hard stop
+
+    public static final float WRIST_OUT_SOFT_LIMIT = 204; // previously 224 before hard stop
+
+    public static final float WRIST_ELEVATOR_OUT_SOFT_LIMIT = 270;
+
+    public static final double WRIST_MAX_TEST_PERCENT_OUTPUT = 0.15;
+
+    public static final double MAX_WRIST_GRAVITY_FF = 0.0375; // Determined on 2/7/2023
+
+    public static final double WRIST_FLOOR_MIN_INCH_DISTANCE = 12.1;
+
+    public static final double WRIST_FLOOR_MAX_INCH_DISTANCE = 20.6;
+
+    public static final boolean WRIST_IS_INVERTED = true;
+
+    public static final double WRIST_SET_POS_CONVERSION_FACTOR = 1.6;
+
+    public static class WristAngleConstants {
+      public static final double WRIST_CONE_HIGH_ANGLE = 138.0;
+      public static final double WRIST_CONE_MID_ANGLE = 143.0;
+
+      public static final double WRIST_CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
+      public static final double WRIST_CUBE_MID_OPTIMAL_ANGLE = 140.0;
+
+      public static final double WRIST_START_POSITION = 50; //Determined 03/2/23 Previously: 52.0
+      public static final double WRIST_GRAB_FROM_SUBSTATION_ANGLE = 148;
+      public static final double WRIST_TRANSFER_ANGLE = -8;
+
+      public static final double WRIST_DRIVE_ANGLE = 65;
+      
+      public static final double WRIST_GRAB_FROM_INTAKE_ANGLE = -26.9;
+
+      public static final double WRIST_FLOOR_ANGLE = 210.7;
+    }
   }
 }

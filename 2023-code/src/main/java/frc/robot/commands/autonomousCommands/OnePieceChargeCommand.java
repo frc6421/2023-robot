@@ -19,7 +19,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -31,7 +30,6 @@ import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-import frc.robot.subsystems.GrabberSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -40,16 +38,13 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
     private DriveSubsystem driveSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
     private ArmSubsystem armSubsystem;
-    private GrabberSubsystem grabberSubsystem;
 
     /** Creates a new OnePieceChargeCommand. */
-    public OnePieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm,
-            GrabberSubsystem grabber) {
+    public OnePieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm) {
         driveSubsystem = drive;
         elevatorSubsystem = elevator;
         armSubsystem = arm;
-        grabberSubsystem = grabber;
-        addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, grabberSubsystem);
+        addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem);
 
         TrajectoryConfig forwardConfig = new TrajectoryConfig(
                 AutoConstants.AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND,
@@ -106,8 +101,6 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
         addCommands(
                 new InstantCommand(() -> driveSubsystem.resetOdometry(overChargeStationTrajectory.getInitialPose())),
                 new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
-                new ParallelDeadlineGroup(new WaitCommand(0.7),
-                        new InstantCommand(() -> grabberSubsystem.toggleGrabber())),
                 new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
                 new WaitCommand(0.7),
                 overChargeStationCommand,

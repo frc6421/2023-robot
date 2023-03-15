@@ -26,9 +26,7 @@ public class ArmCommand extends CommandBase {
     FLOOR,
     MID,
     HIGH,
-    SUBSTATION,
     HYBRID, 
-    TRANSFER,
     DRIVE
   }
   private PlaceStates placeState;
@@ -64,16 +62,8 @@ public class ArmCommand extends CommandBase {
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_HIGH_ANGLE, 0);
         break;
 
-      case SUBSTATION:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.GRAB_FROM_SUBSTATION_ANGLE, 0);
-        break;
-
       case HYBRID:
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.DRIVE_ANGLE, 0);
-        break;
-
-      case TRANSFER:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.TRANSFER_ANGLE, 0);
         break;
 
       case DRIVE:

@@ -300,8 +300,7 @@ public final class Constants {
 
   public static class IntakeConstants
   {
-    public static final int ARM_INTAKE_MOTOR_ID = 20;
-    public static final int GRAB_INTAKE_MOTOR_ID = 21; 
+    public static final int INTAKE_MOTOR_ID = 20;
 
     public static final double INTAKE_START_POSITION = 90;
 

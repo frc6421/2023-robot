@@ -298,6 +298,27 @@ public final class Constants {
     public static final double ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE = (Units.inchesToMeters(1.7567) * Math.PI);
   }
 
+  public static class IntakeConstants
+  {
+    public static final int ARM_INTAKE_MOTOR_ID = 20;
+    public static final int GRAB_INTAKE_MOTOR_ID = 21; 
+
+    public static final double INTAKE_START_POSITION = 90;
+
+    public static final float INTAKE_BOTTOM_SOFT_LIMIT = -15f;
+    public static final float INTAKE_UP_SOFT_LIMIT = 97f;
+
+    public static final double INTAKE_ARM_P = 0.015; 
+    public static final double INTAKE_ARM_I = 0; 
+    public static final double INTAKE_ARM_D = 0; 
+
+
+    public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
+
+    public static final double MAX_ARM_GRAVITY_FF = 0.045;
+
+  }
+
   public static class ModuleConstants {
     public static final String CANIVORE_NAME = "driveBus";
 

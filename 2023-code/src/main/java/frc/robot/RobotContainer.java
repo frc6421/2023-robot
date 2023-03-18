@@ -19,6 +19,7 @@ import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.BlinkinSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -56,6 +57,8 @@ public class RobotContainer {
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
 
+  private final IntakeSubsystem intakeSubsystem;
+
   private SendableChooser<Command> autoChooser;
 
   private OnePieceChargeCommand onePieceChargeCommand;
@@ -77,6 +80,7 @@ public class RobotContainer {
     elevatorSubsystem = new ElevatorSubsystem();
     armSubsystem = new ArmSubsystem();
     wristSubsystem = new WristSubsystem();
+    intakeSubsystem = new IntakeSubsystem();
 
     onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem);
     twoPieceCommand = new TwoPieceCommand(driveSubsystem, elevatorSubsystem, armSubsystem);
@@ -166,6 +170,11 @@ public class RobotContainer {
     // Mid button
     copilotController.b().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.MID)
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.MID)));
+
+    
+    driverController.y().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-1)));
+
+    driverController.a().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)));
   }
 
   /**

@@ -14,6 +14,7 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.BlinkinSubsystem;
@@ -53,6 +54,12 @@ public class RobotContainer {
   
   private final CommandXboxController copilotController;
 
+  private final CommandXboxController testController;
+
+  NetworkTableEntry wristP;
+  NetworkTableEntry wristAngle;
+  NetworkTableEntry armAngle;
+
   private final ArmSubsystem armSubsystem;
   public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
@@ -88,6 +95,8 @@ public class RobotContainer {
     twoPieceChargeCommand = new TwoPieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem);
     flippedTwoPieceChargeCommand = new FlippedTwoPieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem);
 
+    
+
     autoChooser = new SendableChooser<>();
     
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
@@ -96,6 +105,8 @@ public class RobotContainer {
     PDP.clearStickyFaults();
 
     copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
+
+    testController = new CommandXboxController(2);
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
@@ -106,6 +117,9 @@ public class RobotContainer {
         MathUtil.clamp(driverController.getRightTriggerAxis() * driveNerf, 1.0, 1.0)
         ),
         driveSubsystem));
+
+    // wristSubsystem.setDefaultCommand(new RunCommand(() ->
+    //   wristSubsystem.setWristAngleWithGrav(wristSubsystem.getWristDegreePosition()), wristSubsystem)); 
       
     autoChooser.setDefaultOption("1 Piece Charge", onePieceChargeCommand);
     autoChooser.addOption("Left Start 2 Piece", flippedTwoPieceCommand);
@@ -114,6 +128,14 @@ public class RobotContainer {
     autoChooser.addOption("Right Start 2 Piece Charge", twoPieceChargeCommand);
     SmartDashboard.putData("autoChooser", autoChooser);
 
+      SmartDashboard.putNumber("wrist p", 0);
+     wristP = SmartDashboard.getEntry("wrist p");
+
+     SmartDashboard.putNumber("wrist angle", 136.5);
+      wristAngle = SmartDashboard.getEntry("wrist angle");
+
+    SmartDashboard.putNumber("arm angle", -28);
+    armAngle = SmartDashboard.getEntry("arm angle");
 
     // Configure the trigger bindings
     configureBindings();
@@ -140,7 +162,7 @@ public class RobotContainer {
         .andThen(new WaitCommand(.5))
         );
     // Reverse intake for hybrid
-    driverController.b().onTrue(null);
+    
 
     // driverController.a().onTrue(new InstantCommand(() -> driveNerf = 0.25)
     // .andThen(new IntakeDownCommand(intakeSubsystem))
@@ -172,9 +194,17 @@ public class RobotContainer {
         .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.MID)));
 
     
-    driverController.y().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-1)));
+    testController.y().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-1)));
 
-    driverController.a().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)));
+    testController.a().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)));
+
+    testController.b().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1)));
+
+    testController.x().onTrue(new RunCommand(() -> wristSubsystem.setWristP(wristP.getDouble(0))));
+
+    testController.rightBumper().onTrue(new InstantCommand(() -> wristSubsystem.setWristAngleWithGrav(wristAngle.getDouble(136.5))));
+
+    testController.leftBumper().onTrue(new InstantCommand(() -> armSubsystem.setArmAngleWithGrav(armAngle.getDouble(-28))));
   }
 
   /**

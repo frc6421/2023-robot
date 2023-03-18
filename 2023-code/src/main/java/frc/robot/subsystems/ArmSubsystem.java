@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmConstants.ArmAngleConstants;
@@ -48,7 +49,7 @@ public class ArmSubsystem extends SubsystemBase
 
         armPIDController.setFeedbackDevice(armEncoder);
 
-        setPoint = ArmConstants.ARM_IN_SOFT_LIMIT;
+        setPoint = ArmAngleConstants.ARM_START_POSITION;
 
         armMotor.setSoftLimit(SoftLimitDirection.kForward, ArmConstants.ARM_OUT_SOFT_LIMIT);
         armMotor.setSoftLimit(SoftLimitDirection.kReverse, ArmConstants.ARM_IN_SOFT_LIMIT);
@@ -66,7 +67,6 @@ public class ArmSubsystem extends SubsystemBase
         armPIDController.setP(ArmConstants.ARM_P);
         armPIDController.setI(ArmConstants.ARM_I);
         armPIDController.setD(ArmConstants.ARM_D);
-        armPIDController.setFF(ArmConstants.ARM_DEFAULT_FF);
         
         armPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
         
@@ -74,7 +74,9 @@ public class ArmSubsystem extends SubsystemBase
     
     @Override
   public void periodic() 
-    {}
+    {
+        SmartDashboard.putNumber("Arm Encoder Angle", getArmDegreePosition());
+    }
 
 
     ////MOTOR AND PID METHODS////

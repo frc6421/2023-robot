@@ -44,7 +44,7 @@ public final class Constants {
      */
     public static final double DEGREES_PER_MOTOR_ROTATION = (360 / ARM_GEAR_RATIO);
 
-    public static final float ARM_IN_SOFT_LIMIT = -8; // previously -29 before hard stop
+    public static final float ARM_IN_SOFT_LIMIT = -28; // 3/18/23
 
     public static final float ARM_OUT_SOFT_LIMIT = 204; // previously 224 before hard stop
 
@@ -58,7 +58,7 @@ public final class Constants {
 
     public static final double FLOOR_MAX_INCH_DISTANCE = 20.6;
 
-    public static final boolean ARM_IS_INVERTED = true;
+    public static final boolean ARM_IS_INVERTED = false;
 
     public static final double ARM_SET_POS_CONVERSION_FACTOR = 1.6;
 
@@ -69,7 +69,7 @@ public final class Constants {
       public static final double CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
       public static final double CUBE_MID_OPTIMAL_ANGLE = 140.0;
 
-      public static final double ARM_START_POSITION = 50; //Determined 03/2/23 Previously: 52.0
+      public static final double ARM_START_POSITION = -28; //Determined 03/18/23
 
       public static final double DRIVE_ANGLE = 65;
       
@@ -413,31 +413,31 @@ public final class Constants {
   }
 
   public static class WristConstants {
-    public static final int WRIST_CAN_ID = 40;
+    public static final int WRIST_CAN_ID = 41;
 
     public static final double WRIST_DEFAULT_FF = 0.04; // Determined on 2/13/23 0.04    
-    public static final double WRIST_P = 0.06;// Determined on 2/7/23 0.06
+    public static final double WRIST_P = 0.015;// Determined on 2/7/23 0.06
     public static final double WRIST_I = 0.0;
     public static final double WRIST_D = 0.0;
 
     public static final float WRIST_SOFT_LIMIT = 0.0f;
 
-    public static final double WRIST_GEAR_RATIO = 60 * (64/18);
+    public static final double WRIST_GEAR_RATIO = 133.33333;
 
     /**
      * Calculated degrees wrist moves per motor rotation from 360 / gear ratio
      */
     public static final double WRIST_DEGREES_PER_MOTOR_ROTATION = (360 / WRIST_GEAR_RATIO);
 
-    public static final float WRIST_IN_SOFT_LIMIT = -8; // previously -29 before hard stop
+    public static final float WRIST_IN_SOFT_LIMIT = -44.2f; // 3/18/23
 
-    public static final float WRIST_OUT_SOFT_LIMIT = 204; // previously 224 before hard stop
+    public static final float WRIST_OUT_SOFT_LIMIT = 136.5f; // 3/18/23
 
     public static final float WRIST_ELEVATOR_OUT_SOFT_LIMIT = 270;
 
     public static final double WRIST_MAX_TEST_PERCENT_OUTPUT = 0.15;
 
-    public static final double MAX_WRIST_GRAVITY_FF = 0.0375; // Determined on 2/7/2023
+    public static final double MAX_WRIST_GRAVITY_FF = 0.0475; // Determined on 3/18/2023
 
     public static final double WRIST_FLOOR_MIN_INCH_DISTANCE = 12.1;
 
@@ -454,7 +454,7 @@ public final class Constants {
       public static final double WRIST_CUBE_HIGH_OPTIMAL_ANGLE = 140.0;
       public static final double WRIST_CUBE_MID_OPTIMAL_ANGLE = 140.0;
 
-      public static final double WRIST_START_POSITION = 50; //Determined 03/2/23 Previously: 52.0
+      public static final double WRIST_START_POSITION = 136.5; //Determined 03/18/23
       public static final double WRIST_GRAB_FROM_SUBSTATION_ANGLE = 148;
       public static final double WRIST_TRANSFER_ANGLE = -8;
 
@@ -462,7 +462,7 @@ public final class Constants {
       
       public static final double WRIST_GRAB_FROM_INTAKE_ANGLE = -26.9;
 
-      public static final double WRIST_FLOOR_ANGLE = 210.7;
+      public static final double WRIST_INTAKE_ANGLE = -44.2;
     }
   }
 }

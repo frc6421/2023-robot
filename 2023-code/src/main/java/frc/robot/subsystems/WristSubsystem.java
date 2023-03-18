@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.WristConstants.WristAngleConstants;
@@ -32,23 +33,23 @@ public class WristSubsystem extends SubsystemBase
     public WristSubsystem()
     {
 
-        wristMotor = new CANSparkMax(WristConstants.WRIST_CAN_ID, MotorType.kBrushless); //TODO: Get CANID
+        wristMotor = new CANSparkMax(WristConstants.WRIST_CAN_ID, MotorType.kBrushless);
 
         wristMotor.restoreFactoryDefaults();
 
         wristEncoder = wristMotor.getEncoder();
-        wristEncoder.setPositionConversionFactor(WristConstants.WRIST_DEGREES_PER_MOTOR_ROTATION); //TODO: Verify this is not totally wrong
+        wristEncoder.setPositionConversionFactor(WristConstants.WRIST_DEGREES_PER_MOTOR_ROTATION);
 
         wristMotor.setInverted(WristConstants.WRIST_IS_INVERTED);
         wristMotor.setIdleMode(IdleMode.kBrake);
 
-        wristEncoder.setPosition(WristAngleConstants.WRIST_START_POSITION); //TODO: Verify start position
+        wristEncoder.setPosition(WristAngleConstants.WRIST_START_POSITION);
 
         wristPIDController = wristMotor.getPIDController();
 
         wristPIDController.setFeedbackDevice(wristEncoder);
 
-        setPoint = WristConstants.WRIST_IN_SOFT_LIMIT;
+        setPoint = WristAngleConstants.WRIST_START_POSITION;
 
         wristMotor.setSoftLimit(SoftLimitDirection.kForward, WristConstants.WRIST_OUT_SOFT_LIMIT);
         wristMotor.setSoftLimit(SoftLimitDirection.kReverse, WristConstants.WRIST_IN_SOFT_LIMIT);
@@ -66,15 +67,18 @@ public class WristSubsystem extends SubsystemBase
         wristPIDController.setP(WristConstants.WRIST_P);
         wristPIDController.setI(WristConstants.WRIST_I);
         wristPIDController.setD(WristConstants.WRIST_D);
-        wristPIDController.setFF(WristConstants.WRIST_DEFAULT_FF);
         
         wristPIDController.setOutputRange(positionMinOutput, positionMaxOutput);
+        
         
     }
     
     @Override
   public void periodic() 
-    {}
+    {
+        SmartDashboard.putNumber("Wrist Encoder Angle", getWristDegreePosition());
+        
+    }
 
 
     ////MOTOR AND PID METHODS////
@@ -95,7 +99,7 @@ public class WristSubsystem extends SubsystemBase
     public void 
     setPosition(double position)
     {
-        wristPIDController.setReference(position / WristConstants.WRIST_SET_POS_CONVERSION_FACTOR, CANSparkMax.ControlType.kPosition);
+        wristPIDController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
 
     /**
@@ -139,7 +143,7 @@ public class WristSubsystem extends SubsystemBase
 
         setPoint = change + setPoint;
 
-        setPoint = MathUtil.clamp(setPoint, (double) WristConstants.WRIST_IN_SOFT_LIMIT, WristAngleConstants.WRIST_FLOOR_ANGLE);
+        setPoint = MathUtil.clamp(setPoint, (double) WristConstants.WRIST_IN_SOFT_LIMIT, WristConstants.WRIST_OUT_SOFT_LIMIT);
         
         setPosition(setPoint);
     }

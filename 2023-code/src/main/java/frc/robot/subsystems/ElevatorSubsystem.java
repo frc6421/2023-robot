@@ -42,6 +42,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     
         elevatorMotor.setIdleMode(IdleMode.kCoast);
 
+        
         // Set soft limits
         elevatorMotor.setSoftLimit(SoftLimitDirection.kForward, ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS);
         elevatorMotor.setSoftLimit(SoftLimitDirection.kReverse, ElevatorConstants.ELEVATOR_REVERSE_SOFT_LIMIT);

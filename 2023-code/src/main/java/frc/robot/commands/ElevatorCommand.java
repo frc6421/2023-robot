@@ -8,6 +8,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.ElevatorSubsystem;
 
@@ -22,21 +23,10 @@ public class ElevatorCommand extends CommandBase {
   private TrapezoidProfile.State elevatorSetpoint = new TrapezoidProfile.State();
   
   TrapezoidProfile elevatorProfile;
-  
-  public enum PlaceStates {
-    FLOOR,
-    MID,
-    HIGH,
-    HYBRID, 
-    TRANSFER,
-    DRIVE
-  }
-  private PlaceStates placeState;
 
-  public ElevatorCommand(ElevatorSubsystem elevatorSubsystem, PlaceStates state) {
+  public ElevatorCommand(ElevatorSubsystem elevatorSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(elevatorSubsystem);
-      placeState = state;
       
       elevator = elevatorSubsystem;
   }
@@ -46,37 +36,36 @@ public class ElevatorCommand extends CommandBase {
   public void initialize() 
   {
     timer.reset();
-    timer.start();
 
-    switch(placeState)
+    switch(RobotContainer.robotState)
     {
-      case FLOOR:
+      case DRIVE:
+      case INTAKE:
+      case HYBRID:
+      case MID_LEFT:
+      case MID_CENTER:
+      case MID_RIGHT:
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         
         break;
 
-      case MID:
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
-        break;
+      case HIGH_LEFT:
+      case HIGH_CENTER:
+      case HIGH_RIGHT:
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_HIGH_POSITION, 0);
 
-      case HIGH:
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS, 0);
         break;
+      
+      case LEFT_SUBSTATION:
+      case RIGHT_SUBSTATION:
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_SUBSTATION_POSITION, 0);
 
-      case HYBRID:
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
-        break;
-
-      case TRANSFER:
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_FORWARD_SOFT_LIMIT_METERS, 0);
-        break;
-
-      case DRIVE:
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
         break;
     }
 
     elevatorProfile = new TrapezoidProfile(elevatorConstraints, elevatorGoal, new TrapezoidProfile.State(ElevatorSubsystem.getElevatorEncoderPosition(), 0));
+
+    timer.start();
 
   }
 
@@ -88,7 +77,6 @@ public class ElevatorCommand extends CommandBase {
     elevatorSetpoint = elevatorProfile.calculate(timer.get());
     
     elevator.setElevatorPosition(elevatorSetpoint.position);
-    SmartDashboard.putNumber("Elevator Goal", elevatorSetpoint.position);
   }
 
   // Called once the command ends or is interrupted.

@@ -19,17 +19,23 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.RobotStates;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -38,16 +44,20 @@ public class TwoPieceChargeCommand extends SequentialCommandGroup {
   private DriveSubsystem driveSubsystem;
   private ElevatorSubsystem elevatorSubsystem;
   private ArmSubsystem armSubsystem;
+  private IntakeSubsystem intakeSubsystem;
+  private WristSubsystem wristSubsystem;
 
   /**
    * Creates a new TwoPieceChargeCommand. Scores two pieces on the high row and
    * balances the charge station
    */
-  public TwoPieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm) {
+  public TwoPieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, IntakeSubsystem intake, WristSubsystem wrist) {
     driveSubsystem = drive;
     elevatorSubsystem = elevator;
     armSubsystem = arm;
-    addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem);
+    intakeSubsystem = intake;
+    wristSubsystem = wrist;
+    addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
 
     TrajectoryConfig forwardConfig = new TrajectoryConfig(
         AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
@@ -74,13 +84,14 @@ public class TwoPieceChargeCommand extends SequentialCommandGroup {
     // Return to score cube next to cone
     Trajectory firstScoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
         new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE, new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
         new Pose2d(TrajectoryConstants.CUBE_NODE, new Rotation2d(0))), reverseConfig);
 
     // Drives on charge station
     Trajectory chargeStationTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
         new Pose2d(TrajectoryConstants.CUBE_NODE, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.COOPERTITION_CUBE_NODE.plus(new Translation2d(Units.inchesToMeters(36), 0)), new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.CENTER_OF_CHARGE_STATION, new Rotation2d(0))), chargeConfig);
+        new Pose2d(TrajectoryConstants.SECOND_COOPERTITION_CONE_NODE.plus(new Translation2d(Units.inchesToMeters(48), 0)), new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.CENTER_OF_CHARGE_STATION.minus(new Translation2d(0, Units.inchesToMeters(21.39))), new Rotation2d(0))), chargeConfig);
 
     var thetaController = new ProfiledPIDController(
         AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,
@@ -122,22 +133,25 @@ public class TwoPieceChargeCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         new InstantCommand(() -> driveSubsystem.resetOdometry(firstPickUpTrajectory.getInitialPose())),
-        // TODO determine which height we will score on in auto
-        new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH),
-            new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
-        // TODO turn on intake in deadline group
-        new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE),
-            new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
-        new WaitCommand(0.5),
-        firstPickUpCommand,
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.HIGH_LEFT),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.8))),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
+        new ParallelDeadlineGroup(firstPickUpCommand, 
+                        new SequentialCommandGroup(new WaitCommand(2), 
+                                new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1))))),
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
         firstScoreCommand,
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
-        new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH),
-            new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
-        new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE),
-            new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
-        new WaitCommand(0.5),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.HIGH_CENTER),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.8))),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
         chargeStationCommand,
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new BalanceCommand(driveSubsystem));

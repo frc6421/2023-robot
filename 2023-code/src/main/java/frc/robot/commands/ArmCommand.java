@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.ArmConstants.ArmAngleConstants;
 import frc.robot.subsystems.ArmSubsystem;
 
@@ -21,65 +22,63 @@ public class ArmCommand extends CommandBase {
   private TrapezoidProfile.State armSetpoint = new TrapezoidProfile.State();
   
   TrapezoidProfile armProfile;
-  
-  public enum PlaceStates {
-    FLOOR,
-    MID,
-    HIGH,
-    HYBRID, 
-    DRIVE
-  }
-  private PlaceStates placeState;
 
-  public ArmCommand(ArmSubsystem armSubsystem, PlaceStates state) {
+  public ArmCommand(ArmSubsystem armSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
       addRequirements(armSubsystem);
-      placeState = state;
 
       arm = armSubsystem;
-
-      arm.setSetPoint(arm.getArmDegreePosition());
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() 
   {
+
     timer.reset();
-    timer.start();
 
-    switch(placeState)
+    switch(RobotContainer.robotState)
     {
-      case FLOOR:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_INTAKE_ANGLE, 0);
-        break;
-
-      case MID:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_CONE_MID_ANGLE, 0);
-        break;
-
-      case HIGH:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_CONE_HIGH_ANGLE, 0);
-        break;
-
-      case HYBRID:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_DRIVE_ANGLE, 0);
-        break;
-
       case DRIVE:
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_DRIVE_ANGLE, 0);
         break;
 
+      case INTAKE:
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_INTAKE_ANGLE, 0);
+        break;
+
+      case HYBRID:
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_HYBRID_ANGLE, 0);
+        break;
+
+      case HIGH_LEFT:
+      case HIGH_CENTER:
+      case HIGH_RIGHT:
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_CONE_HIGH_ANGLE, 0);
+        break;
+
+      case MID_LEFT:
+      case MID_CENTER:
+      case MID_RIGHT:
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_CONE_MID_ANGLE, 0);
+        break;
+
+      case LEFT_SUBSTATION:
+      case RIGHT_SUBSTATION:
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_SUBSTATION_ANGLE, 0);
+        break;
+
     }
 
-    armProfile = new TrapezoidProfile(armConstraints, armGoal, new TrapezoidProfile.State(arm.getArmDegreePosition() - 6, 0));
+    armProfile = new TrapezoidProfile(armConstraints, armGoal, new TrapezoidProfile.State(arm.getArmDegreePosition(), 0));
+
+    timer.start();
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
-
   {
     armSetpoint = armProfile.calculate(timer.get());
     

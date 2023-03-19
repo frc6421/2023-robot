@@ -20,15 +20,22 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
+import frc.robot.Constants.RobotStates;
+import frc.robot.RobotContainer;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -37,15 +44,19 @@ public class TwoPieceCommand extends SequentialCommandGroup {
   private DriveSubsystem driveSubsystem;
   private ElevatorSubsystem elevatorSubsystem;
   private ArmSubsystem armSubsystem;
+  private IntakeSubsystem intakeSubsystem;
+  private WristSubsystem wristSubsystem;
 
   private Field2d field;
 
   /** Creates a new TwoPieceCommand. */
-  public TwoPieceCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm) {
+  public TwoPieceCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, IntakeSubsystem intake, WristSubsystem wrist) {
     driveSubsystem = drive;
     elevatorSubsystem = elevator;
     armSubsystem = arm;
-    addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem);
+    intakeSubsystem = intake;
+    wristSubsystem = wrist;
+    addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
 
     TrajectoryConfig forwardConfig = new TrajectoryConfig(
         AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
@@ -73,11 +84,16 @@ public class TwoPieceCommand extends SequentialCommandGroup {
     ), reverseConfig);
 
     // Gets the robot in a good position to start tele-op
-    Trajectory edgeOfCommunityTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
+    Trajectory secondPickUpTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
       new Pose2d(TrajectoryConstants.CUBE_NODE, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.THIRD_GAME_PIECE, new Rotation2d(0))
     ), forwardConfig);
+
+    Trajectory edgeOfCommunityTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
+      new Pose2d(TrajectoryConstants.THIRD_GAME_PIECE, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(0))
+    ), reverseConfig);
 
     // Simulation
     field = new Field2d();
@@ -89,7 +105,7 @@ public class TwoPieceCommand extends SequentialCommandGroup {
       
       field.getObject("Pick Up Trajectory 1").setTrajectory(firstPickUpTrajectory);
       field.getObject("Score Trajectory 1").setTrajectory(firstScoreTrajectory);
-      field.getObject("Out of Community Trajectory").setTrajectory(edgeOfCommunityTrajectory);
+      field.getObject("Out of Community Trajectory").setTrajectory(secondPickUpTrajectory);
     }
 
 
@@ -121,28 +137,54 @@ public class TwoPieceCommand extends SequentialCommandGroup {
                 driveSubsystem::autoSetModuleStates,
                 driveSubsystem);
 
-        SwerveControllerCommand edgeOfCommunityCommand = new SwerveControllerCommand(
-                edgeOfCommunityTrajectory,
+        SwerveControllerCommand secondPickUpCommand = new SwerveControllerCommand(
+                secondPickUpTrajectory,
                 driveSubsystem::getPose2d,
                 driveSubsystem.swerveKinematics,
                 holonomicDriveController,
                 driveSubsystem::autoSetModuleStates,
                 driveSubsystem);
+
+        SwerveControllerCommand edgeOfCommunityCommand = new SwerveControllerCommand(
+          edgeOfCommunityTrajectory,
+          driveSubsystem::getPose2d,
+          driveSubsystem.swerveKinematics,
+          holonomicDriveController,
+          driveSubsystem::autoSetModuleStates,
+          driveSubsystem);
                 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(() -> driveSubsystem.resetOdometry(firstPickUpTrajectory.getInitialPose())),
-      new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
-      new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
-      firstPickUpCommand,
-      new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
-      firstScoreCommand,
-      new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
-      new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
-      edgeOfCommunityCommand,
-      new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ElevatorCommand(elevator, ElevatorCommand.PlaceStates.DRIVE)),
-      new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0))
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.HIGH_LEFT),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.8))),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
+        new ParallelDeadlineGroup(firstPickUpCommand, 
+                        new SequentialCommandGroup(new WaitCommand(2), 
+                                new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1))))),
+        new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        firstScoreCommand,
+        new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.HIGH_CENTER),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.8))),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
+        new ParallelDeadlineGroup(secondPickUpCommand, 
+                        new SequentialCommandGroup(new WaitCommand(2), 
+                                new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1))))),
+        new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
+        new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        edgeOfCommunityCommand,
+        new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0))
     );
   }
 }

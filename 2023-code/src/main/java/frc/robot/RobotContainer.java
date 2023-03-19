@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.RobotStates;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceChargeCommand;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceCommand;
 import frc.robot.commands.autonomousCommands.OnePieceChargeCommand;
@@ -16,11 +17,14 @@ import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.commands.ArmCommand;
+import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.BlinkinSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShuffleboardButtonManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -31,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -43,28 +48,21 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveSubsystem driveSubsystem;
-  //private final LimelightSubsystem limelightSubsystem;
-
+  private final ArmSubsystem armSubsystem;
   private final ElevatorSubsystem elevatorSubsystem;
-
   private final WristSubsystem wristSubsystem;
+  private final IntakeSubsystem intakeSubsystem;
+
+  public final GyroSubsystem gyroSubsystem;
+
+  private final ShuffleboardButtonManager shuffleboardButtonManager;
 
   // Set up controller with CommandXboxController
   private final CommandXboxController driverController;
-  
-  private final CommandXboxController copilotController;
 
   private final CommandXboxController testController;
 
-  NetworkTableEntry wristP;
-  NetworkTableEntry wristAngle;
-  NetworkTableEntry armAngle;
-
-  private final ArmSubsystem armSubsystem;
-  public GyroSubsystem gyroSubsystem;
   private final PowerDistribution PDP;
-
-  private final IntakeSubsystem intakeSubsystem;
 
   private SendableChooser<Command> autoChooser;
 
@@ -75,38 +73,40 @@ public class RobotContainer {
   private FlippedTwoPieceChargeCommand flippedTwoPieceChargeCommand;
 
   private static double driveNerf = 0.85;
-  private static double steerNerf = 0.8; //0.5
+  private static double steerNerf = 0.8;
+
+  public static RobotStates robotState;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
     
     gyroSubsystem = new GyroSubsystem();
-    driveSubsystem = new DriveSubsystem();
 
+    driveSubsystem = new DriveSubsystem();
     elevatorSubsystem = new ElevatorSubsystem();
     armSubsystem = new ArmSubsystem();
     wristSubsystem = new WristSubsystem();
     intakeSubsystem = new IntakeSubsystem();
 
-    onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem);
-    twoPieceCommand = new TwoPieceCommand(driveSubsystem, elevatorSubsystem, armSubsystem);
-    flippedTwoPieceCommand = new FlippedTwoPieceCommand(driveSubsystem, elevatorSubsystem, armSubsystem);
-    twoPieceChargeCommand = new TwoPieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem);
-    flippedTwoPieceChargeCommand = new FlippedTwoPieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem);
+    shuffleboardButtonManager = new ShuffleboardButtonManager();
 
-    
+    onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
+    twoPieceCommand = new TwoPieceCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
+    flippedTwoPieceCommand = new FlippedTwoPieceCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
+    twoPieceChargeCommand = new TwoPieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
+    flippedTwoPieceChargeCommand = new FlippedTwoPieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
 
+  
     autoChooser = new SendableChooser<>();
     
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
 
+    testController = new CommandXboxController(2);
+
     PDP = new PowerDistribution();
     PDP.clearStickyFaults();
 
-    copilotController = new CommandXboxController(OperatorConstants.COPILOT_CONTROLLER_PORT);
-
-    testController = new CommandXboxController(2);
 
     driveSubsystem.setDefaultCommand(new RunCommand(() ->
       driveSubsystem.drive(
@@ -135,14 +135,7 @@ public class RobotContainer {
     autoChooser.addOption("Right Start 2 Piece Charge", twoPieceChargeCommand);
     SmartDashboard.putData("autoChooser", autoChooser);
 
-      SmartDashboard.putNumber("wrist p", 0);
-     wristP = SmartDashboard.getEntry("wrist p");
-
-     SmartDashboard.putNumber("wrist angle", 136.5);
-      wristAngle = SmartDashboard.getEntry("wrist angle");
-
-    SmartDashboard.putNumber("arm angle", -28);
-    armAngle = SmartDashboard.getEntry("arm angle");
+    robotState = RobotStates.DRIVE;
 
     // Configure the trigger bindings
     configureBindings();
@@ -162,56 +155,25 @@ public class RobotContainer {
     driverController.back().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
     driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
 
-    // Arm up and intake turned low speed then intake in
-    driverController.y().onTrue(new ParallelCommandGroup(new InstantCommand(() -> driveNerf = 0.75))
-        .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE))
-        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE))
-        .andThen(new WaitCommand(.5))
-        );
-    // Reverse intake for hybrid
-    
+    // Change from intake position to drive position
+    // Run belts at a slow speed to hold pieces in
+    driverController.y().onTrue(new InstantCommand(() -> robotState = RobotStates.DRIVE)
+        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.3))));
 
-    // driverController.a().onTrue(new InstantCommand(() -> driveNerf = 0.25)
-    // .andThen(new IntakeDownCommand(intakeSubsystem))
-    // .andThen(new InstantCommand(() -> driveNerf = 0.75)));
-    // Intake floor pickup
-    driverController.a().onTrue(new ParallelCommandGroup(new InstantCommand(() -> driveNerf = 0.25))
-        .andThen(new WaitCommand(.5))
-        .andThen(new ParallelCommandGroup(new InstantCommand(() -> driveNerf = 0.75)))
-        .andThen(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE))
-        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE))
-        .andThen(new WaitCommand(.5)));
+    // Set robot to hybrid position and reverse intake
+    driverController.b().onTrue(new InstantCommand(() -> robotState = RobotStates.HYBRID)
+        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.8))));
 
-    // Set LEDs to yellow
-    copilotController.povUp().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinYellowSet()));
-
-    // Set LEDs to purple
-    copilotController.povDown().onTrue(new InstantCommand(() -> BlinkinSubsystem.blinkinVioletSet()));
-
-    // Up button (arm drive position)
-    copilotController.rightBumper().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE)
-        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)));
-    
-    // High button
-    copilotController.y().onTrue(new ParallelDeadlineGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH),
-      new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)));
-
-    // Mid button
-    copilotController.b().onTrue(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.MID)
-        .andThen(new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.MID)));
-
-    
-    testController.y().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-1)));
-
-    testController.a().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0)));
-
-    testController.b().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1)));
-
-    testController.x().onTrue(new RunCommand(() -> wristSubsystem.setWristP(wristP.getDouble(0))));
-
-    testController.rightBumper().onTrue(new InstantCommand(() -> wristSubsystem.setWristAngleWithGrav(wristAngle.getDouble(136.5))));
-
-    testController.leftBumper().onTrue(new InstantCommand(() -> armSubsystem.setArmAngleWithGrav(armAngle.getDouble(-28))));
+    // Set robot to intake position and turn intake on for floor pickup
+    driverController.a().onTrue(new InstantCommand(() -> robotState = RobotStates.INTAKE)
+        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1)))
+        .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() < 200)))
+        .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
+        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.3))));
   }
 
   /**

@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
-import frc.robot.Constants.driverControlSystem;
+import frc.robot.Constants.DriverControlSystem;
 
 public class DriveSubsystem extends SubsystemBase {
   private final SwerveModule frontLeft;
@@ -37,7 +37,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Creates a sendable chooser on smartdashboard to select the desired control
   // system
-  private SendableChooser<driverControlSystem> controlSystem;
+  private SendableChooser<DriverControlSystem> controlSystem;
 
   // Creates the slew rates to slowly accelerate controller inputs
   private SlewRateLimiter magnitudeSlewRate;
@@ -88,9 +88,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Sets up the sendable chooser on SmartDashboard to select control system
     controlSystem = new SendableChooser<>();
-    controlSystem.setDefaultOption("Left Trigger Controls", driverControlSystem.LEFT_TRIGGER);
-    controlSystem.addOption("Joystick Controls", driverControlSystem.JOYSTICK); // TODO Get these into an enum w/ switch
-    controlSystem.addOption("RightTrigger", driverControlSystem.RIGHT_TRIGGER);
+    controlSystem.setDefaultOption("Left Trigger Controls", DriverControlSystem.LEFT_TRIGGER);
+    controlSystem.addOption("Joystick Controls", DriverControlSystem.JOYSTICK); // TODO Get these into an enum w/ switch
+    controlSystem.addOption("RightTrigger", DriverControlSystem.RIGHT_TRIGGER);
     SmartDashboard.putData("Control system", controlSystem);
 
     magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);

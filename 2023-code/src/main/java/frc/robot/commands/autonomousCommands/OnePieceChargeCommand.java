@@ -19,17 +19,23 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.RobotStates;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -38,13 +44,18 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
     private DriveSubsystem driveSubsystem;
     private ElevatorSubsystem elevatorSubsystem;
     private ArmSubsystem armSubsystem;
+    private IntakeSubsystem intakeSubsystem;
+    private WristSubsystem wristSubsystem;
 
     /** Creates a new OnePieceChargeCommand. */
-    public OnePieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm) {
+    public OnePieceChargeCommand(DriveSubsystem drive, ElevatorSubsystem elevator, ArmSubsystem arm, IntakeSubsystem intake, WristSubsystem wrist) {
         driveSubsystem = drive;
         elevatorSubsystem = elevator;
         armSubsystem = arm;
-        addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem);
+        intakeSubsystem = intake;
+        wristSubsystem = wrist;
+
+        addRequirements(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
 
         TrajectoryConfig forwardConfig = new TrajectoryConfig(
                 AutoConstants.AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND,
@@ -100,12 +111,18 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
         // addCommands(new FooCommand(), new BarCommand());
         addCommands(
                 new InstantCommand(() -> driveSubsystem.resetOdometry(overChargeStationTrajectory.getInitialPose())),
-                new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.HIGH), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.HIGH)),
-                new ParallelCommandGroup(new ArmCommand(armSubsystem, ArmCommand.PlaceStates.DRIVE), new ElevatorCommand(elevatorSubsystem, ElevatorCommand.PlaceStates.DRIVE)),
-                new WaitCommand(0.7),
-                overChargeStationCommand,
+                new InstantCommand(() -> RobotContainer.robotState = RobotStates.HIGH_LEFT),
+                new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+                new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.8))),
+                new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
+                new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+                new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
+                new ParallelDeadlineGroup(overChargeStationCommand, 
+                        new SequentialCommandGroup(new WaitCommand(2), 
+                                new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1))))),
                 new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
-                new WaitCommand(0.7),
+                new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
+                new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.5))),
                 ontoChargeStationCommand,
                 new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
                 new BalanceCommand(driveSubsystem));

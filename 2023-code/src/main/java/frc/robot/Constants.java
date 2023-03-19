@@ -21,10 +21,29 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-  public static enum driverControlSystem {
+  public static enum DriverControlSystem {
     LEFT_TRIGGER,
     RIGHT_TRIGGER,
     JOYSTICK,
+  }
+
+  public static enum RobotStates {
+    HIGH_LEFT,
+    HIGH_CENTER,
+    HIGH_RIGHT,
+    MID_LEFT,
+    MID_CENTER,
+    MID_RIGHT,
+    HYBRID,
+    DRIVE,
+    INTAKE,
+    LEFT_SUBSTATION,
+    RIGHT_SUBSTATION
+  }
+
+  public static enum LEDStates {
+    YELLOW,
+    PURPLE
   }
 
   public static class ArmConstants {
@@ -303,7 +322,7 @@ public final class Constants {
 
     public static final double ELEVATOR_HIGH_POSITION = 0.36;
 
-    public static final double ELEVATOR_DOUBLE_SUBSTATION_POSITION = 0.36;
+    public static final double ELEVATOR_SUBSTATION_POSITION = 0.36;
   }
 
   public static class IntakeConstants

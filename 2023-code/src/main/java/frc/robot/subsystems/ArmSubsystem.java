@@ -141,7 +141,7 @@ public class ArmSubsystem extends SubsystemBase
 
         setPoint = change + setPoint;
 
-        setPoint = MathUtil.clamp(setPoint, (double) ArmConstants.ARM_IN_SOFT_LIMIT, ArmAngleConstants.FLOOR_ANGLE);
+        setPoint = MathUtil.clamp(setPoint, (double) ArmConstants.ARM_IN_SOFT_LIMIT, ArmConstants.ARM_OUT_SOFT_LIMIT);
         
         setPosition(setPoint);
     }

@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import frc.robot.Constants.ElevatorConstants;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -63,14 +64,14 @@ public class ElevatorSubsystem extends SubsystemBase {
         elevatorPIDController.setP(ElevatorConstants.ELEVATOR_P, 0);
         elevatorPIDController.setI(ElevatorConstants.ELEVATOR_I, 0);
         elevatorPIDController.setD(ElevatorConstants.ELEVATOR_D, 0);
-        elevatorPIDController.setFF(ElevatorConstants.ELEVATOR_FF, 0);
+        
         elevatorPIDController.setOutputRange(positionMinOutput, positionMaxOutput, 0);
     }
 
     @Override
     public void periodic()
     {
-        //SmartDashboard.putNumber("elevator pos", getElelvatorPositionInMeters());
+        SmartDashboard.putNumber("elevator pos", getElevatorEncoderPosition());
     }
 
     // MOTOR PID \\

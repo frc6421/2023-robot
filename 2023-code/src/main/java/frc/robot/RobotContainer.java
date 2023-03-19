@@ -118,8 +118,15 @@ public class RobotContainer {
         ),
         driveSubsystem));
 
-    // wristSubsystem.setDefaultCommand(new RunCommand(() ->
-    //   wristSubsystem.setWristAngleWithGrav(wristSubsystem.getWristDegreePosition()), wristSubsystem)); 
+    wristSubsystem.setDefaultCommand(new RunCommand(() ->
+      wristSubsystem.setPercentPosition(testController.getLeftX()), wristSubsystem)); 
+
+    armSubsystem.setDefaultCommand(new RunCommand(() ->
+      armSubsystem.setPercentPosition(testController.getLeftY()), armSubsystem));
+
+    elevatorSubsystem.setDefaultCommand(new RunCommand(() ->
+      elevatorSubsystem.setPercentPosition(testController.getRightY()), elevatorSubsystem));
+
       
     autoChooser.setDefaultOption("1 Piece Charge", onePieceChargeCommand);
     autoChooser.addOption("Left Start 2 Piece", flippedTwoPieceCommand);

@@ -51,23 +51,23 @@ public class ArmCommand extends CommandBase {
     switch(placeState)
     {
       case FLOOR:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.FLOOR_ANGLE, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_INTAKE_ANGLE, 0);
         break;
 
       case MID:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_MID_ANGLE, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_CONE_MID_ANGLE, 0);
         break;
 
       case HIGH:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.CONE_HIGH_ANGLE, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_CONE_HIGH_ANGLE, 0);
         break;
 
       case HYBRID:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.DRIVE_ANGLE, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_DRIVE_ANGLE, 0);
         break;
 
       case DRIVE:
-        armGoal = new TrapezoidProfile.State(ArmAngleConstants.DRIVE_ANGLE, 0);
+        armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_DRIVE_ANGLE, 0);
         break;
 
     }

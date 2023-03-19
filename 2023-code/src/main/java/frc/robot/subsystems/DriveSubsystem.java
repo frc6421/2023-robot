@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -96,6 +98,7 @@ public class DriveSubsystem extends SubsystemBase {
     magnitudeSlewRate = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
     xDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
     yDriveSlew = new SlewRateLimiter(DriveConstants.DRIVE_SLEW_RATE);
+
   }
 
   @Override
@@ -158,7 +161,6 @@ public class DriveSubsystem extends SubsystemBase {
     backRight.setDesiredState(desiredStates[3]);
   }
 
-  // TODO not currently used
   /**
    * Sets the swerve module states
    * Uses closed loop control for auto
@@ -318,19 +320,22 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   /** Same as drive method, but without the trigger control inputs.
-   *  This allows it to be used for drivin to targets based on vision.
+   *  This allows it to be used for driving to targets based on vision.
    * 
    * @param xSpeedInput percent input from -1 to 1 (converts to meters per sec)
    * @param ySpeedInput percent input from -1 to 1 (converts to meters per sec)
    * @param rotationInput percent input from -1 to 1 (converts to radians per sec)
    */
   public void autoDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
-    double xSpeed = -1 * xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double ySpeed = -1 * ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    // double xSpeed = xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    // double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
-    double rotation = -1 * rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    // double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
-    System.out.println("XSpeed: " + xSpeed);
+    double xSpeed = xSpeedInput * (DriveConstants.MAX_VELOCITY_METERS_PER_SECOND / 2) + Math.signum(xSpeedInput) * 0.18;
+    double ySpeed = ySpeedInput * (DriveConstants.MAX_VELOCITY_METERS_PER_SECOND / 2) + Math.signum(ySpeedInput) * 0.18;
+
+    double rotation = rotationInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND + Math.signum(rotationInput) * 0.18;
     
     // Sets field relative speeds
     var swerveModuleStates = 

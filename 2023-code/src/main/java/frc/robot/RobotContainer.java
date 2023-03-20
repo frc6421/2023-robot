@@ -25,6 +25,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.ShuffleboardButtonManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -133,7 +134,10 @@ public class RobotContainer {
     autoChooser.addOption("Right Start 2 Piece", twoPieceCommand);
     autoChooser.addOption("Left Start 2 Piece Charge", flippedTwoPieceChargeCommand);
     autoChooser.addOption("Right Start 2 Piece Charge", twoPieceChargeCommand);
-    SmartDashboard.putData("autoChooser", autoChooser);
+    
+    Shuffleboard.getTab("Competition").add("autoChooser", autoChooser)
+    .withPosition(6, 2)
+    .withSize(2, 1);
 
     robotState = RobotStates.DRIVE;
 

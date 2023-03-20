@@ -15,12 +15,10 @@ import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.commands.ArmCommand;
-import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.VisionCommand;
 import frc.robot.commands.WristCommand;
-import frc.robot.subsystems.BlinkinSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.GyroSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -32,9 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -72,6 +68,8 @@ public class RobotContainer {
   private TwoPieceChargeCommand twoPieceChargeCommand;
   private FlippedTwoPieceChargeCommand flippedTwoPieceChargeCommand;
 
+  private VisionCommand visionCommand;
+
   private static double driveNerf = 0.85;
   private static double steerNerf = 0.8;
 
@@ -90,6 +88,8 @@ public class RobotContainer {
     intakeSubsystem = new IntakeSubsystem();
 
     shuffleboardButtonManager = new ShuffleboardButtonManager();
+
+    visionCommand = new VisionCommand(driveSubsystem);
 
     onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
     twoPieceCommand = new TwoPieceCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
@@ -174,6 +174,10 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.3))));
+
+    // Run vision command and set arm, elevator, and wrist to correct position
+    driverController.leftBumper().onTrue(visionCommand
+        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))));
   }
 
   /**

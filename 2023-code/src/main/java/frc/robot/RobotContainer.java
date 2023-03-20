@@ -153,7 +153,7 @@ public class RobotContainer {
   private void configureBindings() { 
 
     driverController.back().onTrue(new InstantCommand(() -> GyroSubsystem.zeroGyro())); 
-    driverController.start().whileTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
+    driverController.start().onTrue(new RunCommand(() -> driveSubsystem.setSteerMotorsToAbsolute()));
 
     // Change from intake position to drive position
     // Run belts at a slow speed to hold pieces in
@@ -178,6 +178,10 @@ public class RobotContainer {
     // Run vision command and set arm, elevator, and wrist to correct position
     driverController.leftBumper().onTrue(visionCommand
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))));
+
+    // Place piece on node (hold button to spin intake, release to stop)
+    driverController.rightBumper().whileTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.8)));
+    driverController.rightBumper().onFalse(new InstantCommand(() -> intakeSubsystem.stopIntakeMotors()));
   }
 
   /**

@@ -97,7 +97,7 @@ public class ArmSubsystem extends SubsystemBase
     public void 
     setPosition(double position)
     {
-        armPIDController.setReference(position / ArmConstants.ARM_SET_POS_CONVERSION_FACTOR, CANSparkMax.ControlType.kPosition);
+        armPIDController.setReference(position, CANSparkMax.ControlType.kPosition);
     }
 
     /**

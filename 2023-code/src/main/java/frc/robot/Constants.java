@@ -92,7 +92,7 @@ public final class Constants {
 
       public static final double ARM_DRIVE_ANGLE = -17;
       
-      public static final double ARM_INTAKE_ANGLE = -8;
+      public static final double ARM_INTAKE_ANGLE = -11; //-8
 
       public static final double ARM_HYBRID_ANGLE = 24;
 
@@ -499,7 +499,7 @@ public final class Constants {
 
       public static final double WRIST_DRIVE_ANGLE = 136.5;
 
-      public static final double WRIST_INTAKE_ANGLE = -42;
+      public static final double WRIST_INTAKE_ANGLE = -28; //-42
 
       public static final double WRIST_HYBRID_ANGLE = -42;
     }

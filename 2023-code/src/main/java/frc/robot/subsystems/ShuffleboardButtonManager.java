@@ -53,10 +53,10 @@ public class ShuffleboardButtonManager extends SubsystemBase {
     .getEntry();
 
     CompetitionTab.addString("Robot State", () -> RobotContainer.robotState.name())
-    .withPosition(4, 5);
+    .withPosition(4, 3);
 
     CompetitionTab.addString("LED State", () -> ledState.name())
-    .withPosition(5, 5);
+    .withPosition(5, 3);
   }
 
   @Override

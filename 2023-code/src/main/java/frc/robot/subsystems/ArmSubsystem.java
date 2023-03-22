@@ -40,6 +40,8 @@ public class ArmSubsystem extends SubsystemBase
         armEncoder = armMotor.getEncoder();
         armEncoder.setPositionConversionFactor(ArmConstants.DEGREES_PER_MOTOR_ROTATION); //TODO: Verify this is not totally wrong
 
+        armMotor.setSmartCurrentLimit(60);
+
         armMotor.setInverted(ArmConstants.ARM_IS_INVERTED);
         armMotor.setIdleMode(IdleMode.kBrake);
 

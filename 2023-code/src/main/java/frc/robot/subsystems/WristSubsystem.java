@@ -40,6 +40,8 @@ public class WristSubsystem extends SubsystemBase
         wristEncoder = wristMotor.getEncoder();
         wristEncoder.setPositionConversionFactor(WristConstants.WRIST_DEGREES_PER_MOTOR_ROTATION);
 
+        wristMotor.setSmartCurrentLimit(30);
+
         wristMotor.setInverted(WristConstants.WRIST_IS_INVERTED);
         wristMotor.setIdleMode(IdleMode.kBrake);
 

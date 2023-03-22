@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -35,11 +36,11 @@ public class VisionCommand extends CommandBase {
 
   private final double xPValue = 4.9;
   private final double yPValue = 5;
-  private final double yawPValue = 0.04;
+  private final double yawPValue = 0.5;
 
   private final double allowableXError = 0.01;
   private final double allowableYError = 0.01;
-  private final double allowableYawError = 0.5;
+  private final double allowableYawError = 0.01;
 
   private double xPercentAdjust;
   private double yPercentAdjust;
@@ -60,6 +61,8 @@ public class VisionCommand extends CommandBase {
     xPIDController.setTolerance(allowableXError);
     yPIDController.setTolerance(allowableYError);
     yawPIDController.setTolerance(allowableYawError);
+
+    yawPIDController.enableContinuousInput(Units.degreesToRadians(-180), Units.degreesToRadians(180));
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSubsystem);
@@ -148,14 +151,14 @@ public class VisionCommand extends CommandBase {
       // Blue alliance substation
       case 4:
         if (RobotContainer.robotState == RobotStates.LEFT_SUBSTATION) {
-          targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
+          targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
           targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 180;
+          targetYawAngle = Units.degreesToRadians(180);
 
         } else if (RobotContainer.robotState == RobotStates.RIGHT_SUBSTATION) {
-          targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
+          targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
           targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 180;
+          targetYawAngle = Units.degreesToRadians(180);
 
         }
 
@@ -163,14 +166,14 @@ public class VisionCommand extends CommandBase {
       // Red alliance substation
       case 5:
         if (RobotContainer.robotState == RobotStates.LEFT_SUBSTATION) {
-          targetXPose = VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
+          targetXPose = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
           targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 180;
+          targetYawAngle = Units.degreesToRadians(180);
 
         } else if (RobotContainer.robotState == RobotStates.RIGHT_SUBSTATION) {
-          targetXPose = VisionConstants.RED_SUBSTATION_POSE_X + VisionConstants.SUBSTATION_X_OFFSET;
+          targetXPose = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
           targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = 180;
+          targetYawAngle = Units.degreesToRadians(180);
 
         }
 
@@ -263,7 +266,7 @@ public class VisionCommand extends CommandBase {
   public void execute() {
       currentXPose = driveSubsystem.getPose2d().getX();
       currentYPose = driveSubsystem.getPose2d().getY();
-      currentYawAngle = driveSubsystem.getPose2d().getRotation().getDegrees();
+      currentYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
 
       xPercentAdjust = MathUtil.clamp(xPIDController.calculate(currentXPose), -1, 1);
       yPercentAdjust = MathUtil.clamp(yPIDController.calculate(currentYPose), -1, 1);

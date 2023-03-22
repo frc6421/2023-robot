@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RobotStates;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceChargeCommand;
@@ -31,7 +32,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -163,12 +166,15 @@ public class RobotContainer {
     // Run belts at a slow speed to hold pieces in
     driverController.y().onTrue(new InstantCommand(() -> robotState = RobotStates.DRIVE)
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
-        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.3))));
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
 
     // Set robot to hybrid position and reverse intake
-    driverController.b().onTrue(new InstantCommand(() -> robotState = RobotStates.HYBRID)
+    driverController.b().whileTrue(new InstantCommand(() -> robotState = RobotStates.HYBRID)
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.8))));
+    driverController.b().onFalse(new InstantCommand(() -> robotState = RobotStates.DRIVE)
+        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
 
     // Set robot to intake position and turn intake on for floor pickup
     driverController.a().onTrue(new InstantCommand(() -> robotState = RobotStates.INTAKE)
@@ -177,25 +183,25 @@ public class RobotContainer {
         .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -200)))
         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
-        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.3))));
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
 
     // Turn intake on for substation pick up, then bring arm back in
     driverController.x().onTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-1))
         .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -200)))
         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
-        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.3))));
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
 
     // Run vision command and set arm, elevator, and wrist to correct position
-    // driverController.leftBumper().onTrue(visionCommand
-    //     .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))));
-    driverController.leftBumper().onTrue(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)));
+     driverController.leftBumper().onTrue(new ParallelDeadlineGroup(new WaitCommand(0.5), visionCommand)
+        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))));
 
     // Place piece on node (hold button to spin intake, release to stop)
     driverController.rightBumper().whileTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(0.8)));
     driverController.rightBumper().onFalse(new InstantCommand(() -> intakeSubsystem.stopIntakeMotors())
         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
-        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))));
+        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+        .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
   }
 
   /**
@@ -206,6 +212,11 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // Returns the selected autonomous command from the sendable chooser
     return autoChooser.getSelected();
+  }
+
+  public void setIntakePowerTeleopInit()
+  {
+    intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER);
   }
 
 }

@@ -72,7 +72,7 @@ public class GyroSubsystem extends SubsystemBase {
   /**
    * Gets the yaw angle of the gyro
    * 
-   * @return yaw angle in Rotation2d
+   * @return yaw angle in Rotation2d (radians)
    */
   public static Rotation2d getYawAngle()
   {

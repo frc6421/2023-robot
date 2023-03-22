@@ -16,7 +16,7 @@ public class WristCommand extends CommandBase {
   Timer timer = new Timer();
 
   private final TrapezoidProfile.Constraints wristConstraints =
-      new TrapezoidProfile.Constraints(600, 600);
+      new TrapezoidProfile.Constraints(600, 300);
 
   private TrapezoidProfile.State wristGoal = new TrapezoidProfile.State();
   private TrapezoidProfile.State wristSetpoint = new TrapezoidProfile.State();

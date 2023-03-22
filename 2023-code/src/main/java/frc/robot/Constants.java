@@ -96,7 +96,7 @@ public final class Constants {
 
       public static final double ARM_HYBRID_ANGLE = 24;
 
-      public static final double ARM_SUBSTATION_ANGLE = 111;
+      public static final double ARM_SUBSTATION_ANGLE = 100; //111
     }
 
   }
@@ -322,7 +322,7 @@ public final class Constants {
 
     public static final double ELEVATOR_HIGH_POSITION = 0.36;
 
-    public static final double ELEVATOR_SUBSTATION_POSITION = 0.36;
+    public static final double ELEVATOR_SUBSTATION_POSITION = 0.11; //0.36
   }
 
   public static class IntakeConstants
@@ -337,6 +337,8 @@ public final class Constants {
     public static final double INTAKE_ARM_P = 0.015; 
     public static final double INTAKE_ARM_I = 0; 
     public static final double INTAKE_ARM_D = 0; 
+
+    public static final double INTAKE_HOLD_POWER = -0.1;
 
 
     public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
@@ -409,13 +411,13 @@ public final class Constants {
     /** Y offset from center of the cube AprilTag */
     public static final double CONE_OFFSET = 0.5715;
     /** X offset from substation AprilTag */
-    public static final double SUBSTATION_X_OFFSET = 1.08;
+    public static final double SUBSTATION_X_OFFSET = 0.5; //1.08
 
     /** Y offset when moving to left or right side of substation */
     public static final double SUBSTATION_Y_OFFSET = 0.5;
 
     /** X offset from AprilTag to end of grids */
-    public static final double GRID_OFFSET = 0.3;
+    public static final double GRID_OFFSET = 0.38;
 
     public static final double SUBSTATION_GAME_PIECE_Y_ANGLE = 0;
 
@@ -487,15 +489,15 @@ public final class Constants {
     public static final double WRIST_SET_POS_CONVERSION_FACTOR = 1.6;
 
     public static class WristAngleConstants {
-      public static final double WRIST_CONE_HIGH_ANGLE = 140;
-      public static final double WRIST_CONE_MID_ANGLE = 171;
+      public static final double WRIST_CONE_HIGH_ANGLE = 150; // 140
+      public static final double WRIST_CONE_MID_ANGLE = 176; // 171
 
-      public static final double WRIST_CUBE_HIGH_ANGLE = 140;
-      public static final double WRIST_CUBE_MID_ANGLE = 171;
+      public static final double WRIST_CUBE_HIGH_ANGLE = 150; // 140
+      public static final double WRIST_CUBE_MID_ANGLE = 176; // 171
 
       public static final double WRIST_START_POSITION = 136.5; //Determined 03/18/23
 
-      public static final double WRIST_SUBSTATION_ANGLE = 156;
+      public static final double WRIST_SUBSTATION_ANGLE = 205; //156
 
       public static final double WRIST_DRIVE_ANGLE = 136.5;
 

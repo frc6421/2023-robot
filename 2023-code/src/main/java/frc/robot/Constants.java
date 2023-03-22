@@ -340,6 +340,10 @@ public final class Constants {
 
     public static final double INTAKE_HOLD_POWER = -0.1;
 
+    public static final double INTAKE_PICK_UP_SPEED = -1;
+    
+    public static final double INTAKE_SCORE_SPEED = 0.8;
+
 
     public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
 

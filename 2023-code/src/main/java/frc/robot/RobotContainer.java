@@ -142,6 +142,8 @@ public class RobotContainer {
     .withPosition(6, 2)
     .withSize(2, 1);
 
+    Shuffleboard.selectTab("Competition");
+
     robotState = RobotStates.DRIVE;
 
     // Configure the trigger bindings

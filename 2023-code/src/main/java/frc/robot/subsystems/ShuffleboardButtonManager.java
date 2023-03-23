@@ -41,6 +41,8 @@ public class ShuffleboardButtonManager extends SubsystemBase {
   /** Creates a new ShuffleboardButtonManager. */
   public ShuffleboardButtonManager() {
     curButton = buttons[0];
+    curButton.setValue(true);
+    RobotContainer.robotState = curButton.getRobotState();
 
     yellowButton = CompetitionTab.add("Yellow", false)
     .withWidget(BuiltInWidgets.kToggleButton)

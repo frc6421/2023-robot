@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.RobotStates;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
@@ -73,7 +74,12 @@ public class VisionCommand extends CommandBase {
   public void initialize() {
     allianceColor = DriverStation.getAlliance().name();
 
-    if(LimelightSubsystem.isTargetDetected("limelight-two")) {
+    if(LimelightSubsystem.isTargetDetected("limelight-two") 
+        || RobotContainer.robotState == RobotStates.DRIVE 
+        || RobotContainer.robotState == RobotStates.INTAKE
+        || RobotContainer.robotState == RobotStates.HYBRID
+        || RobotContainer.robotState == RobotStates.LEFT_SUBSTATION
+        || RobotContainer.robotState == RobotStates.RIGHT_SUBSTATION) {
       tagID = (int)LimelightSubsystem.getAprilTagID("limelight-two");
       System.out.println(tagID);
     } else {
@@ -149,35 +155,35 @@ public class VisionCommand extends CommandBase {
 
         break;
       // Blue alliance substation
-      case 4:
-        if (RobotContainer.robotState == RobotStates.LEFT_SUBSTATION) {
-          targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
-          targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = Units.degreesToRadians(180);
+      // case 4:
+      //   if (RobotContainer.robotState == RobotStates.LEFT_SUBSTATION) {
+      //     targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
+      //     targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
+      //     targetYawAngle = Units.degreesToRadians(180);
 
-        } else if (RobotContainer.robotState == RobotStates.RIGHT_SUBSTATION) {
-          targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
-          targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = Units.degreesToRadians(180);
+      //   } else if (RobotContainer.robotState == RobotStates.RIGHT_SUBSTATION) {
+      //     targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
+      //     targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
+      //     targetYawAngle = Units.degreesToRadians(180);
 
-        }
+      //   }
 
-        break;
-      // Red alliance substation
-      case 5:
-        if (RobotContainer.robotState == RobotStates.LEFT_SUBSTATION) {
-          targetXPose = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
-          targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = Units.degreesToRadians(180);
+      //   break;
+      // // Red alliance substation
+      // case 5:
+      //   if (RobotContainer.robotState == RobotStates.LEFT_SUBSTATION) {
+      //     targetXPose = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
+      //     targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y + VisionConstants.SUBSTATION_Y_OFFSET;
+      //     targetYawAngle = Units.degreesToRadians(180);
 
-        } else if (RobotContainer.robotState == RobotStates.RIGHT_SUBSTATION) {
-          targetXPose = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
-          targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
-          targetYawAngle = Units.degreesToRadians(180);
+      //   } else if (RobotContainer.robotState == RobotStates.RIGHT_SUBSTATION) {
+      //     targetXPose = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SUBSTATION_X_OFFSET;
+      //     targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
+      //     targetYawAngle = Units.degreesToRadians(180);
 
-        }
+      //   }
 
-        break;
+      //   break;
       // Blue alliance left grid
       case 6:
         if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT) {

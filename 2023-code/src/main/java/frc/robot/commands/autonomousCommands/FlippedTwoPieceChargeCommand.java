@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
 import frc.robot.Constants.RobotStates;
 import frc.robot.RobotContainer;
@@ -131,23 +132,23 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
         new InstantCommand(() -> driveSubsystem.resetOdometry(firstPickUpTrajectory.getInitialPose())),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.HIGH_LEFT),
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
-        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.8))),
+        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
         new ParallelDeadlineGroup(firstPickUpCommand, 
-                        new SequentialCommandGroup(new WaitCommand(2), 
-                                new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(1))))),
+                        new SequentialCommandGroup(new WaitCommand(1), 
+                                new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))))),
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
-        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))),
         firstScoreCommand,
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.HIGH_CENTER),
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
-        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(-0.8))),
+        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
-        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
+        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))),
         chargeStationCommand,
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new BalanceCommand(driveSubsystem));

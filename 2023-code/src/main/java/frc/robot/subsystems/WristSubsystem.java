@@ -9,6 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.WristConstants.WristAngleConstants;
 
@@ -198,6 +199,13 @@ public class WristSubsystem extends SubsystemBase
 
     public double getSetPoint() {
         return setPoint;
+    }
+
+    /**
+     * Resets the encoder position to the start position
+     */
+    public void resetEncoderPosition() {
+        wristEncoder.setPosition(WristAngleConstants.WRIST_START_POSITION);
     }
 
 

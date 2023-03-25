@@ -82,7 +82,7 @@ public final class Constants {
     public static final double ARM_SET_POS_CONVERSION_FACTOR = 1.6;
 
     public static class ArmAngleConstants {
-      public static final double ARM_CONE_HIGH_ANGLE = 121;
+      public static final double ARM_CONE_HIGH_ANGLE = 126; //121
       public static final double ARM_CONE_MID_ANGLE = 128;
 
       public static final double ARM_CUBE_HIGH_ANGLE = 121;
@@ -92,7 +92,7 @@ public final class Constants {
 
       public static final double ARM_DRIVE_ANGLE = -17;
       
-      public static final double ARM_INTAKE_ANGLE = -11; //-8
+      public static final double ARM_INTAKE_ANGLE = -5; //-11, -8
 
       public static final double ARM_HYBRID_ANGLE = 24;
 
@@ -320,7 +320,9 @@ public final class Constants {
      */
     public static final double ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE = (Units.inchesToMeters(1.7567) * Math.PI);
 
-    public static final double ELEVATOR_HIGH_POSITION = 0.48; //0.36
+    public static final double ELEVATOR_HIGH_POSITION = 0.517; //0.36
+
+    public static final double ELEVATOR_MID_POSITION = .04;
 
     public static final double ELEVATOR_SUBSTATION_POSITION = 0.35; //0.36
   }
@@ -344,6 +346,7 @@ public final class Constants {
     
     public static final double INTAKE_SCORE_SPEED = 0.6;
 
+    public static final double INTAKE_HYBRID_SCORE_SPEED = 0.72;
 
     public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
 
@@ -493,8 +496,8 @@ public final class Constants {
     public static final double WRIST_SET_POS_CONVERSION_FACTOR = 1.6;
 
     public static class WristAngleConstants {
-      public static final double WRIST_CONE_HIGH_ANGLE = 160; // 150
-      public static final double WRIST_CONE_MID_ANGLE = 165;
+      public static final double WRIST_CONE_HIGH_ANGLE = 171; // 150, 160
+      public static final double WRIST_CONE_MID_ANGLE = 175; //165
 
       public static final double WRIST_CUBE_HIGH_ANGLE = 160; // 150
       public static final double WRIST_CUBE_MID_ANGLE = 165;
@@ -503,9 +506,9 @@ public final class Constants {
 
       public static final double WRIST_SUBSTATION_ANGLE = 153;
 
-      public static final double WRIST_DRIVE_ANGLE = 136.5;
+      public static final double WRIST_DRIVE_ANGLE = 146.5; //136.5, 141.5
 
-      public static final double WRIST_INTAKE_ANGLE = -28; //-42
+      public static final double WRIST_INTAKE_ANGLE = -20; //-42, -28
 
       public static final double WRIST_HYBRID_ANGLE = -42;
     }

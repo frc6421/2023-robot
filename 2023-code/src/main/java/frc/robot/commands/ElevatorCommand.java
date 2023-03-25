@@ -41,10 +41,13 @@ public class ElevatorCommand extends CommandBase {
       case DRIVE:
       case INTAKE:
       case HYBRID:
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
+
+        break;
       case MID_LEFT:
       case MID_CENTER:
       case MID_RIGHT:
-        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
+        elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MID_POSITION, 0);
         
         break;
 

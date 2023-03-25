@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -218,8 +219,17 @@ public class RobotContainer {
           Map.entry(RobotStates.RIGHT_SUBSTATION, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED)))), 
           ()-> robotState)));
 
-    // Place piece on node (hold button to spin intake, release to stop)
-    driverController.rightBumper().whileTrue(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED)));
+    // Place piece on node (hold button to spin intake, release to stop) 
+    driverController.rightBumper().whileTrue(new SelectCommand(Map.ofEntries(
+      Map.entry(RobotStates.DRIVE, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HYBRID_SCORE_SPEED))),
+      Map.entry(RobotStates.HYBRID, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HYBRID_SCORE_SPEED))),
+      Map.entry(RobotStates.HIGH_LEFT, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.HIGH_CENTER, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.HIGH_RIGHT, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.MID_CENTER, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.MID_LEFT, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.MID_RIGHT, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED)))),
+      ()-> robotState));
     driverController.rightBumper().onFalse(new InstantCommand(() -> intakeSubsystem.stopIntakeMotors())
         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))

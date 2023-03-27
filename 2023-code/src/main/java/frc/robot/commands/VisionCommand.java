@@ -77,7 +77,6 @@ public class VisionCommand extends CommandBase {
     if(LimelightSubsystem.isTargetDetected("limelight-two") 
         || RobotContainer.robotState == RobotStates.DRIVE 
         || RobotContainer.robotState == RobotStates.INTAKE
-        || RobotContainer.robotState == RobotStates.HYBRID
         || RobotContainer.robotState == RobotStates.LEFT_SUBSTATION
         || RobotContainer.robotState == RobotStates.RIGHT_SUBSTATION) {
       tagID = (int)LimelightSubsystem.getAprilTagID("limelight-two");

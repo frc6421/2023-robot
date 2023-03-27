@@ -47,7 +47,9 @@ public class ArmCommand extends CommandBase {
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_INTAKE_ANGLE, 0);
         break;
 
-      case HYBRID:
+      case HYBRID_LEFT:
+      case HYBRID_CENTER:
+      case HYBRID_RIGHT:
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_HYBRID_ANGLE, 0);
         break;
 

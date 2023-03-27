@@ -216,22 +216,24 @@ public class RobotContainer {
      driverController.leftBumper().onTrue(new ParallelDeadlineGroup(new WaitCommand(0.5), new VisionCommand(driveSubsystem))
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
         .andThen(new SelectCommand(Map.ofEntries(
-          Map.entry(RobotStates.HYBRID, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
-          Map.entry(RobotStates.LEFT_SUBSTATION, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))),
-          Map.entry(RobotStates.RIGHT_SUBSTATION, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED)))), 
+          Map.entry(RobotStates.LEFT_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))),
+          Map.entry(RobotStates.RIGHT_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED)))), 
           ()-> robotState)));
 
     // Place piece on node (hold button to spin intake, release to stop) 
     driverController.rightBumper().whileTrue(new SelectCommand(Map.ofEntries(
-      Map.entry(RobotStates.DRIVE, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HYBRID_SCORE_SPEED))),
-      Map.entry(RobotStates.HYBRID, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HYBRID_SCORE_SPEED))),
-      Map.entry(RobotStates.HIGH_LEFT, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
-      Map.entry(RobotStates.HIGH_CENTER, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
-      Map.entry(RobotStates.HIGH_RIGHT, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
-      Map.entry(RobotStates.MID_CENTER, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
-      Map.entry(RobotStates.MID_LEFT, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
-      Map.entry(RobotStates.MID_RIGHT, new InstantCommand(()-> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED)))),
+      Map.entry(RobotStates.DRIVE, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HYBRID_SCORE_SPEED))),
+      Map.entry(RobotStates.HYBRID_LEFT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HYBRID_SCORE_SPEED))),
+      Map.entry(RobotStates.HYBRID_CENTER, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HYBRID_SCORE_SPEED))),
+      Map.entry(RobotStates.HYBRID_RIGHT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HYBRID_SCORE_SPEED))),
+      Map.entry(RobotStates.HIGH_LEFT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.HIGH_CENTER, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.HIGH_RIGHT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.MID_CENTER, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.MID_LEFT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.MID_RIGHT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED)))),
       ()-> robotState));
+
     driverController.rightBumper().onFalse(new InstantCommand(() -> intakeSubsystem.stopIntakeMotors())
         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))

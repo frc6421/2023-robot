@@ -27,15 +27,15 @@ public class ShuffleboardButtonManager extends SubsystemBase {
   ShuffleboardButtons[] buttons = {
       new ShuffleboardButtons("L High", RobotStates.HIGH_LEFT, 0, 0),
       new ShuffleboardButtons("L Mid", RobotStates.MID_LEFT, 0, 1),
-      new ShuffleboardButtons("L Hybrid", RobotStates.HYBRID, 0, 2),
+      new ShuffleboardButtons("L Hybrid", RobotStates.HYBRID_LEFT, 0, 2),
       new ShuffleboardButtons("C High", RobotStates.HIGH_CENTER, 1, 0),
       new ShuffleboardButtons("C Mid", RobotStates.MID_CENTER, 1, 1),
-      new ShuffleboardButtons("C Hybrid", RobotStates.HYBRID, 1, 2),
+      new ShuffleboardButtons("C Hybrid", RobotStates.HYBRID_CENTER, 1, 2),
       new ShuffleboardButtons("R High", RobotStates.HIGH_RIGHT, 2, 0),
       new ShuffleboardButtons("R Mid", RobotStates.MID_RIGHT, 2, 1),
-      new ShuffleboardButtons("R Hybrid", RobotStates.HYBRID, 2, 2),
+      new ShuffleboardButtons("R Hybrid", RobotStates.HYBRID_RIGHT, 2, 2),
       new ShuffleboardButtons("L Substation", RobotStates.LEFT_SUBSTATION, 4, 0),
-      new ShuffleboardButtons("R Substation", RobotStates.RIGHT_SUBSTATION, 5, 0),
+      new ShuffleboardButtons("R Substation", RobotStates.RIGHT_SUBSTATION, 5, 0)
   };
 
   /** Creates a new ShuffleboardButtonManager. */

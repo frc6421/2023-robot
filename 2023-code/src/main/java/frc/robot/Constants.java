@@ -82,7 +82,7 @@ public final class Constants {
     public static final double ARM_SET_POS_CONVERSION_FACTOR = 1.6;
 
     public static class ArmAngleConstants {
-      public static final double ARM_CONE_HIGH_ANGLE = 126; //121
+      public static final double ARM_CONE_HIGH_ANGLE = 121; //121
       public static final double ARM_CONE_MID_ANGLE = 128;
 
       public static final double ARM_CUBE_HIGH_ANGLE = 121;
@@ -320,7 +320,7 @@ public final class Constants {
      */
     public static final double ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE = (Units.inchesToMeters(1.7567) * Math.PI);
 
-    public static final double ELEVATOR_HIGH_POSITION = 0.517; //0.36
+    public static final double ELEVATOR_HIGH_POSITION = 0.47; //0.45
 
     public static final double ELEVATOR_MID_POSITION = .04;
 

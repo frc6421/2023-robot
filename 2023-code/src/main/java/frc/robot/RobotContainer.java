@@ -178,7 +178,8 @@ public class RobotContainer {
     // Change from intake position to drive position
     // Run belts at a slow speed to hold pieces in
     driverController.y().onTrue(new InstantCommand(() -> robotState = RobotStates.DRIVE)
-        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem)))
+        .andThen(new ParallelCommandGroup(new WristCommand(wristSubsystem)))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
 
     // Set robot to hybrid position and reverse intake
@@ -197,7 +198,8 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED)))
         .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -200)))
         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
-        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+        .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem)))
+        .andThen(new ParallelCommandGroup(new WristCommand(wristSubsystem)))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
 
     // Turn intake on for substation pick up, then bring arm back in

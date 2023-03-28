@@ -40,7 +40,8 @@ public final class Constants {
     DRIVE,
     INTAKE,
     LEFT_SUBSTATION,
-    RIGHT_SUBSTATION
+    RIGHT_SUBSTATION,
+    SINGLE_SUBSTATION
   }
 
   public static enum LEDStates {
@@ -429,6 +430,12 @@ public final class Constants {
     public static final double GRID_OFFSET = 0.38;
 
     public static final double SUBSTATION_GAME_PIECE_Y_ANGLE = 0;
+
+    /** X offset from AprilTag to single substation */
+    public static final double SINGLE_SUBSTATION_X_OFFSET = 1;
+
+    /** Y offset from AprilTag to single substation */
+    public static final double SINGLE_SUBSTATION_Y_OFFSET = 1;
 
     // Tag 1
     public static final double RED_LEFT_GRID_CUBE_POSE_X = 1.03;

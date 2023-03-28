@@ -42,6 +42,7 @@
       "/LiveWindow/Ungrouped/Talon FX [15]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [16]": "Motor Controller",
       "/LiveWindow/Ungrouped/Talon FX [17]": "Motor Controller",
+      "/Shuffleboard/Competition/autoChooser": "String Chooser",
       "/Shuffleboard/Elevator Tab/ElevatorSubsystem": "Subsystem",
       "/SmartDashboard/Control system": "String Chooser",
       "/SmartDashboard/Field": "Field2d",

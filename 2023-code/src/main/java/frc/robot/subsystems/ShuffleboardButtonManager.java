@@ -35,7 +35,8 @@ public class ShuffleboardButtonManager extends SubsystemBase {
       new ShuffleboardButtons("R Mid", RobotStates.MID_RIGHT, 2, 1),
       new ShuffleboardButtons("R Hybrid", RobotStates.HYBRID_RIGHT, 2, 2),
       new ShuffleboardButtons("L Substation", RobotStates.LEFT_SUBSTATION, 4, 0),
-      new ShuffleboardButtons("R Substation", RobotStates.RIGHT_SUBSTATION, 5, 0)
+      new ShuffleboardButtons("R Substation", RobotStates.RIGHT_SUBSTATION, 5, 0),
+      new ShuffleboardButtons("Single Substation", RobotStates.SINGLE_SUBSTATION, 4, 1)
   };
 
   /** Creates a new ShuffleboardButtonManager. */
@@ -74,6 +75,11 @@ public class ShuffleboardButtonManager extends SubsystemBase {
         RobotContainer.robotState = curButton.getRobotState();
         break;
       }
+    }
+
+    // TESTING BUTTON FIX \\
+    if(RobotContainer.robotState == RobotStates.DRIVE || RobotContainer.robotState == RobotStates.INTAKE) {
+      curButton.setValue(false);
     }
 
     if(yellowButton.getBoolean(false) && ledState == LEDStates.PURPLE) {

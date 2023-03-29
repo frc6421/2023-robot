@@ -137,7 +137,7 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
         new ParallelDeadlineGroup(firstPickUpCommand, 
-                        new SequentialCommandGroup(new WaitCommand(1), 
+                        new SequentialCommandGroup(new WaitCommand(0.35), 
                                 new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))))),
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),

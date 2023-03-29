@@ -105,7 +105,7 @@ public final class Constants {
 
   public static class AutoConstants {
     public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 4; // TODO update 4
-    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3; // TODO update 8
+    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 5; // TODO update 8
 
     public static final double AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND = 2;
     public static final double AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1;
@@ -139,7 +139,7 @@ public final class Constants {
       public static final Translation2d FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(3.5)); //3
       public static final Translation2d THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
-          Units.feetToMeters(7));
+          Units.feetToMeters(7.5)); //7
       public static final Translation2d SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(11));
       public static final Translation2d FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
@@ -164,7 +164,7 @@ public final class Constants {
           Units.inchesToMeters(108));
 
       public static final Translation2d CUBE_NODE = new Translation2d(Units.feetToMeters(0),
-          Units.inchesToMeters(45));
+          Units.inchesToMeters(48));
 
       public static final Translation2d AROUND_CHARGE_STATION = new Translation2d(Units.feetToMeters(5), //6
           Units.feetToMeters(3));
@@ -182,7 +182,7 @@ public final class Constants {
       public static final Translation2d FLIPPED_FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(3.5)); //3
       public static final Translation2d FLIPPED_THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
-          -Units.feetToMeters(7));
+          -Units.feetToMeters(7.5)); //7
       public static final Translation2d FLIPPED_SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(11));
       public static final Translation2d FLIPPED_FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
@@ -207,7 +207,7 @@ public final class Constants {
           -Units.inchesToMeters(108));
 
       public static final Translation2d FLIPPED_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
-          -Units.inchesToMeters(45));
+          -Units.inchesToMeters(48));
 
       public static final Translation2d FLIPPED_AROUND_CHARGE_STATION = new Translation2d(Units.feetToMeters(5), //6
           -Units.feetToMeters(3));

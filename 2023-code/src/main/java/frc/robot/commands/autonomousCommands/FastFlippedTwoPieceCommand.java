@@ -62,8 +62,8 @@ public class FastFlippedTwoPieceCommand extends SequentialCommandGroup {
         .setKinematics(driveSubsystem.swerveKinematics);
 
     TrajectoryConfig reverseConfig = new TrajectoryConfig(
-        AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND - 1,
-        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED - 1)
+        AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
+        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
         .setKinematics(driveSubsystem.swerveKinematics)
         .setReversed(true);
 
@@ -71,12 +71,12 @@ public class FastFlippedTwoPieceCommand extends SequentialCommandGroup {
     // Stage cube in far left game piece
     Trajectory firstPickUpTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
       new Pose2d(TrajectoryConstants.FLIPPED_SECOND_CONE_NODE, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), 0)), new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.minus(new Translation2d(Units.feetToMeters(1), 0)), new Rotation2d(0))
     ), forwardConfig);
 
     // Return to score cube next to cone
     Trajectory firstScoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-      new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), 0)), new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.minus(new Translation2d(Units.feetToMeters(1), 0)), new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE, new Rotation2d(0))
@@ -87,11 +87,11 @@ public class FastFlippedTwoPieceCommand extends SequentialCommandGroup {
       new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE, new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE, new Rotation2d(Units.degreesToRadians(-45)))
     ), forwardConfig);
 
     Trajectory edgeOfCommunityTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-      new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE, new Rotation2d(Units.degreesToRadians(-45))),
       new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0))
     ), reverseConfig);
 
@@ -150,7 +150,7 @@ public class FastFlippedTwoPieceCommand extends SequentialCommandGroup {
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
         new ParallelDeadlineGroup(firstPickUpCommand, 
-                        new SequentialCommandGroup(new WaitCommand(0.5), 
+                        new SequentialCommandGroup(new WaitCommand(0.35), 
                                 new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))))),
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
@@ -164,7 +164,7 @@ public class FastFlippedTwoPieceCommand extends SequentialCommandGroup {
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
         new ParallelDeadlineGroup(secondPickUpCommand, 
-                        new SequentialCommandGroup(new WaitCommand(0.5), 
+                        new SequentialCommandGroup(new WaitCommand(0.35), 
                                 new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))))),
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),

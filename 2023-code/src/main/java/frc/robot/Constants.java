@@ -40,8 +40,7 @@ public final class Constants {
     DRIVE,
     INTAKE,
     LEFT_SUBSTATION,
-    RIGHT_SUBSTATION,
-    SINGLE_SUBSTATION
+    RIGHT_SUBSTATION
   }
 
   public static enum LEDStates {
@@ -66,7 +65,7 @@ public final class Constants {
      */
     public static final double DEGREES_PER_MOTOR_ROTATION = (360 / ARM_GEAR_RATIO);
 
-    public static final float ARM_IN_SOFT_LIMIT = -17; // 3/18/23
+    public static final float ARM_IN_SOFT_LIMIT = -32.8f; // 3/28/23
 
     public static final float ARM_OUT_SOFT_LIMIT = 170; // previously 224 before hard stop
 
@@ -85,21 +84,21 @@ public final class Constants {
     public static final double ARM_SET_POS_CONVERSION_FACTOR = 1.6;
 
     public static class ArmAngleConstants {
-      public static final double ARM_CONE_HIGH_ANGLE = 121; //121
-      public static final double ARM_CONE_MID_ANGLE = 128;
+      public static final double ARM_CONE_HIGH_ANGLE = 119; // 3/28/23
+      public static final double ARM_CONE_MID_ANGLE = 125; // 3/28/23
 
-      public static final double ARM_CUBE_HIGH_ANGLE = 121;
-      public static final double ARM_CUBE_MID_ANGLE = 128;
+      public static final double ARM_CUBE_HIGH_ANGLE = 119; // 3/28/23
+      public static final double ARM_CUBE_MID_ANGLE = 125; // 3/28/23
 
-      public static final double ARM_START_POSITION = -17; //Determined 03/18/23
+      public static final double ARM_START_POSITION = -32.8; //Determined 03/28/23
 
-      public static final double ARM_DRIVE_ANGLE = -17;
+      public static final double ARM_DRIVE_ANGLE = -32.8; // 3/28/23
       
-      public static final double ARM_INTAKE_ANGLE = -5; //-11, -8
+      public static final double ARM_INTAKE_ANGLE = -22.3; // 3/28/23
 
-      public static final double ARM_HYBRID_ANGLE = 24;
+      public static final double ARM_HYBRID_ANGLE = -15;  // 3/28/23
 
-      public static final double ARM_SUBSTATION_ANGLE = 128; //111
+      public static final double ARM_SUBSTATION_ANGLE = 90; //  3/28/23
     }
 
   }
@@ -323,11 +322,11 @@ public final class Constants {
      */
     public static final double ELEVATOR_SPROCKET_PITCH_CIRCUMFERENCE = (Units.inchesToMeters(1.7567) * Math.PI);
 
-    public static final double ELEVATOR_HIGH_POSITION = 0.47; //0.45
+    public static final double ELEVATOR_HIGH_POSITION = 0.52;
 
-    public static final double ELEVATOR_MID_POSITION = .04;
+    public static final double ELEVATOR_MID_POSITION = 0;
 
-    public static final double ELEVATOR_SUBSTATION_POSITION = 0.35; //0.36
+    public static final double ELEVATOR_SUBSTATION_POSITION = 0.19; // 3/28/23
   }
 
   public static class IntakeConstants
@@ -349,7 +348,7 @@ public final class Constants {
     
     public static final double INTAKE_SCORE_SPEED = 0.6;
 
-    public static final double INTAKE_HYBRID_SCORE_SPEED = 0.72;
+    public static final double INTAKE_HYBRID_SCORE_SPEED = 1;
 
     public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
 
@@ -486,9 +485,9 @@ public final class Constants {
      */
     public static final double WRIST_DEGREES_PER_MOTOR_ROTATION = (360 / WRIST_GEAR_RATIO);
 
-    public static final float WRIST_IN_SOFT_LIMIT = -44.2f; // 3/18/23
+    public static final float WRIST_IN_SOFT_LIMIT = -44.8f; // 3/28/23
 
-    public static final float WRIST_OUT_SOFT_LIMIT = 226.5f; // 3/18/23
+    public static final float WRIST_OUT_SOFT_LIMIT = 111f; // 3/28/23
 
     public static final float WRIST_ELEVATOR_OUT_SOFT_LIMIT = 270;
 
@@ -505,21 +504,21 @@ public final class Constants {
     public static final double WRIST_SET_POS_CONVERSION_FACTOR = 1.6;
 
     public static class WristAngleConstants {
-      public static final double WRIST_CONE_HIGH_ANGLE = 171; // 150, 160
-      public static final double WRIST_CONE_MID_ANGLE = 175; //165
+      public static final double WRIST_CONE_HIGH_ANGLE = 55; // 3/28/23
+      public static final double WRIST_CONE_MID_ANGLE = 49; //  3/28/23
 
-      public static final double WRIST_CUBE_HIGH_ANGLE = 160; // 150
-      public static final double WRIST_CUBE_MID_ANGLE = 165;
+      public static final double WRIST_CUBE_HIGH_ANGLE = 55; // 3/28/23
+      public static final double WRIST_CUBE_MID_ANGLE = 49; //  3/28/23
 
-      public static final double WRIST_START_POSITION = 136.5; //Determined 03/18/23
+      public static final double WRIST_START_POSITION = 111; //Determined 03/28/23
 
-      public static final double WRIST_SUBSTATION_ANGLE = 153;
+      public static final double WRIST_SUBSTATION_ANGLE = 83; // 3/28/23
 
-      public static final double WRIST_DRIVE_ANGLE = 146.5; //136.5, 141.5
+      public static final double WRIST_DRIVE_ANGLE = 100; // 3/28/23
 
-      public static final double WRIST_INTAKE_ANGLE = -20; //-42, -28
+      public static final double WRIST_INTAKE_ANGLE = -44.8;
 
-      public static final double WRIST_HYBRID_ANGLE = -42;
+      public static final double WRIST_HYBRID_ANGLE = 111; // 3/28/23
     }
   }
 }

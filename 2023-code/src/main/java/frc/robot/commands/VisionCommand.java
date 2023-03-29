@@ -74,54 +74,68 @@ public class VisionCommand extends CommandBase {
   public void initialize() {
     allianceColor = DriverStation.getAlliance().name();
 
-    if(LimelightSubsystem.isTargetDetected("limelight-two")) {
-      tagID = (int)LimelightSubsystem.getAprilTagID("limelight-two");
+    if (LimelightSubsystem.isTargetDetected("limelight-two")) {
+      tagID = (int) LimelightSubsystem.getAprilTagID("limelight-two");
       System.out.println(tagID);
-    } else if(!LimelightSubsystem.isTargetDetected("limelight-two") 
-      || RobotContainer.robotState == RobotStates.DRIVE 
-      || RobotContainer.robotState == RobotStates.INTAKE) {
+    } else {
       CommandScheduler.getInstance().cancel(this);
+      tagID = 0;
+    }
+
+    if (RobotContainer.robotState.equals(RobotStates.DRIVE) || RobotContainer.robotState.equals(RobotStates.INTAKE)) {
+      tagID = 0;
     }
 
 
     switch (tagID) {
       // Red alliance left grid (driver perspective)
       case 1:
-        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
+        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT
+            || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
           targetXPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT || RobotContainer.robotState == RobotStates.MID_RIGHT || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT
+            || RobotContainer.robotState == RobotStates.MID_RIGHT
+            || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
           targetXPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER || RobotContainer.robotState == RobotStates.MID_CENTER || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER
+            || RobotContainer.robotState == RobotStates.MID_CENTER
+            || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
           targetXPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y;
           targetYawAngle = 0;
+
         }
 
         break;
       // Red alliance center grid
       case 2:
-        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
+        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT
+            || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
           targetXPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT || RobotContainer.robotState == RobotStates.MID_RIGHT || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT
+            || RobotContainer.robotState == RobotStates.MID_RIGHT
+            || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
           targetXPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER || RobotContainer.robotState == RobotStates.MID_CENTER || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER
+            || RobotContainer.robotState == RobotStates.MID_CENTER
+            || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
           targetXPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_Y;
@@ -131,19 +145,24 @@ public class VisionCommand extends CommandBase {
         break;
       // Red alliance right grid
       case 3:
-        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
+        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT
+            || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
           targetXPose = VisionConstants.RED_RIGHT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.RED_RIGHT_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT || RobotContainer.robotState == RobotStates.MID_RIGHT || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT
+            || RobotContainer.robotState == RobotStates.MID_RIGHT
+            || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
           targetXPose = VisionConstants.RED_RIGHT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.RED_RIGHT_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER || RobotContainer.robotState == RobotStates.MID_CENTER || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER
+            || RobotContainer.robotState == RobotStates.MID_CENTER
+            || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
           targetXPose = VisionConstants.RED_RIGHT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.RED_RIGHT_GRID_CUBE_POSE_Y;
@@ -163,10 +182,6 @@ public class VisionCommand extends CommandBase {
           targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
           targetYawAngle = Units.degreesToRadians(180);
 
-        } else if (RobotContainer.robotState == RobotStates.SINGLE_SUBSTATION) {
-          targetXPose = VisionConstants.BLUE_SUBSTATION_POSE_X - VisionConstants.SINGLE_SUBSTATION_X_OFFSET;
-          targetYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y + VisionConstants.SINGLE_SUBSTATION_Y_OFFSET;
-          targetYawAngle = Units.degreesToRadians(-90);
         }
 
         break;
@@ -182,28 +197,29 @@ public class VisionCommand extends CommandBase {
           targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y - VisionConstants.SUBSTATION_Y_OFFSET;
           targetYawAngle = Units.degreesToRadians(180);
 
-        } else if (RobotContainer.robotState == RobotStates.SINGLE_SUBSTATION) {
-          targetXPose = VisionConstants.RED_SUBSTATION_POSE_X - VisionConstants.SINGLE_SUBSTATION_X_OFFSET;
-          targetYPose = VisionConstants.RED_SUBSTATION_POSE_Y + VisionConstants.SINGLE_SUBSTATION_Y_OFFSET;
-          targetYawAngle = Units.degreesToRadians(-90);
         }
 
         break;
       // Blue alliance left grid
       case 6:
-        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
+        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT
+            || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
           targetXPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT || RobotContainer.robotState == RobotStates.MID_RIGHT || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT
+            || RobotContainer.robotState == RobotStates.MID_RIGHT
+            || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
           targetXPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER || RobotContainer.robotState == RobotStates.MID_CENTER || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER
+            || RobotContainer.robotState == RobotStates.MID_CENTER
+            || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
           targetXPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_Y;
@@ -212,19 +228,24 @@ public class VisionCommand extends CommandBase {
         break;
       // Blue alliance center grid
       case 7:
-        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
+        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT
+            || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
           targetXPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT || RobotContainer.robotState == RobotStates.MID_RIGHT || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT
+            || RobotContainer.robotState == RobotStates.MID_RIGHT
+            || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
           targetXPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER || RobotContainer.robotState == RobotStates.MID_CENTER || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER
+            || RobotContainer.robotState == RobotStates.MID_CENTER
+            || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
           targetXPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_Y;
@@ -233,19 +254,24 @@ public class VisionCommand extends CommandBase {
         break;
       // Blue alliance right grid
       case 8:
-        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
+        if (RobotContainer.robotState == RobotStates.HIGH_LEFT || RobotContainer.robotState == RobotStates.MID_LEFT
+            || RobotContainer.robotState == RobotStates.HYBRID_LEFT) {
           targetXPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_Y + VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT || RobotContainer.robotState == RobotStates.MID_RIGHT || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_RIGHT
+            || RobotContainer.robotState == RobotStates.MID_RIGHT
+            || RobotContainer.robotState == RobotStates.HYBRID_RIGHT) {
           targetXPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_Y - VisionConstants.CONE_OFFSET;
           targetYawAngle = 0;
 
-        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER || RobotContainer.robotState == RobotStates.MID_CENTER || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
+        } else if (RobotContainer.robotState == RobotStates.HIGH_CENTER
+            || RobotContainer.robotState == RobotStates.MID_CENTER
+            || RobotContainer.robotState == RobotStates.HYBRID_CENTER) {
           targetXPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_X + TrajectoryConstants.CENTER_OF_ROBOT_LENGTH
               + VisionConstants.GRID_OFFSET;
           targetYPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_Y;
@@ -253,7 +279,9 @@ public class VisionCommand extends CommandBase {
         }
         break;
       default:
-        end(true);
+        targetXPose = driveSubsystem.getPose2d().getX();
+        targetYPose = driveSubsystem.getPose2d().getY();
+        targetYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
         break;
     }
 
@@ -261,11 +289,17 @@ public class VisionCommand extends CommandBase {
     yPIDController.setSetpoint(targetYPose);
     yawPIDController.setSetpoint(targetYawAngle);
 
-    if (allianceColor == "Red") {
+    if (allianceColor == "Red"
+        && LimelightSubsystem.isTargetDetected("limelight-two")
+        && !RobotContainer.robotState.equals(RobotStates.DRIVE)
+        && !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
       driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getRedBotPoseX("limelight-two"),
           LimelightSubsystem.getRedBotPoseY("limelight-two"), GyroSubsystem.getYawAngle()));
 
-    } else if (allianceColor == "Blue") {
+    } else if (allianceColor == "Blue"
+        && LimelightSubsystem.isTargetDetected("limelight-two")
+        && !RobotContainer.robotState.equals(RobotStates.DRIVE)
+        && !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
       driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getBlueBotPoseX("limelight-two"),
           LimelightSubsystem.getBlueBotPoseY("limelight-two"), GyroSubsystem.getYawAngle()));
 
@@ -275,15 +309,15 @@ public class VisionCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      currentXPose = driveSubsystem.getPose2d().getX();
-      currentYPose = driveSubsystem.getPose2d().getY();
-      currentYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
+    currentXPose = driveSubsystem.getPose2d().getX();
+    currentYPose = driveSubsystem.getPose2d().getY();
+    currentYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
 
-      xPercentAdjust = MathUtil.clamp(xPIDController.calculate(currentXPose), -1, 1);
-      yPercentAdjust = MathUtil.clamp(yPIDController.calculate(currentYPose), -1, 1);
-      yawPercentAdjust = MathUtil.clamp(yawPIDController.calculate(currentYawAngle), -1, 1);
+    xPercentAdjust = MathUtil.clamp(xPIDController.calculate(currentXPose), -1, 1);
+    yPercentAdjust = MathUtil.clamp(yPIDController.calculate(currentYPose), -1, 1);
+    yawPercentAdjust = MathUtil.clamp(yawPIDController.calculate(currentYawAngle), -1, 1);
 
-      driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
+    driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
   }
 
   // Called once the command ends or is interrupted.

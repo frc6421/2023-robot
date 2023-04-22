@@ -159,7 +159,7 @@ public class FlippedTwoPieceCommand extends SequentialCommandGroup {
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.HIGH_CENTER),
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
-        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED - 0.1))),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),

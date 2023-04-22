@@ -119,7 +119,7 @@ public class OnePieceChargeCommand extends SequentialCommandGroup {
                 new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
                 new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
                 new ParallelDeadlineGroup(overChargeStationCommand, 
-                        new SequentialCommandGroup(new WaitCommand(2), 
+                        new SequentialCommandGroup(new WaitCommand(0.75), 
                                 new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))))),
                 new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
                 new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),

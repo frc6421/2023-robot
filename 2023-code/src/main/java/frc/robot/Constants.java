@@ -51,6 +51,8 @@ public final class Constants {
   public static class ArmConstants {
     public static final int ARM_CAN_ID = 40;
 
+    public static final int ARM_LIMIT_SWITCH_DIO_PORT = 0;
+
     public static final double ARM_DEFAULT_FF = 0.04; // Determined on 2/13/23 0.04    
     public static final double ARM_P = 0.06;// Determined on 2/7/23 0.06
     public static final double ARM_I = 0.0;
@@ -73,7 +75,7 @@ public final class Constants {
 
     public static final double ARM_MAX_TEST_PERCENT_OUTPUT = 0.15;
 
-    public static final double MAX_ARM_GRAVITY_FF = 0.0375; // Determined on 2/7/2023
+    public static final double MAX_ARM_GRAVITY_FF = 0.060; // Determined on 2/7/2023
 
     public static final double FLOOR_MIN_INCH_DISTANCE = 12.1;
 
@@ -98,7 +100,7 @@ public final class Constants {
 
       public static final double ARM_HYBRID_ANGLE = -15;  // 3/28/23
 
-      public static final double ARM_SUBSTATION_ANGLE = 90; //  3/28/23
+      public static final double ARM_SUBSTATION_ANGLE = 92.5; //  3/28/23, 90
     }
 
   }
@@ -107,8 +109,8 @@ public final class Constants {
     public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 4; // TODO update 4
     public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 5; // TODO update 8
 
-    public static final double AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND = 2;
-    public static final double AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 1;
+    public static final double AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND = 3;
+    public static final double AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3;
 
     public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
     public static final double AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC = Math.PI;
@@ -139,7 +141,7 @@ public final class Constants {
       public static final Translation2d FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(3.5)); //3
       public static final Translation2d THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
-          Units.feetToMeters(7.5)); //7
+          Units.feetToMeters(8)); //7
       public static final Translation2d SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
           Units.feetToMeters(11));
       public static final Translation2d FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(17.5),
@@ -182,7 +184,7 @@ public final class Constants {
       public static final Translation2d FLIPPED_FOURTH_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(3.5)); //3
       public static final Translation2d FLIPPED_THIRD_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
-          -Units.feetToMeters(7.5)); //7
+          -Units.feetToMeters(8)); //7
       public static final Translation2d FLIPPED_SECOND_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
           -Units.feetToMeters(11));
       public static final Translation2d FLIPPED_FIRST_GAME_PIECE = new Translation2d(Units.feetToMeters(18),
@@ -348,7 +350,7 @@ public final class Constants {
     
     public static final double INTAKE_SCORE_SPEED = 0.6;
 
-    public static final double INTAKE_HYBRID_SCORE_SPEED = 1;
+    public static final double INTAKE_HYBRID_SCORE_SPEED = 0.8; //1
 
     public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
 
@@ -514,7 +516,7 @@ public final class Constants {
 
       public static final double WRIST_SUBSTATION_ANGLE = 83; // 3/28/23
 
-      public static final double WRIST_DRIVE_ANGLE = 100; // 3/28/23
+      public static final double WRIST_DRIVE_ANGLE = 108; // 3/28/23 111
 
       public static final double WRIST_INTAKE_ANGLE = -44.8;
 

@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -21,6 +22,7 @@ public class ArmSubsystem extends SubsystemBase
     private SparkMaxPIDController armPIDController;
     public static RelativeEncoder armEncoder;
 
+    //private DigitalInput armLimitSwitch;
 
     private double positionMaxOutput; 
     private double positionMinOutput;
@@ -33,12 +35,14 @@ public class ArmSubsystem extends SubsystemBase
     public ArmSubsystem()
     {
 
-        armMotor = new CANSparkMax(ArmConstants.ARM_CAN_ID, MotorType.kBrushless); //TODO: Get CANID
+        armMotor = new CANSparkMax(ArmConstants.ARM_CAN_ID, MotorType.kBrushless);
+
+        //armLimitSwitch = new DigitalInput(ArmConstants.ARM_LIMIT_SWITCH_DIO_PORT);
 
         armMotor.restoreFactoryDefaults();
 
         armEncoder = armMotor.getEncoder();
-        armEncoder.setPositionConversionFactor(ArmConstants.DEGREES_PER_MOTOR_ROTATION); //TODO: Verify this is not totally wrong
+        armEncoder.setPositionConversionFactor(ArmConstants.DEGREES_PER_MOTOR_ROTATION);
 
         armMotor.setSmartCurrentLimit(60);
 
@@ -78,6 +82,11 @@ public class ArmSubsystem extends SubsystemBase
   public void periodic() 
     {
         SmartDashboard.putNumber("Arm Encoder Angle", getArmDegreePosition());
+
+        // if(getArmLimitSwitch()) {
+        //     // setPosition(ArmAngleConstants.ARM_START_POSITION);
+        //     System.out.println("Limit Switch Flipped");
+        // }
     }
 
 
@@ -199,7 +208,9 @@ public class ArmSubsystem extends SubsystemBase
     }
 
 
-    ////TEST METHODS////
-
+    ////LIMIT SWITCH METHODS////
+    // public boolean getArmLimitSwitch() {
+    //     return !armLimitSwitch.get();
+    // }
     
 }

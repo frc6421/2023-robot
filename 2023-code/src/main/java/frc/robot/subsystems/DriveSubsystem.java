@@ -5,7 +5,11 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,9 +19,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.DriverControlSystem;
@@ -30,7 +38,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public final SwerveDriveKinematics swerveKinematics;
 
-  private final SwerveDriveOdometry odometry;
+  //private final SwerveDriveOdometry odometry;
+
+  private final SwerveDrivePoseEstimator swervePoseEstimator;
+  private final Matrix<N3, N1> stateStandardDeviations;
+  private final Matrix<N3, N1> visionStandardDeviations;
 
   private final PIDController angleController;
   private final PIDController driftCorrector;
@@ -73,11 +85,39 @@ public class DriveSubsystem extends SubsystemBase {
         new Translation2d(-DriveConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0,
             -DriveConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0));
 
-    odometry = new SwerveDriveOdometry(swerveKinematics, GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
+    // odometry = new SwerveDriveOdometry(swerveKinematics, GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
+    //     frontLeft.getModulePosition(),
+    //     frontRight.getModulePosition(),
+    //     backLeft.getModulePosition(),
+    //     backRight.getModulePosition() });
+
+    stateStandardDeviations = new Matrix<>(Nat.N3(), Nat.N1()); //TODO tune standard deviation values
+    // Set X standard deviation
+    stateStandardDeviations.set(0, 0, 0.05);
+    // Set Y standard deviation
+    stateStandardDeviations.set(1, 0, 0.05);
+    // Set yaw standard deviation
+    stateStandardDeviations.set(2, 0, 5);
+
+    visionStandardDeviations = new Matrix<>(Nat.N3(), Nat.N1());  //TODO tune standard deviation values
+    // Set X standard deviation
+    visionStandardDeviations.set(0, 0, 0.5);
+    // Set Y standard deviation
+    visionStandardDeviations.set(1, 0, 0.5);
+    // Set yaw standard deviation
+    visionStandardDeviations.set(2, 0, 30);
+
+    swervePoseEstimator = new SwerveDrivePoseEstimator(swerveKinematics,
+      GyroSubsystem.getYawAngle(), 
+      new SwerveModulePosition[] {
         frontLeft.getModulePosition(),
         frontRight.getModulePosition(),
         backLeft.getModulePosition(),
-        backRight.getModulePosition() });
+        backRight.getModulePosition()
+      }, 
+      new Pose2d(), //TODO update starting pose?
+      stateStandardDeviations,
+      visionStandardDeviations);
 
     // PID controller for the rotation of the robot
     angleController = new PIDController(DriveConstants.ANGLE_CONTROLLER_KP, 0, 0);
@@ -102,13 +142,27 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    odometry.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
-      frontLeft.getModulePosition(),
-      frontRight.getModulePosition(),
-      backLeft.getModulePosition(),
-      backRight.getModulePosition()
-      }
-    );
+
+    // Field coordinates are different in auto and teleop because autonomous commands ignore the loading zones
+    // TODO determine if pose estimation w/ vision can be used in auto (probably not)
+    if(DriverStation.isAutonomous()) {
+      swervePoseEstimator.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
+          frontLeft.getModulePosition(),
+          frontRight.getModulePosition(),
+          backLeft.getModulePosition(),
+          backRight.getModulePosition()
+        });
+    } else if(DriverStation.isTeleop()) {
+      
+    }
+
+    // odometry.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
+    //   frontLeft.getModulePosition(),
+    //   frontRight.getModulePosition(),
+    //   backLeft.getModulePosition(),
+    //   backRight.getModulePosition()
+    //   }
+    //);
   }
 
   // ODOMETRY METHODS \\
@@ -119,7 +173,8 @@ public class DriveSubsystem extends SubsystemBase {
    * @return current robot pose2d in meters
    */
   public Pose2d getPose2d() {
-    return odometry.getPoseMeters();
+    //return odometry.getPoseMeters();
+    return swervePoseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -128,20 +183,28 @@ public class DriveSubsystem extends SubsystemBase {
    * @return current estimated robot heading as a Rotation2d (radians)
    */
   public Rotation2d getPoseHeading() {
-    return odometry.getPoseMeters().getRotation();
+    //return odometry.getPoseMeters().getRotation();
+    return swervePoseEstimator.getEstimatedPosition().getRotation();
   }
 
+  //TODO rename method if using pose estimator
   /**
    * Resets odometry to the given pose value
    * 
    * @param pose to use for reset
    */
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
+    // odometry.resetPosition(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
+    //     frontLeft.getModulePosition(),
+    //     frontRight.getModulePosition(),
+    //     backLeft.getModulePosition(),
+    //     backRight.getModulePosition() }, pose);
+    swervePoseEstimator.resetPosition(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
         frontLeft.getModulePosition(),
         frontRight.getModulePosition(),
         backLeft.getModulePosition(),
-        backRight.getModulePosition() }, pose);
+        backRight.getModulePosition()
+      }, pose);
   }
 
   /**

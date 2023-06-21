@@ -91,6 +91,7 @@ public class DriveSubsystem extends SubsystemBase {
     //     backLeft.getModulePosition(),
     //     backRight.getModulePosition() });
 
+    // State Standard Deviations \\
     stateStandardDeviations = new Matrix<>(Nat.N3(), Nat.N1()); //TODO tune standard deviation values
     // Set X standard deviation
     stateStandardDeviations.set(0, 0, 0.05);
@@ -99,6 +100,7 @@ public class DriveSubsystem extends SubsystemBase {
     // Set yaw standard deviation
     stateStandardDeviations.set(2, 0, 5);
 
+    // Vision Standard Deviations \\
     visionStandardDeviations = new Matrix<>(Nat.N3(), Nat.N1());  //TODO tune standard deviation values
     // Set X standard deviation
     visionStandardDeviations.set(0, 0, 0.5);
@@ -144,7 +146,6 @@ public class DriveSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     // Field coordinates are different in auto and teleop because autonomous commands ignore the loading zones
-    // TODO determine if pose estimation w/ vision can be used in auto (probably not)
     if(DriverStation.isAutonomous()) {
       swervePoseEstimator.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
           frontLeft.getModulePosition(),

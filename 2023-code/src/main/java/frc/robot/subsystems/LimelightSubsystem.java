@@ -22,6 +22,8 @@ public class LimelightSubsystem extends SubsystemBase {
   private GenericEntry blueXPose;
   private GenericEntry blueYPose;
   private GenericEntry blueYaw;
+
+  private String bestCamera;
   
   /** Creates a new LimelightSubsystem. */
   public LimelightSubsystem() {
@@ -41,13 +43,15 @@ public class LimelightSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    redXPose.setDouble(getRedBotPoseX("limelight-two"));
-    redYPose.setDouble(getRedBotPoseY("limelight-two"));
-    redYaw.setDouble(getRedBotPoseYaw("limelight-two"));
 
-    blueXPose.setDouble(getBlueBotPoseX("limelight-two"));
-    blueYPose.setDouble(getBlueBotPoseY("limelight-two"));
-    blueYaw.setDouble(getBlueBotPoseYaw("limelight-two"));
+    redXPose.setDouble(getRedBotPoseX(bestCamera));
+    redYPose.setDouble(getRedBotPoseY(bestCamera));
+    redYaw.setDouble(getRedBotPoseYaw(bestCamera));
+
+    blueXPose.setDouble(getBlueBotPoseX(bestCamera));
+    blueYPose.setDouble(getBlueBotPoseY(bestCamera));
+    blueYaw.setDouble(getBlueBotPoseYaw(bestCamera));
+
   }
 
 
@@ -57,6 +61,9 @@ public class LimelightSubsystem extends SubsystemBase {
     return LimelightHelpers.getCurrentPipelineIndex(limelightHostName);
   }
 
+  public static String getBestCamera() {
+    return "limelight-one";
+  }
 
   // APRILTAG GET METHODS \\
 

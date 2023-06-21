@@ -145,7 +145,7 @@ public class RobotContainer {
         MathUtil.clamp(driverController.getLeftX() * driveNerf, -1.0, 1.0),
         MathUtil.clamp(driverController.getRightX() * steerNerf, -1.0, 1.0),
         MathUtil.clamp(driverController.getLeftTriggerAxis() * driveNerf, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightTriggerAxis() * driveNerf, 1.0, 1.0)
+        MathUtil.clamp(driverController.getRightTriggerAxis() * driveNerf, -1.0, 1.0)
         ),
         driveSubsystem));
 

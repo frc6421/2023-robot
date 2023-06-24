@@ -251,9 +251,9 @@ public class RobotContainer {
       Map.entry(RobotStates.HYBRID_CENTER, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HYBRID_SCORE_SPEED))),
       Map.entry(RobotStates.HYBRID_RIGHT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HYBRID_SCORE_SPEED))),
       Map.entry(RobotStates.HIGH_LEFT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
-      Map.entry(RobotStates.HIGH_CENTER, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.HIGH_CENTER, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_CENTER_SCORE_SPEED))),
       Map.entry(RobotStates.HIGH_RIGHT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
-      Map.entry(RobotStates.MID_CENTER, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+      Map.entry(RobotStates.MID_CENTER, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_CENTER_SCORE_SPEED))),
       Map.entry(RobotStates.MID_LEFT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
       Map.entry(RobotStates.MID_RIGHT, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED)))),
       ()-> robotState));

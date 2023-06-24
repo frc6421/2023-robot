@@ -350,7 +350,9 @@ public final class Constants {
     
     public static final double INTAKE_SCORE_SPEED = 0.6;
 
-    public static final double INTAKE_HYBRID_SCORE_SPEED = 0.8; //1
+    public static final double INTAKE_HYBRID_SCORE_SPEED = 0.7; //0.8
+
+    public static final double INTAKE_CENTER_SCORE_SPEED = 0.4;
 
     public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
 

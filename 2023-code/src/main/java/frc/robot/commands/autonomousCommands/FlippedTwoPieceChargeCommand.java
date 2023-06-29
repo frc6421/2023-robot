@@ -63,7 +63,7 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
         .setKinematics(driveSubsystem.swerveKinematics);
 
     TrajectoryConfig chargeConfig = new TrajectoryConfig(
-      AutoConstants.AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND,
+      AutoConstants.AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND + 1,
       AutoConstants.AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
       .setKinematics(driveSubsystem.swerveKinematics);
 

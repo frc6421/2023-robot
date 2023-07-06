@@ -227,6 +227,7 @@ public class VisionCommand extends CommandBase {
         && LimelightSubsystem.isTargetDetected("limelight-two")
         && !RobotContainer.robotState.equals(RobotStates.DRIVE)
         && !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
+      //TODO update this to use pose estimator (may not even need this reset if pose is updating in drive periodic)
       driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getRedBotPoseX("limelight-two"),
           LimelightSubsystem.getRedBotPoseY("limelight-two"), GyroSubsystem.getYawAngle()));
 
@@ -234,6 +235,7 @@ public class VisionCommand extends CommandBase {
         && LimelightSubsystem.isTargetDetected("limelight-two")
         && !RobotContainer.robotState.equals(RobotStates.DRIVE)
         && !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
+      //TODO update this to use pose estimator (may not even need this reset if pose is updating in drive periodic)
       driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getBlueBotPoseX("limelight-two"),
           LimelightSubsystem.getBlueBotPoseY("limelight-two"), GyroSubsystem.getYawAngle()));
 

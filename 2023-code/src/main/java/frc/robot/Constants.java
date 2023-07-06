@@ -21,10 +21,19 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
+  public static enum CameraFilter {
+    CLOSEST_Z_POSE,
+    CLOSEST_YAW_ANGLE,
+    CLOSEST_ROLL_ANGLE,
+    CLOSEST_PITCH_ANGLE,
+    AVERAGE_POSE,
+    WEIGHTED_AVERAGE_POSE
+  }
+
   public static enum DriverControlSystem {
     LEFT_TRIGGER,
     RIGHT_TRIGGER,
-    JOYSTICK,
+    JOYSTICK
   }
 
   public static enum RobotStates {

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.CameraFilter;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RobotStates;
@@ -127,7 +128,6 @@ public class RobotContainer {
     fastTwoPieceCommand = new FastTwoPieceCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
     fastFlippedTwoPieceCommand = new FastFlippedTwoPieceCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
 
-  
     autoChooser = new SendableChooser<>();
     
     driverController = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);

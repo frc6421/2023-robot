@@ -106,11 +106,11 @@ public final class Constants {
   }
 
   public static class AutoConstants {
-    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 4; // TODO update 4
-    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 5; // TODO update 8
+    public static final double AUTO_MAX_VELOCITY_METERS_PER_SECOND = 4.3; // was 4
+    public static final double AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 8; // was 5
 
-    public static final double AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND = 3;
-    public static final double AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3;
+    public static final double AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND = 4.3; // was 3
+    public static final double AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3.5; // was 3
 
     public static final double AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC = 2 * Math.PI;
     public static final double AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC = Math.PI;

@@ -66,7 +66,7 @@ public class TwoPieceChargeCommand extends SequentialCommandGroup {
         .setKinematics(driveSubsystem.swerveKinematics);
 
     TrajectoryConfig chargeConfig = new TrajectoryConfig(
-        AutoConstants.AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND + 1,
+        AutoConstants.AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND,
         AutoConstants.AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
         .setKinematics(driveSubsystem.swerveKinematics);
 
@@ -136,12 +136,13 @@ public class TwoPieceChargeCommand extends SequentialCommandGroup {
         new InstantCommand(() -> driveSubsystem.resetOdometry(firstPickUpTrajectory.getInitialPose())),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.HIGH_LEFT),
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
-        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+        new ParallelDeadlineGroup(new WaitCommand(0.14), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
+        // TODO drive after elevator goes down (maybe)
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
         new ParallelDeadlineGroup(firstPickUpCommand, 
-                        new SequentialCommandGroup(new WaitCommand(0.2), 
+                        new SequentialCommandGroup(new WaitCommand(0.1), 
                                 new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))))),
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
@@ -150,7 +151,7 @@ public class TwoPieceChargeCommand extends SequentialCommandGroup {
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.HIGH_CENTER),
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
-        new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
+        new ParallelDeadlineGroup(new WaitCommand(0.14), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))),
         chargeStationCommand,

@@ -59,7 +59,7 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
 
     TrajectoryConfig forwardConfig = new TrajectoryConfig(
         AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
-        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
+        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED + 1)
         .setKinematics(driveSubsystem.swerveKinematics);
 
     TrajectoryConfig chargeConfig = new TrajectoryConfig(
@@ -69,7 +69,7 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
 
     TrajectoryConfig reverseConfig = new TrajectoryConfig(
         AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND,
-        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
+        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED + 1)
         .setKinematics(driveSubsystem.swerveKinematics)
         .setReversed(true);
 
@@ -82,6 +82,8 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
     // Return to score cube next to cone
     Trajectory firstScoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
         new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE, new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
         new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE, new Rotation2d(0))), reverseConfig);
 
     // Drives on charge station
@@ -137,7 +139,7 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
         new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.INTAKE),
         new ParallelDeadlineGroup(firstPickUpCommand, 
-                        new SequentialCommandGroup(new WaitCommand(0.2), 
+                        new SequentialCommandGroup(new WaitCommand(0.1), 
                                 new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))))),
         new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)),
         new InstantCommand(() -> RobotContainer.robotState = RobotStates.DRIVE),

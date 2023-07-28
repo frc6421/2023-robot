@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RobotStates;
+import frc.robot.Constants.WristConstants.WristAngleConstants;
 import frc.robot.commands.autonomousCommands.FastFlippedTwoPieceCommand;
 import frc.robot.commands.autonomousCommands.FastTwoPieceCommand;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceChargeCommand;
@@ -262,6 +263,11 @@ public class RobotContainer {
         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
+
+    // driverController.povUp().onTrue(new InstantCommand(() -> WristAngleConstants.WRIST_SUBSTATION_ANGLE = WristAngleConstants.WRIST_SUBSTATION_ANGLE + 2)
+    //   .andThen(new InstantCommand(() -> System.out.println(WristAngleConstants.WRIST_SUBSTATION_ANGLE))));
+    // driverController.povDown().onTrue(new InstantCommand(() -> WristAngleConstants.WRIST_SUBSTATION_ANGLE = WristAngleConstants.WRIST_SUBSTATION_ANGLE - 2)
+    //   .andThen(new InstantCommand(() -> System.out.println(WristAngleConstants.WRIST_SUBSTATION_ANGLE))));
 
     // Reset wrist encoder in case of skipping
     testController.a().onTrue(new InstantCommand(() -> wristSubsystem.resetEncoderPosition()));

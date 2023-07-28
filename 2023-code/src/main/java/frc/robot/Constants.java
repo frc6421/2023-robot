@@ -489,7 +489,7 @@ public final class Constants {
      */
     public static final double WRIST_DEGREES_PER_MOTOR_ROTATION = (360 / WRIST_GEAR_RATIO);
 
-    public static final float WRIST_IN_SOFT_LIMIT = -44.8f; // 3/28/23
+    public static final float WRIST_IN_SOFT_LIMIT = -60f; // 3/28/23, -44.8f
 
     public static final float WRIST_OUT_SOFT_LIMIT = 111f; // 3/28/23
 
@@ -516,7 +516,7 @@ public final class Constants {
 
       public static final double WRIST_START_POSITION = 111; //Determined 03/28/23
 
-      public static final double WRIST_SUBSTATION_ANGLE = -43.9; // 6/17/23, 83
+      public static final double WRIST_SUBSTATION_ANGLE = -60; // 6/17/23, 83
 
       public static final double WRIST_DRIVE_ANGLE = 108; // 3/28/23 111
 

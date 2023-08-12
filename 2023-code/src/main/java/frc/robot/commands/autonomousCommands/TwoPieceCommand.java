@@ -84,12 +84,12 @@ public class TwoPieceCommand extends SequentialCommandGroup {
       new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), 0)), new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.CUBE_NODE, new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.CUBE_NODE.plus(new Translation2d(0, Units.inchesToMeters(6))), new Rotation2d(0))
     ), reverseConfig);
 
     // Pick up third piece
     Trajectory secondPickUpTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-      new Pose2d(TrajectoryConstants.CUBE_NODE, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.CUBE_NODE.plus(new Translation2d(0, Units.inchesToMeters(6))), new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.THIRD_GAME_PIECE, new Rotation2d(0))

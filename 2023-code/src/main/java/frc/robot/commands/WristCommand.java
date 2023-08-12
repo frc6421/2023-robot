@@ -69,6 +69,10 @@ public class WristCommand extends CommandBase {
         wristGoal = new TrapezoidProfile.State(WristAngleConstants.WRIST_SUBSTATION_ANGLE, 0);
         break;
 
+      case SINGLE_SUBSTATION:
+        wristGoal = new TrapezoidProfile.State(WristAngleConstants.WRIST_SINGLE_SUBSTATION_ANGLE, 0);
+
+
     }
 
     wristProfile = new TrapezoidProfile(wristConstraints, wristGoal, new TrapezoidProfile.State(wristSubsystem.getWristDegreePosition(), 0));

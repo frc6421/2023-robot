@@ -242,6 +242,11 @@ public class RobotContainer {
             .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
             .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
             .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+            .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER)))),
+          Map.entry(RobotStates.SINGLE_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
+            .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
+            .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
+            .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
             .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))))), 
           ()-> robotState)));
 

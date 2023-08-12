@@ -40,7 +40,8 @@ public final class Constants {
     DRIVE,
     INTAKE,
     LEFT_SUBSTATION,
-    RIGHT_SUBSTATION
+    RIGHT_SUBSTATION,
+    SINGLE_SUBSTATION
   }
 
   public static enum LEDStates {
@@ -211,7 +212,7 @@ public final class Constants {
       public static final Translation2d FLIPPED_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
           -Units.inchesToMeters(48));
 
-      public static final Translation2d FLIPPED_AROUND_CHARGE_STATION = new Translation2d(Units.feetToMeters(5), //6
+    public static final Translation2d FLIPPED_AROUND_CHARGE_STATION = new Translation2d(Units.feetToMeters(5), //6
           -Units.feetToMeters(3));
 
       public static final Translation2d FLIPPED_CENTER_OF_CHARGE_STATION = new Translation2d(
@@ -516,7 +517,9 @@ public final class Constants {
 
       public static final double WRIST_START_POSITION = 111; //Determined 03/28/23
 
-      public static final double WRIST_SUBSTATION_ANGLE = -60; // 6/17/23, 83
+      public static final double WRIST_SUBSTATION_ANGLE = -53; // 6/17/23, 83
+
+      public static final double WRIST_SINGLE_SUBSTATION_ANGLE = 78;
 
       public static final double WRIST_DRIVE_ANGLE = 108; // 3/28/23 111
 

@@ -40,6 +40,7 @@ public class ArmCommand extends CommandBase {
     switch(RobotContainer.robotState)
     {
       case DRIVE:
+      case SINGLE_SUBSTATION:
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_DRIVE_ANGLE, 0);
         break;
 

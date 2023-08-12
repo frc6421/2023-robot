@@ -43,6 +43,7 @@ public class ElevatorCommand extends CommandBase {
       case HYBRID_LEFT:
       case HYBRID_CENTER:
       case HYBRID_RIGHT:
+      case SINGLE_SUBSTATION:
         elevatorGoal = new TrapezoidProfile.State(ElevatorConstants.ELEVATOR_MIN_POS_IN, 0);
 
         break;

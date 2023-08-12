@@ -49,7 +49,8 @@ public final class Constants {
     DRIVE,
     INTAKE,
     LEFT_SUBSTATION,
-    RIGHT_SUBSTATION
+    RIGHT_SUBSTATION,
+    SINGLE_SUBSTATION
   }
 
   public static enum LEDStates {
@@ -101,7 +102,7 @@ public final class Constants {
       public static final double ARM_CUBE_HIGH_ANGLE = 119; // 3/28/23
       public static final double ARM_CUBE_MID_ANGLE = 125; // 3/28/23
 
-      public static final double ARM_START_POSITION = -32.8; //Determined 03/28/23
+      public static final double ARM_START_POSITION = -35; //Determined 6/17/23
 
       public static final double ARM_DRIVE_ANGLE = -32.8; // 3/28/23
       
@@ -109,7 +110,7 @@ public final class Constants {
 
       public static final double ARM_HYBRID_ANGLE = -15;  // 3/28/23
 
-      public static final double ARM_SUBSTATION_ANGLE = 92.5; //  3/28/23, 90
+      public static final double ARM_SUBSTATION_ANGLE = 158.3; //  6/17/23, 159.8
     }
 
   }
@@ -220,7 +221,7 @@ public final class Constants {
       public static final Translation2d FLIPPED_CUBE_NODE = new Translation2d(Units.feetToMeters(0),
           -Units.inchesToMeters(48));
 
-      public static final Translation2d FLIPPED_AROUND_CHARGE_STATION = new Translation2d(Units.feetToMeters(5), //6
+    public static final Translation2d FLIPPED_AROUND_CHARGE_STATION = new Translation2d(Units.feetToMeters(5), //6
           -Units.feetToMeters(3));
 
       public static final Translation2d FLIPPED_CENTER_OF_CHARGE_STATION = new Translation2d(
@@ -337,7 +338,7 @@ public final class Constants {
 
     public static final double ELEVATOR_MID_POSITION = 0;
 
-    public static final double ELEVATOR_SUBSTATION_POSITION = 0.19; // 3/28/23
+    public static final double ELEVATOR_SUBSTATION_POSITION = 0; // 6/17/23, 0.19
   }
 
   public static class IntakeConstants
@@ -359,7 +360,9 @@ public final class Constants {
     
     public static final double INTAKE_SCORE_SPEED = 0.6;
 
-    public static final double INTAKE_HYBRID_SCORE_SPEED = 0.8; //1
+    public static final double INTAKE_HYBRID_SCORE_SPEED = 0.7; //0.8
+
+    public static final double INTAKE_CENTER_SCORE_SPEED = 0.4;
 
     public static final double DEGREES_PER_MOTOR_ROTATION = 3.0;
 
@@ -496,7 +499,7 @@ public final class Constants {
      */
     public static final double WRIST_DEGREES_PER_MOTOR_ROTATION = (360 / WRIST_GEAR_RATIO);
 
-    public static final float WRIST_IN_SOFT_LIMIT = -44.8f; // 3/28/23
+    public static final float WRIST_IN_SOFT_LIMIT = -60f; // 3/28/23, -44.8f
 
     public static final float WRIST_OUT_SOFT_LIMIT = 111f; // 3/28/23
 
@@ -523,7 +526,9 @@ public final class Constants {
 
       public static final double WRIST_START_POSITION = 111; //Determined 03/28/23
 
-      public static final double WRIST_SUBSTATION_ANGLE = 83; // 3/28/23
+      public static final double WRIST_SUBSTATION_ANGLE = -53; // 6/17/23, 83
+
+      public static final double WRIST_SINGLE_SUBSTATION_ANGLE = 78;
 
       public static final double WRIST_DRIVE_ANGLE = 108; // 3/28/23 111
 

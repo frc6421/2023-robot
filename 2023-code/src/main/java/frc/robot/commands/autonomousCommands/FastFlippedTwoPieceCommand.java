@@ -79,12 +79,12 @@ public class FastFlippedTwoPieceCommand extends SequentialCommandGroup {
       new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.minus(new Translation2d(Units.feetToMeters(1), 0)), new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE, new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE.plus(new Translation2d(0, Units.inchesToMeters(-6))), new Rotation2d(0))
     ), reverseConfig);
 
     // Pick up third piece
     Trajectory secondPickUpTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-      new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE.plus(new Translation2d(0, Units.inchesToMeters(-6))), new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE, new Rotation2d(Units.degreesToRadians(-45)))

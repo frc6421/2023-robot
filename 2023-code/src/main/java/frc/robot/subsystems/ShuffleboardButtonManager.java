@@ -37,7 +37,7 @@ public class ShuffleboardButtonManager extends SubsystemBase {
       new ShuffleboardButtons("L Substation", RobotStates.LEFT_SUBSTATION, 4, 0),
       new ShuffleboardButtons("R Substation", RobotStates.RIGHT_SUBSTATION, 5, 0),
       new ShuffleboardButtons("Single Sub", RobotStates.SINGLE_SUBSTATION, 6, 0)
-  };
+    };
 
   /** Creates a new ShuffleboardButtonManager. */
   public ShuffleboardButtonManager() {

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.CameraFilter;
+import frc.robot.Constants.GridStates;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RobotStates;
@@ -96,6 +97,7 @@ public class RobotContainer {
   private static double steerNerf = 0.8;
 
   public static RobotStates robotState;
+  public static GridStates gridState;
 
   // private GenericEntry armFFTest;
 
@@ -175,6 +177,7 @@ public class RobotContainer {
     Shuffleboard.selectTab("Competition");
 
     robotState = RobotStates.DRIVE;
+    gridState = GridStates.ONE;
 
     // Configure the trigger bindings
     configureBindings();

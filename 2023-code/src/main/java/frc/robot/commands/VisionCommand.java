@@ -11,7 +11,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.GridStates;
 import frc.robot.Constants.RobotStates;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
@@ -91,41 +93,135 @@ public class VisionCommand extends CommandBase {
       tagID = 0;
     }
 
+    if (allianceColor.equals("Red") && !RobotContainer.robotState.equals(RobotStates.LEFT_SUBSTATION)
+        && !RobotContainer.robotState.equals(RobotStates.RIGHT_SUBSTATION)
+        && !RobotContainer.robotState.equals(RobotStates.SINGLE_SUBSTATION)) {
+      switch (RobotContainer.gridState) {
+        // Red alliance left grid (driver perspective)
+        case ONE:
+
+          tagXPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_X;
+          tagYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y;
+
+          xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+
+          targetYawAngle = 0;
+
+          break;
+        // Red alliance center grid
+        case TWO:
+
+          tagXPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_X;
+          tagYPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_Y;
+
+          xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+
+          targetYawAngle = 0;
+
+          break;
+        // Red alliance right grid
+        case THREE:
+
+          tagXPose = VisionConstants.RED_RIGHT_GRID_CUBE_POSE_X;
+          tagYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y;
+
+          xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+
+          targetYawAngle = 0;
+
+          break;
+        // When no target is detected (no grid state selected)
+        default:
+          targetXPose = driveSubsystem.getPose2d().getX();
+          targetYPose = driveSubsystem.getPose2d().getY();
+          targetYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
+          break;
+      }
+    } else if (allianceColor.equals("Blue") && !RobotContainer.robotState.equals(RobotStates.LEFT_SUBSTATION)
+        && !RobotContainer.robotState.equals(RobotStates.RIGHT_SUBSTATION)
+        && !RobotContainer.robotState.equals(RobotStates.SINGLE_SUBSTATION)) {
+      switch (RobotContainer.gridState) {
+        // Blue alliance left grid
+        case ONE:
+
+          tagXPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_X;
+          tagYPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_Y;
+
+          xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+
+          targetYawAngle = 0;
+
+          break;
+        // Blue alliance center grid
+        case TWO:
+
+          tagXPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_X;
+          tagYPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_Y;
+
+          xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+
+          targetYawAngle = 0;
+
+          break;
+        // Blue alliance right grid
+        case THREE:
+
+          tagXPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_X;
+          tagYPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_Y;
+
+          xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+
+          targetYawAngle = 0;
+
+          break;
+        // When no target is detected (no grid state selected)
+        default:
+          targetXPose = driveSubsystem.getPose2d().getX();
+          targetYPose = driveSubsystem.getPose2d().getY();
+          targetYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
+          break;
+      }
+    }
+
     switch (tagID) {
       // Red alliance left grid (driver perspective)
-      case 1:
+      // case 1:
 
-        tagXPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_X;
-        tagYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y;
+      // tagXPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_X;
+      // tagYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y;
 
-        xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+      // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+      // VisionConstants.GRID_OFFSET;
 
-        targetYawAngle = 0;
+      // targetYawAngle = 0;
 
-        break;
-      // Red alliance center grid
-      case 2:
+      // break;
+      // // Red alliance center grid
+      // case 2:
 
-        tagXPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_X;
-        tagYPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_Y;
+      // tagXPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_X;
+      // tagYPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_Y;
 
-        xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+      // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+      // VisionConstants.GRID_OFFSET;
 
-        targetYawAngle = 0;
+      // targetYawAngle = 0;
 
-        break;
-      // Red alliance right grid
-      case 3:
+      // break;
+      // // Red alliance right grid
+      // case 3:
 
-        tagXPose = VisionConstants.RED_RIGHT_GRID_CUBE_POSE_X;
-        tagYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y;
+      // tagXPose = VisionConstants.RED_RIGHT_GRID_CUBE_POSE_X;
+      // tagYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y;
 
-        xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+      // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+      // VisionConstants.GRID_OFFSET;
 
-        targetYawAngle = 0;
+      // targetYawAngle = 0;
 
-        break;
+      // break;
       // Blue alliance substation
+      //TODO deal with single substation case
       case 4:
 
         tagXPose = VisionConstants.BLUE_SUBSTATION_POSE_X;
@@ -148,44 +244,47 @@ public class VisionCommand extends CommandBase {
 
         break;
       // Blue alliance left grid
-      case 6:
+      // case 6:
 
-        tagXPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_X;
-        tagYPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_Y;
+      // tagXPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_X;
+      // tagYPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_Y;
 
-        xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+      // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+      // VisionConstants.GRID_OFFSET;
 
-        targetYawAngle = 0;
+      // targetYawAngle = 0;
 
-        break;
-      // Blue alliance center grid
-      case 7:
+      // break;
+      // // Blue alliance center grid
+      // case 7:
 
-        tagXPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_X;
-        tagYPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_Y;
+      // tagXPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_X;
+      // tagYPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_Y;
 
-        xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+      // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+      // VisionConstants.GRID_OFFSET;
 
-        targetYawAngle = 0;
+      // targetYawAngle = 0;
 
-        break;
-      // Blue alliance right grid
-      case 8:
+      // break;
+      // // Blue alliance right grid
+      // case 8:
 
-        tagXPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_X;
-        tagYPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_Y;
+      // tagXPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_X;
+      // tagYPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_Y;
 
-        xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH + VisionConstants.GRID_OFFSET;
+      // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+      // VisionConstants.GRID_OFFSET;
 
-        targetYawAngle = 0;
+      // targetYawAngle = 0;
 
-        break;
-      // When no target is detected (tagID == 0)
-      default:
-        targetXPose = driveSubsystem.getPose2d().getX();
-        targetYPose = driveSubsystem.getPose2d().getY();
-        targetYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
-        break;
+      // break;
+      // // When no target is detected (tagID == 0)
+      // default:
+      // targetXPose = driveSubsystem.getPose2d().getX();
+      // targetYPose = driveSubsystem.getPose2d().getY();
+      // targetYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
+      // break;
     }
 
     if (RobotContainer.robotState.equals(RobotStates.HIGH_LEFT)
@@ -214,7 +313,12 @@ public class VisionCommand extends CommandBase {
 
       yOffset = -VisionConstants.SUBSTATION_Y_OFFSET;
 
+    } else if (RobotContainer.robotState.equals(RobotStates.SINGLE_SUBSTATION)) {
+
+      //yOffset =
+
     }
+
 
     targetXPose = tagXPose + xOffset;
     targetYPose = tagYPose + yOffset;
@@ -227,7 +331,8 @@ public class VisionCommand extends CommandBase {
         && LimelightSubsystem.isTargetDetected("limelight-two")
         && !RobotContainer.robotState.equals(RobotStates.DRIVE)
         && !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
-      //TODO update this to use pose estimator (may not even need this reset if pose is updating in drive periodic)
+      // TODO update this to use pose estimator (may not even need this reset if pose
+      // is updating in drive periodic)
       driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getRedBotPoseX("limelight-two"),
           LimelightSubsystem.getRedBotPoseY("limelight-two"), GyroSubsystem.getYawAngle()));
 
@@ -235,7 +340,8 @@ public class VisionCommand extends CommandBase {
         && LimelightSubsystem.isTargetDetected("limelight-two")
         && !RobotContainer.robotState.equals(RobotStates.DRIVE)
         && !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
-      //TODO update this to use pose estimator (may not even need this reset if pose is updating in drive periodic)
+      // TODO update this to use pose estimator (may not even need this reset if pose
+      // is updating in drive periodic)
       driveSubsystem.resetOdometry(new Pose2d(LimelightSubsystem.getBlueBotPoseX("limelight-two"),
           LimelightSubsystem.getBlueBotPoseY("limelight-two"), GyroSubsystem.getYawAngle()));
 

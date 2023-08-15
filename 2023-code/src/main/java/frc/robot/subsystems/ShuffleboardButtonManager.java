@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.GridStates;
 import frc.robot.Constants.LEDStates;
 import frc.robot.Constants.RobotStates;
 
@@ -20,6 +21,10 @@ public class ShuffleboardButtonManager extends SubsystemBase {
 
   private GenericEntry yellowButton;
   private GenericEntry purpleButton;
+
+  private GenericEntry gridOneButton;
+  private GenericEntry gridTwoButton;
+  private GenericEntry gridThreeButton;
 
   private LEDStates ledState = LEDStates.YELLOW;
 
@@ -55,11 +60,29 @@ public class ShuffleboardButtonManager extends SubsystemBase {
     .withPosition(5, 2)
     .getEntry();
 
+    gridOneButton = CompetitionTab.add("Grid 1", false)
+    .withWidget(BuiltInWidgets.kToggleButton)
+    .withPosition(4, 1)
+    .getEntry();
+
+    gridTwoButton = CompetitionTab.add("Grid 2", false)
+    .withWidget(BuiltInWidgets.kToggleButton)
+    .withPosition(5, 1)
+    .getEntry();
+
+    gridThreeButton = CompetitionTab.add("Grid 3", false)
+    .withWidget(BuiltInWidgets.kToggleButton)
+    .withPosition(6, 1)
+    .getEntry();
+
     CompetitionTab.addString("Robot State", () -> RobotContainer.robotState.name())
     .withPosition(4, 3);
 
     CompetitionTab.addString("LED State", () -> ledState.name())
     .withPosition(5, 3);
+
+    CompetitionTab.addString("Grid State", () -> RobotContainer.gridState.name())
+    .withPosition(6, 3);
   }
 
   @Override
@@ -92,6 +115,24 @@ public class ShuffleboardButtonManager extends SubsystemBase {
       BlinkinSubsystem.blinkinVioletSet();
       yellowButton.setBoolean(false);
       ledState = LEDStates.PURPLE;
+    }
+
+    if(gridOneButton.getBoolean(false) && RobotContainer.gridState != GridStates.ONE) {
+      gridTwoButton.setBoolean(false);
+      gridThreeButton.setBoolean(false);
+      RobotContainer.gridState = GridStates.ONE;
+    }
+
+    if(gridTwoButton.getBoolean(false) && RobotContainer.gridState != GridStates.TWO) {
+      gridOneButton.setBoolean(false);
+      gridThreeButton.setBoolean(false);
+      RobotContainer.gridState = GridStates.TWO;
+    }
+
+    if(gridThreeButton.getBoolean(false) && RobotContainer.gridState != GridStates.THREE) {
+      gridOneButton.setBoolean(false);
+      gridTwoButton.setBoolean(false);
+      RobotContainer.gridState = GridStates.THREE;
     }
   }
 

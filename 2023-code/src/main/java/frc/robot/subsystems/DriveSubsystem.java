@@ -21,10 +21,14 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
@@ -41,8 +45,6 @@ public class DriveSubsystem extends SubsystemBase {
   //private final SwerveDriveOdometry odometry;
 
   private final SwerveDrivePoseEstimator swervePoseEstimator;
-  private final Matrix<N3, N1> stateStandardDeviations;
-  private final Matrix<N3, N1> visionStandardDeviations;
 
   private final PIDController angleController;
   private final PIDController driftCorrector;
@@ -91,24 +93,6 @@ public class DriveSubsystem extends SubsystemBase {
     //     backLeft.getModulePosition(),
     //     backRight.getModulePosition() });
 
-    // State Standard Deviations \\
-    stateStandardDeviations = new Matrix<>(Nat.N3(), Nat.N1()); //TODO tune standard deviation values
-    // Set X standard deviation
-    stateStandardDeviations.set(0, 0, 0.05);
-    // Set Y standard deviation
-    stateStandardDeviations.set(1, 0, 0.05);
-    // Set yaw standard deviation
-    stateStandardDeviations.set(2, 0, 5);
-
-    // Vision Standard Deviations \\
-    visionStandardDeviations = new Matrix<>(Nat.N3(), Nat.N1());  //TODO tune standard deviation values
-    // Set X standard deviation
-    visionStandardDeviations.set(0, 0, 0.5);
-    // Set Y standard deviation
-    visionStandardDeviations.set(1, 0, 0.5);
-    // Set yaw standard deviation
-    visionStandardDeviations.set(2, 0, 30);
-
     swervePoseEstimator = new SwerveDrivePoseEstimator(swerveKinematics,
       GyroSubsystem.getYawAngle(), 
       new SwerveModulePosition[] {
@@ -118,8 +102,10 @@ public class DriveSubsystem extends SubsystemBase {
         backRight.getModulePosition()
       }, 
       new Pose2d(), //TODO update starting pose?
-      stateStandardDeviations,
-      visionStandardDeviations);
+      // State standard deviations (x, y, yaw)
+      VecBuilder.fill(0.1, 0.1, 0.1),
+      // Vision standard deviations (x, y, yaw)
+      VecBuilder.fill(0.9, 0.9, 0.9));
 
     // PID controller for the rotation of the robot
     angleController = new PIDController(DriveConstants.ANGLE_CONTROLLER_KP, 0, 0);
@@ -154,9 +140,33 @@ public class DriveSubsystem extends SubsystemBase {
           backRight.getModulePosition()
         });
     } else if(DriverStation.isTeleop()) {
-      //TODO set up if statement to update with vision if the current vision timestamp is different than the last timestamp
-      //Else update with odometry like in auto
-      //Use LimelightSubsystem.getBestCameraPose() to get the vision reading
+      swervePoseEstimator.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
+        frontLeft.getModulePosition(),
+        frontRight.getModulePosition(),
+        backLeft.getModulePosition(),
+        backRight.getModulePosition()
+      });
+
+      if(DriverStation.getAlliance().equals(Alliance.Red)) {
+
+        swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiRed("limelight-one"),
+          Timer.getFPGATimestamp() - (LimelightSubsystem.getRedBotPoseLatency("limelight-one") / 1000));
+
+        swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiRed("limelight-two"),
+          Timer.getFPGATimestamp() - (LimelightSubsystem.getRedBotPoseLatency("limelight-two") / 1000));
+
+      } else if(DriverStation.getAlliance().equals(Alliance.Blue)) {
+
+        swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue("limelight-one"),
+          Timer.getFPGATimestamp() - (LimelightSubsystem.getBlueBotPoseLatency("limelight-one") / 1000));
+
+        swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue("limelight-two"),
+          Timer.getFPGATimestamp() - (LimelightSubsystem.getBlueBotPoseLatency("limelight-two") / 1000));
+
+      }
+
+      SmartDashboard.putNumber("x", swervePoseEstimator.getEstimatedPosition().getX());
+      SmartDashboard.putNumber("y", swervePoseEstimator.getEstimatedPosition().getY());
     }
 
     // odometry.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {

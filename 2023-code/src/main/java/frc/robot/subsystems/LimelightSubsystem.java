@@ -296,6 +296,11 @@ public class LimelightSubsystem extends SubsystemBase {
     return botPoseArray[5];
   }
 
+  public static double getBotPoseLatency(String limelightHostName) {
+    double botPoseArray[] = get3dBotPose(limelightHostName);
+    return botPoseArray[6];
+  }
+
   /**
    * Gets the robot's position in 3d space relative to the red alliance driver
    * stations
@@ -336,6 +341,11 @@ public class LimelightSubsystem extends SubsystemBase {
     return botPoseArray[5];
   }
 
+  public static double getRedBotPoseLatency(String limelightHostName) {
+    double botPoseArray[] = getRed3dBotPose(limelightHostName);
+    return botPoseArray[6];
+  }
+
   /**
    * Gets the robot's position in 3d space relative to the blue alliance driver
    * stations
@@ -374,6 +384,11 @@ public class LimelightSubsystem extends SubsystemBase {
   public static double getBlueBotPoseYaw(String limelightHostName) {
     double botPoseArray[] = getBlue3dBotPose(limelightHostName);
     return botPoseArray[5];
+  }
+
+  public static double getBlueBotPoseLatency(String limelightHostName) {
+    double botPoseArray[] = getBlue3dBotPose(limelightHostName);
+    return botPoseArray[6];
   }
 
   // APRILTAG SET METHODS \\

@@ -58,6 +58,12 @@ public final class Constants {
     PURPLE
   }
 
+  public static enum GridStates {
+    ONE,
+    TWO,
+    THREE
+  }
+
   public static class ArmConstants {
     public static final int ARM_CAN_ID = 40;
 

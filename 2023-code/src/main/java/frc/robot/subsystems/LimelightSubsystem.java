@@ -7,18 +7,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.Constants.CameraFilter;
-import frc.robot.LimelightHelpers.LimelightResults;
 
 public class LimelightSubsystem extends SubsystemBase {
   private ShuffleboardTab limelightTab;
@@ -37,8 +34,8 @@ public class LimelightSubsystem extends SubsystemBase {
 
   /** Creates a new LimelightSubsystem. */
   public LimelightSubsystem() {
-    NetworkTable tableOne = NetworkTableInstance.getDefault().getTable("limelight-one");
-    NetworkTable tableTwo = NetworkTableInstance.getDefault().getTable("limelight-two");
+    // NetworkTable tableOne = NetworkTableInstance.getDefault().getTable("limelight-one");
+    // NetworkTable tableTwo = NetworkTableInstance.getDefault().getTable("limelight-two");
 
     limelightTab = Shuffleboard.getTab("Limelight Tab");
     redXPose = limelightTab.add("Red X Pose", 0).getEntry();

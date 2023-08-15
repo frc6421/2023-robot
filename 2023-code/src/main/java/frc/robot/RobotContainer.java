@@ -4,12 +4,10 @@
 
 package frc.robot;
 
-import frc.robot.Constants.CameraFilter;
 import frc.robot.Constants.GridStates;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.RobotStates;
-import frc.robot.Constants.WristConstants.WristAngleConstants;
 import frc.robot.commands.autonomousCommands.FastFlippedTwoPieceCommand;
 import frc.robot.commands.autonomousCommands.FastTwoPieceCommand;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceChargeCommand;
@@ -23,13 +21,7 @@ import frc.robot.subsystems.WristSubsystem;
 
 import java.util.Map;
 
-import javax.management.InstanceNotFoundException;
-
-import com.fasterxml.jackson.core.base.GeneratorBase;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.GenericEntry;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ElevatorCommand;
@@ -42,18 +34,12 @@ import frc.robot.subsystems.ShuffleboardButtonManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -203,16 +189,6 @@ public class RobotContainer {
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
 
-    // Set robot to hybrid position and reverse intake
-    // driverController.b().onTrue(new InstantCommand(() -> robotState = RobotStates.HYBRID)
-    //     .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
-    //     .andThen(new ParallelDeadlineGroup(new WaitCommand(0.3), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_SCORE_SPEED))))
-    //     .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
-    //     .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem), new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER)))));
-    //driverController.b().onFalse(new InstantCommand(() -> robotState = RobotStates.DRIVE)
-        //.andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
-        //.andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
-
     // Set robot to intake position and turn intake on for floor pickup
     driverController.a().onTrue(new InstantCommand(() -> robotState = RobotStates.INTAKE)
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
@@ -222,19 +198,33 @@ public class RobotContainer {
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
 
-    // Turn intake on for substation pick up, then bring arm back in
-    // driverController.x().onTrue(new ParallelDeadlineGroup(new WaitCommand(0.5), new VisionCommand(driveSubsystem))
-    //     .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem)))
-    //     .andThen(new WristCommand(wristSubsystem))
-    //     .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED)))
-    //     .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -200)))
-    //     .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
-    //     .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
-    //     .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
+    // Current competition button
 
-    // Run vision command and set arm, elevator, and wrist to correct position
-     driverController.leftBumper().onTrue(
-        new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))
+    // Set arm, elevator, and wrist to correct position
+    //  driverController.leftBumper().onTrue(
+    //     new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))
+    //     .andThen(new SelectCommand(Map.ofEntries(
+    //       Map.entry(RobotStates.LEFT_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
+    //         .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
+    //         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
+    //         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+    //         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER)))),
+    //       Map.entry(RobotStates.RIGHT_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
+    //         .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
+    //         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
+    //         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+    //         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER)))),
+    //       Map.entry(RobotStates.SINGLE_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
+    //         .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
+    //         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
+    //         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+    //         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))))), 
+    //       ()-> robotState)));
+
+    // Run vision command while held, then move arm for scoring or substation on release
+    driverController.leftBumper().whileTrue(new VisionCommand(driveSubsystem));
+
+    driverController.leftBumper().onFalse(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))
         .andThen(new SelectCommand(Map.ofEntries(
           Map.entry(RobotStates.LEFT_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
             .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
@@ -272,10 +262,7 @@ public class RobotContainer {
         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))));
 
-    // driverController.povUp().onTrue(new InstantCommand(() -> WristAngleConstants.WRIST_SUBSTATION_ANGLE = WristAngleConstants.WRIST_SUBSTATION_ANGLE + 2)
-    //   .andThen(new InstantCommand(() -> System.out.println(WristAngleConstants.WRIST_SUBSTATION_ANGLE))));
-    // driverController.povDown().onTrue(new InstantCommand(() -> WristAngleConstants.WRIST_SUBSTATION_ANGLE = WristAngleConstants.WRIST_SUBSTATION_ANGLE - 2)
-    //   .andThen(new InstantCommand(() -> System.out.println(WristAngleConstants.WRIST_SUBSTATION_ANGLE))));
+    // TEST CONTROLLER BUTTONS \\
 
     // Reset wrist encoder in case of skipping
     testController.a().onTrue(new InstantCommand(() -> wristSubsystem.resetEncoderPosition()));
@@ -300,7 +287,7 @@ public class RobotContainer {
     intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER);
   }
 
-  private RobotStates getRobotSupplier()
+  private RobotStates getRobotState()
   {
     return robotState;
   }

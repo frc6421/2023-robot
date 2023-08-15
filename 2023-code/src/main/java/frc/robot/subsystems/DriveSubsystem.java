@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -16,12 +14,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -29,7 +23,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Constants.DriverControlSystem;
@@ -165,8 +158,8 @@ public class DriveSubsystem extends SubsystemBase {
 
       }
 
-      SmartDashboard.putNumber("x", swervePoseEstimator.getEstimatedPosition().getX());
-      SmartDashboard.putNumber("y", swervePoseEstimator.getEstimatedPosition().getY());
+      SmartDashboard.putNumber("x", getPose2d().getX());
+      SmartDashboard.putNumber("y", getPose2d().getY());
     }
 
     // odometry.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
@@ -178,7 +171,7 @@ public class DriveSubsystem extends SubsystemBase {
     //);
   }
 
-  // ODOMETRY METHODS \\
+  // POSE ESTIMATOR METHODS \\
 
   /**
    * Returns estimated current robot pose in meters
@@ -219,6 +212,9 @@ public class DriveSubsystem extends SubsystemBase {
         backRight.getModulePosition()
       }, pose);
   }
+
+
+  // SWERVE DRIVE METHODS \\
 
   /**
    * Sets the swerve module states

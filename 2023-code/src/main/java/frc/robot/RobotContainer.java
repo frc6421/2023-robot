@@ -224,24 +224,24 @@ public class RobotContainer {
     // Run vision command while held, then move arm for scoring or substation on release
     driverController.leftBumper().whileTrue(new VisionCommand(driveSubsystem));
 
-    driverController.leftBumper().onFalse(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))
-        .andThen(new SelectCommand(Map.ofEntries(
-          Map.entry(RobotStates.LEFT_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
-            .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
-            .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
-            .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
-            .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER)))),
-          Map.entry(RobotStates.RIGHT_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
-            .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
-            .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
-            .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
-            .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER)))),
-          Map.entry(RobotStates.SINGLE_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
-            .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
-            .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
-            .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
-            .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))))), 
-          ()-> robotState)));
+    // driverController.leftBumper().onFalse(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))
+    //     .andThen(new SelectCommand(Map.ofEntries(
+    //       Map.entry(RobotStates.LEFT_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
+    //         .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
+    //         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
+    //         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+    //         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER)))),
+    //       Map.entry(RobotStates.RIGHT_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
+    //         .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
+    //         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
+    //         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+    //         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER)))),
+    //       Map.entry(RobotStates.SINGLE_SUBSTATION, new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_PICK_UP_SPEED))
+    //         .andThen(new WaitUntilCommand(() -> (intakeSubsystem.getIntakeVelocity() > -250)))
+    //         .andThen(new InstantCommand(() -> robotState = RobotStates.DRIVE))
+    //         .andThen(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem)))
+    //         .andThen(new InstantCommand(() -> intakeSubsystem.setIntakeSpeed(IntakeConstants.INTAKE_HOLD_POWER))))), 
+    //       ()-> robotState)));
 
     // Place piece on node (hold button to spin intake, release to stop) 
     driverController.rightBumper().whileTrue(new SelectCommand(Map.ofEntries(

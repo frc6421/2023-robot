@@ -142,19 +142,27 @@ public class DriveSubsystem extends SubsystemBase {
 
       if(DriverStation.getAlliance().equals(Alliance.Red)) {
 
-        swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiRed("limelight-one"),
+        if(LimelightSubsystem.isTargetDetected("limelight-one")) {
+          swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiRed("limelight-one"),
           Timer.getFPGATimestamp() - (LimelightSubsystem.getRedBotPoseLatency("limelight-one") / 1000));
-
-        swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiRed("limelight-two"),
+        }
+        
+        if(LimelightSubsystem.isTargetDetected("limelight-two")) {
+          swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiRed("limelight-two"),
           Timer.getFPGATimestamp() - (LimelightSubsystem.getRedBotPoseLatency("limelight-two") / 1000));
+        }
 
       } else if(DriverStation.getAlliance().equals(Alliance.Blue)) {
 
-        swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue("limelight-one"),
+        if(LimelightSubsystem.isTargetDetected("limelight-one")) {
+          swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue("limelight-one"),
           Timer.getFPGATimestamp() - (LimelightSubsystem.getBlueBotPoseLatency("limelight-one") / 1000));
+        }
 
-        swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue("limelight-two"),
+        if(LimelightSubsystem.isTargetDetected("limelight-two")) {
+          swervePoseEstimator.addVisionMeasurement(LimelightHelpers.getBotPose2d_wpiBlue("limelight-two"),
           Timer.getFPGATimestamp() - (LimelightSubsystem.getBlueBotPoseLatency("limelight-two") / 1000));
+        }
 
       }
 

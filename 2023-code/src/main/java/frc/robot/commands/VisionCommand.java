@@ -6,8 +6,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.RobotContainer;
@@ -38,9 +41,10 @@ public class VisionCommand extends CommandBase {
   private double targetYPose;
   private double targetYawAngle;
 
-  private final double xPValue = 4.9;
-  private final double yPValue = 5;
-  private final double yawPValue = 0.5;
+  private final double xPValue = 0.15;
+
+  private final double yPValue = 0.1;
+  private final double yawPValue = 0.01;
 
   private final double allowableXError = 0.01;
   private final double allowableYError = 0.01;
@@ -50,17 +54,29 @@ public class VisionCommand extends CommandBase {
   private double yPercentAdjust;
   private double yawPercentAdjust;
 
-  private final PIDController xPIDController;
-  private final PIDController yPIDController;
-  private final PIDController yawPIDController;
+  // private final PIDController xPIDController;
+  // private final PIDController yPIDController;
+  // private final PIDController yawPIDController;
+
+  private final ProfiledPIDController xPIDController;
+  private final ProfiledPIDController yPIDController;
+  private final ProfiledPIDController yawPIDController;
+
+  private final TrapezoidProfile.Constraints xConstraints;
+  private final TrapezoidProfile.Constraints yConstraints;
+  private final TrapezoidProfile.Constraints yawConstraints;
 
   /** Creates a new VisionCommand. */
   public VisionCommand(DriveSubsystem drive) {
     driveSubsystem = drive;
 
-    xPIDController = new PIDController(xPValue, 0, 0);
-    yPIDController = new PIDController(yPValue, 0, 0);
-    yawPIDController = new PIDController(yawPValue, 0, 0);
+    xConstraints = new TrapezoidProfile.Constraints(4, 4);
+    yConstraints = new TrapezoidProfile.Constraints(1, 0.5);
+    yawConstraints = new TrapezoidProfile.Constraints(6.28, 3.14);
+
+    xPIDController = new ProfiledPIDController(xPValue, 0, 0, xConstraints);
+    yPIDController = new ProfiledPIDController(yPValue, 0, 0, yConstraints);
+    yawPIDController = new ProfiledPIDController(yawPValue, 0, 0, yawConstraints);
 
     xPIDController.setTolerance(allowableXError);
     yPIDController.setTolerance(allowableYError);
@@ -77,13 +93,13 @@ public class VisionCommand extends CommandBase {
   public void initialize() {
     allianceColor = DriverStation.getAlliance().name();
 
-    if (LimelightSubsystem.isTargetDetected("limelight-two")) {
-      tagID = (int) LimelightSubsystem.getAprilTagID("limelight-two");
-      System.out.println(tagID);
-    } else {
-      CommandScheduler.getInstance().cancel(this);
-      tagID = 0;
-    }
+    // if (LimelightSubsystem.isTargetDetected("limelight-two")) {
+    //   tagID = (int) LimelightSubsystem.getAprilTagID("limelight-two");
+    //   //System.out.println(tagID);
+    // } else {
+    //   CommandScheduler.getInstance().cancel(this);
+    //   tagID = 0;
+    // }
 
     if (RobotContainer.robotState.equals(RobotStates.DRIVE) || RobotContainer.robotState.equals(RobotStates.INTAKE)) {
       tagID = 0;
@@ -97,7 +113,7 @@ public class VisionCommand extends CommandBase {
           // Red alliance left grid (driver perspective)
           case ONE:
 
-            tagXPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_X;
+            tagXPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_X + 0.3;
             tagYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y;
 
             targetYawAngle = 0;
@@ -350,9 +366,12 @@ public class VisionCommand extends CommandBase {
     targetXPose = tagXPose + xOffset;
     targetYPose = tagYPose + yOffset;
 
-    xPIDController.setSetpoint(targetXPose);
-    yPIDController.setSetpoint(targetYPose);
-    yawPIDController.setSetpoint(targetYawAngle);
+    SmartDashboard.putNumber("Target X", targetXPose);
+    SmartDashboard.putNumber("Target Y", targetYPose);
+
+    xPIDController.setGoal(targetXPose);
+    yPIDController.setGoal(targetYPose);
+    yawPIDController.setGoal(targetYawAngle);
 
   }
 
@@ -370,7 +389,8 @@ public class VisionCommand extends CommandBase {
 
     if (!RobotContainer.robotState.equals(RobotStates.DRIVE)
         && !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
-      driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
+      //driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
+      driveSubsystem.autoDrive(xPercentAdjust, 0, 0);
     }
   }
 
@@ -383,6 +403,7 @@ public class VisionCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return xPIDController.atSetpoint() && yPIDController.atSetpoint() && yawPIDController.atSetpoint();
+    //return xPIDController.atSetpoint() && yPIDController.atSetpoint() && yawPIDController.atSetpoint();
+    return xPIDController.atGoal();
   }
 }

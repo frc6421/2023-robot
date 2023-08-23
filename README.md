@@ -128,15 +128,14 @@ There are also buttons to control the LED colors for cube or cone pick up.  We s
 
 The robot's wrist is controlled with a [SPARK MAX Motor Controller](https://www.revrobotics.com/rev-11-2158/) attached to a [NEO brushless motor](https://www.revrobotics.com/rev-21-1650/) and UPDATE [MAXPlanetary](https://www.revrobotics.com/rev-21-2100/) gear box.  Wrist is driven with chain and sprockets (ratio of UPDATE between the sprockets).  The [intake](#intakesubsystem) is attached to the wrist. 
 - The gear box and sprocket ratios gives the wrist 2.7 degrees of rotation of every one rotation of the motor. This 2.7 degrees is the position conversion factor for the Spark Max so that we can input degrees as the desired position.  
-- The required degrees for each wrist position were determined by manually moving the wrist to the position (along with the arm and elevator) and determining an angle by trial and error.  Trial and error needed to be used due to the zero position angle changing as the arm moved. (No one took the time to calculate, but might have been fairly easy to do.)
-- Zero degrees is the wrist all the way touching the arm.    
+- The required degrees for each wrist position were determined by manually moving the wrist to the position (along with the arm and elevator) and determining an angle by trial and error.  Trial and error needed to be used due to the zero position angle changing as the arm moved. (No one took the time to calculate, but might have been fairly easy to do.)  
 
 >TODO Add picture of wrist.
 
 The wrist position is controlled with a PIDContoller on the SPARK MAX with just a P value (I and D are zero).
 
 ***WristSubsystem Notes***
-- A lot of testing was done to determine a dynamic feedforward for the wrist, but this was never used in the final code due to how the angle that was horizontial changed as the arm angle changed. In the end the system worked well without a dynamic feedforward.
+- A lot of testing was done to determine a dynamic feedforward for the wrist, but this was never used in the final code due to how the angle that was horizontal changed as the arm angle changed. In the end the system worked well without a dynamic feedforward.
 
 - See [WristCommand](#wristcommand) to see how a [WPILib TrapezoidProfile](#using-wpilib-trapezoidprofile-in-commands-to-control-motion) was used to control the wrist that most likely eliminated the need for the dynamic feedforward.
 

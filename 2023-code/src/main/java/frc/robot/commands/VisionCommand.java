@@ -4,16 +4,26 @@
 
 package frc.robot.commands;
 
+import java.util.List;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.RobotStates;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
 import frc.robot.Constants.VisionConstants;
@@ -66,6 +76,11 @@ public class VisionCommand extends CommandBase {
   private final TrapezoidProfile.Constraints yConstraints;
   private final TrapezoidProfile.Constraints yawConstraints;
 
+  TrajectoryConfig reverseConfig = new TrajectoryConfig(
+      1, 1)
+      .setKinematics(driveSubsystem.swerveKinematics)
+      .setReversed(true);
+
   /** Creates a new VisionCommand. */
   public VisionCommand(DriveSubsystem drive) {
     driveSubsystem = drive;
@@ -94,11 +109,11 @@ public class VisionCommand extends CommandBase {
     allianceColor = DriverStation.getAlliance().name();
 
     // if (LimelightSubsystem.isTargetDetected("limelight-two")) {
-    //   tagID = (int) LimelightSubsystem.getAprilTagID("limelight-two");
-    //   //System.out.println(tagID);
+    // tagID = (int) LimelightSubsystem.getAprilTagID("limelight-two");
+    // //System.out.println(tagID);
     // } else {
-    //   CommandScheduler.getInstance().cancel(this);
-    //   tagID = 0;
+    // CommandScheduler.getInstance().cancel(this);
+    // tagID = 0;
     // }
 
     if (RobotContainer.robotState.equals(RobotStates.DRIVE) || RobotContainer.robotState.equals(RobotStates.INTAKE)) {
@@ -366,30 +381,60 @@ public class VisionCommand extends CommandBase {
     targetXPose = tagXPose + xOffset;
     targetYPose = tagYPose + yOffset;
 
-    SmartDashboard.putNumber("Target X", targetXPose);
-    SmartDashboard.putNumber("Target Y", targetYPose);
+    // SmartDashboard.putNumber("Target X", targetXPose);
+    // SmartDashboard.putNumber("Target Y", targetYPose);
 
-    xPIDController.setGoal(targetXPose);
-    yPIDController.setGoal(targetYPose);
-    yawPIDController.setGoal(targetYawAngle);
+    // xPIDController.setGoal(targetXPose);
+    // yPIDController.setGoal(targetYPose);
+    // yawPIDController.setGoal(targetYawAngle);
+
+    Pose2d initialPose = driveSubsystem.getPose2d();
+
+    Trajectory trajectory = TrajectoryGenerator.generateTrajectory(List.of(initialPose,
+        new Pose2d(targetXPose, targetYPose, new Rotation2d(targetYawAngle))), reverseConfig);
+
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,
+        new TrapezoidProfile.Constraints(AutoConstants.AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC,
+            AutoConstants.AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC));
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
+        // Position controllers
+        new PIDController(AutoConstants.X_DRIVE_P, AutoConstants.X_DRIVE_I, AutoConstants.X_DRIVE_D),
+        new PIDController(AutoConstants.Y_DRIVE_P, AutoConstants.Y_DRIVE_I, AutoConstants.Y_DRIVE_D),
+        thetaController);
+
+    SwerveControllerCommand autoDriveCommand = new SwerveControllerCommand(
+        trajectory,
+        driveSubsystem::getPose2d,
+        driveSubsystem.swerveKinematics,
+        holonomicDriveController,
+        driveSubsystem::autoSetModuleStates,
+        driveSubsystem);
+
+    
 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentXPose = driveSubsystem.getPose2d().getX();
-    currentYPose = driveSubsystem.getPose2d().getY();
-    currentYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
+    // currentXPose = driveSubsystem.getPose2d().getX();
+    // currentYPose = driveSubsystem.getPose2d().getY();
+    // currentYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
 
-    // TODO clamp to something less than 1?
-    xPercentAdjust = MathUtil.clamp(xPIDController.calculate(currentXPose), -1, 1);
-    yPercentAdjust = MathUtil.clamp(yPIDController.calculate(currentYPose), -1, 1);
-    yawPercentAdjust = MathUtil.clamp(yawPIDController.calculate(currentYawAngle), -1, 1);
+    // // TODO clamp to something less than 1?
+    // xPercentAdjust = MathUtil.clamp(xPIDController.calculate(currentXPose), -1,
+    // 1);
+    // yPercentAdjust = MathUtil.clamp(yPIDController.calculate(currentYPose), -1,
+    // 1);
+    // yawPercentAdjust =
+    // MathUtil.clamp(yawPIDController.calculate(currentYawAngle), -1, 1);
 
     if (!RobotContainer.robotState.equals(RobotStates.DRIVE)
         && !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
-      //driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
+      // driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
       driveSubsystem.autoDrive(xPercentAdjust, 0, 0);
     }
   }
@@ -403,7 +448,8 @@ public class VisionCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //return xPIDController.atSetpoint() && yPIDController.atSetpoint() && yawPIDController.atSetpoint();
+    // return xPIDController.atSetpoint() && yPIDController.atSetpoint() &&
+    // yawPIDController.atSetpoint();
     return xPIDController.atGoal();
   }
 }

@@ -4,34 +4,23 @@
 
 package frc.robot.commands;
 
-import java.util.List;
-
-import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.RobotStates;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.AutoConstants.TrajectoryConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class VisionCommand extends SequentialCommandGroup {
+public class OldVisionCommand extends CommandBase {
   private DriveSubsystem driveSubsystem;
 
   private String allianceColor;
@@ -52,26 +41,65 @@ public class VisionCommand extends SequentialCommandGroup {
   private double targetYPose;
   private double targetYawAngle;
 
-  private Trajectory visionTrajectory;
+  private final double xPValue = 0.15;
+
+  private final double yPValue = 0.1;
+  private final double yawPValue = 0.01;
+
+  private final double allowableXError = 0.01;
+  private final double allowableYError = 0.01;
+  private final double allowableYawError = 0.01;
+
+  private double xPercentAdjust;
+  private double yPercentAdjust;
+  private double yawPercentAdjust;
+
+  // private final PIDController xPIDController;
+  // private final PIDController yPIDController;
+  // private final PIDController yawPIDController;
+
+  private final ProfiledPIDController xPIDController;
+  private final ProfiledPIDController yPIDController;
+  private final ProfiledPIDController yawPIDController;
+
+  private final TrapezoidProfile.Constraints xConstraints;
+  private final TrapezoidProfile.Constraints yConstraints;
+  private final TrapezoidProfile.Constraints yawConstraints;
 
   /** Creates a new VisionCommand. */
-  public VisionCommand(DriveSubsystem drive) {
+  public OldVisionCommand(DriveSubsystem drive) {
     driveSubsystem = drive;
 
+    xConstraints = new TrapezoidProfile.Constraints(4, 4);
+    yConstraints = new TrapezoidProfile.Constraints(1, 0.5);
+    yawConstraints = new TrapezoidProfile.Constraints(6.28, 3.14);
+
+    xPIDController = new ProfiledPIDController(xPValue, 0, 0, xConstraints);
+    yPIDController = new ProfiledPIDController(yPValue, 0, 0, yConstraints);
+    yawPIDController = new ProfiledPIDController(yawPValue, 0, 0, yawConstraints);
+
+    xPIDController.setTolerance(allowableXError);
+    yPIDController.setTolerance(allowableYError);
+    yawPIDController.setTolerance(allowableYawError);
+
+    yawPIDController.enableContinuousInput(Units.degreesToRadians(-180), Units.degreesToRadians(180));
+
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSubsystem);
+  }
 
-    TrajectoryConfig forwardConfig = new TrajectoryConfig(
-        VisionConstants.VISION_MAX_VELOCITY_METERS_PER_SECOND,
-        VisionConstants.VISION_MAX_ACCEL_METERS_PER_SECOND_SQUARED)
-        .setKinematics(driveSubsystem.swerveKinematics);
-
-    TrajectoryConfig reverseConfig = new TrajectoryConfig(
-        VisionConstants.VISION_MAX_VELOCITY_METERS_PER_SECOND,
-        VisionConstants.VISION_MAX_ACCEL_METERS_PER_SECOND_SQUARED)
-        .setKinematics(driveSubsystem.swerveKinematics)
-        .setReversed(true);
-
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
     allianceColor = DriverStation.getAlliance().name();
+
+    // if (LimelightSubsystem.isTargetDetected("limelight-two")) {
+    //   tagID = (int) LimelightSubsystem.getAprilTagID("limelight-two");
+    //   //System.out.println(tagID);
+    // } else {
+    //   CommandScheduler.getInstance().cancel(this);
+    //   tagID = 0;
+    // }
 
     if (RobotContainer.robotState.equals(RobotStates.DRIVE) || RobotContainer.robotState.equals(RobotStates.INTAKE)) {
       tagID = 0;
@@ -195,6 +223,109 @@ public class VisionCommand extends SequentialCommandGroup {
 
     }
 
+    // switch (tagID) {
+    // Red alliance left grid (driver perspective)
+    // case 1:
+
+    // tagXPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_X;
+    // tagYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y;
+
+    // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+    // VisionConstants.GRID_OFFSET;
+
+    // targetYawAngle = 0;
+
+    // break;
+    // // Red alliance center grid
+    // case 2:
+
+    // tagXPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_X;
+    // tagYPose = VisionConstants.RED_CENTER_GRID_CUBE_POSE_Y;
+
+    // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+    // VisionConstants.GRID_OFFSET;
+
+    // targetYawAngle = 0;
+
+    // break;
+    // // Red alliance right grid
+    // case 3:
+
+    // tagXPose = VisionConstants.RED_RIGHT_GRID_CUBE_POSE_X;
+    // tagYPose = VisionConstants.RED_LEFT_GRID_CUBE_POSE_Y;
+
+    // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+    // VisionConstants.GRID_OFFSET;
+
+    // targetYawAngle = 0;
+
+    // break;
+    // // Blue alliance substation
+    // case 4:
+
+    // tagXPose = VisionConstants.BLUE_SUBSTATION_POSE_X;
+    // tagYPose = VisionConstants.BLUE_SUBSTATION_POSE_Y;
+
+    // //xOffset = -VisionConstants.SUBSTATION_X_OFFSET;
+
+    // //targetYawAngle = Units.degreesToRadians(180);
+
+    // break;
+    // // Red alliance substation
+    // case 5:
+
+    // tagXPose = VisionConstants.RED_SUBSTATION_POSE_X;
+    // tagYPose = VisionConstants.RED_SUBSTATION_POSE_Y;
+
+    // //xOffset = -VisionConstants.SUBSTATION_X_OFFSET;
+
+    // //targetYawAngle = Units.degreesToRadians(180);
+
+    // break;
+    // Blue alliance left grid
+    // case 6:
+
+    // tagXPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_X;
+    // tagYPose = VisionConstants.BLUE_LEFT_GRID_CUBE_POSE_Y;
+
+    // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+    // VisionConstants.GRID_OFFSET;
+
+    // targetYawAngle = 0;
+
+    // break;
+    // // Blue alliance center grid
+    // case 7:
+
+    // tagXPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_X;
+    // tagYPose = VisionConstants.BLUE_CENTER_GRID_CUBE_POSE_Y;
+
+    // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+    // VisionConstants.GRID_OFFSET;
+
+    // targetYawAngle = 0;
+
+    // break;
+    // // Blue alliance right grid
+    // case 8:
+
+    // tagXPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_X;
+    // tagYPose = VisionConstants.BLUE_RIGHT_GRID_CUBE_POSE_Y;
+
+    // xOffset = TrajectoryConstants.CENTER_OF_ROBOT_LENGTH +
+    // VisionConstants.GRID_OFFSET;
+
+    // targetYawAngle = 0;
+
+    // break;
+    // // When no target is detected (tagID == 0)
+    // default:
+    // targetXPose = driveSubsystem.getPose2d().getX();
+    // targetYPose = driveSubsystem.getPose2d().getY();
+    // targetYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
+    // break;
+    // }
+
     if (RobotContainer.robotState.equals(RobotStates.HIGH_LEFT)
         || RobotContainer.robotState.equals(RobotStates.MID_LEFT)
         || RobotContainer.robotState.equals(RobotStates.HYBRID_LEFT)) {
@@ -238,38 +369,41 @@ public class VisionCommand extends SequentialCommandGroup {
     SmartDashboard.putNumber("Target X", targetXPose);
     SmartDashboard.putNumber("Target Y", targetYPose);
 
-    if (!RobotContainer.robotState.equals(RobotStates.DRIVE) ||
-        !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
-      visionTrajectory = TrajectoryGenerator.generateTrajectory(List.of(driveSubsystem.getPose2d(),
-          new Pose2d(targetXPose, targetYPose, new Rotation2d(targetYawAngle))), reverseConfig);
-    } else {
-      visionTrajectory = null;
+    xPIDController.setGoal(targetXPose);
+    yPIDController.setGoal(targetYPose);
+    yawPIDController.setGoal(targetYawAngle);
+
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    currentXPose = driveSubsystem.getPose2d().getX();
+    currentYPose = driveSubsystem.getPose2d().getY();
+    currentYawAngle = driveSubsystem.getPose2d().getRotation().getRadians();
+
+    // TODO clamp to something less than 1?
+    xPercentAdjust = MathUtil.clamp(xPIDController.calculate(currentXPose), -1, 1);
+    yPercentAdjust = MathUtil.clamp(yPIDController.calculate(currentYPose), -1, 1);
+    yawPercentAdjust = MathUtil.clamp(yawPIDController.calculate(currentYawAngle), -1, 1);
+
+    if (!RobotContainer.robotState.equals(RobotStates.DRIVE)
+        && !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
+      //driveSubsystem.autoDrive(xPercentAdjust, yPercentAdjust, yawPercentAdjust);
+      driveSubsystem.autoDrive(xPercentAdjust, 0, 0);
     }
+  }
 
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,
-        new TrapezoidProfile.Constraints(AutoConstants.AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC,
-            AutoConstants.AUTO_MAX_ANGULAR_ACCELERATION_RAD_PER_SEC));
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    driveSubsystem.autoDrive(0, 0, 0);
+  }
 
-    HolonomicDriveController holonomicDriveController = new HolonomicDriveController(
-        // Position controllers
-        new PIDController(AutoConstants.X_DRIVE_P, AutoConstants.X_DRIVE_I, AutoConstants.X_DRIVE_D),
-        new PIDController(AutoConstants.Y_DRIVE_P, AutoConstants.Y_DRIVE_I, AutoConstants.Y_DRIVE_D),
-        thetaController);
-
-    SwerveControllerCommand visionDriveCommand = new SwerveControllerCommand(
-        visionTrajectory,
-        driveSubsystem::getPose2d,
-        driveSubsystem.swerveKinematics,
-        holonomicDriveController,
-        driveSubsystem::autoSetModuleStates,
-        driveSubsystem);
-
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-        visionDriveCommand,
-        new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)));
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    //return xPIDController.atSetpoint() && yPIDController.atSetpoint() && yawPIDController.atSetpoint();
+    return xPIDController.atGoal();
   }
 }

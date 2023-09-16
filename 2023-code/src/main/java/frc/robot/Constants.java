@@ -434,8 +434,8 @@ public final class Constants {
   }
 
   public class VisionConstants {
-    public static final double VISION_MAX_VELOCITY_METERS_PER_SECOND = 3;
-    public static final double VISION_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 3;
+    public static final double VISION_MAX_VELOCITY_METERS_PER_SECOND = 1;
+    public static final double VISION_MAX_ACCEL_METERS_PER_SECOND_SQUARED = 1;
     
     // All distances are in meters \\
     // Left and right are relative to the driver's perspective in the driver station \\

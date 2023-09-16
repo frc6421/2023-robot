@@ -37,11 +37,11 @@ public class VisionCommand extends SequentialCommandGroup {
 
   private String allianceColor;
 
-  private int tagID;
+  // private int tagID;
 
-  private double currentXPose;
-  private double currentYPose;
-  private double currentYawAngle;
+  // private double currentXPose;
+  // private double currentYPose;
+  // private double currentYawAngle;
 
   private double xOffset;
   private double yOffset;
@@ -54,11 +54,6 @@ public class VisionCommand extends SequentialCommandGroup {
   private double targetYawAngle;
 
   private Trajectory visionTrajectory;
-
-  TrajectoryConfig reverseConfig = new TrajectoryConfig(
-      1, 1)
-      .setKinematics(driveSubsystem.swerveKinematics)
-      .setReversed(true);
 
   /** Creates a new VisionCommand. */
   public VisionCommand(DriveSubsystem drive) {
@@ -79,9 +74,9 @@ public class VisionCommand extends SequentialCommandGroup {
 
     allianceColor = DriverStation.getAlliance().name();
 
-    if (RobotContainer.robotState.equals(RobotStates.DRIVE) || RobotContainer.robotState.equals(RobotStates.INTAKE)) {
-      tagID = 0;
-    }
+    // if (RobotContainer.robotState.equals(RobotStates.DRIVE) || RobotContainer.robotState.equals(RobotStates.INTAKE)) {
+    //   tagID = 0;
+    // }
 
     if (allianceColor.equals("Red")) {
       if (!RobotContainer.robotState.equals(RobotStates.LEFT_SUBSTATION)
@@ -241,8 +236,8 @@ public class VisionCommand extends SequentialCommandGroup {
     targetXPose = tagXPose + xOffset;
     targetYPose = tagYPose + yOffset;
 
-    // SmartDashboard.putNumber("Target X", targetXPose);
-    // SmartDashboard.putNumber("Target Y", targetYPose);
+    SmartDashboard.putNumber("Target X", targetXPose);
+    SmartDashboard.putNumber("Target Y", targetYPose);
 
     if (!RobotContainer.robotState.equals(RobotStates.DRIVE) ||
         !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
@@ -272,10 +267,13 @@ public class VisionCommand extends SequentialCommandGroup {
         driveSubsystem::autoSetModuleStates,
         driveSubsystem);
 
+    System.out.println(visionTrajectory.getStates());
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-        visionDriveCommand,
-        new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)));
+
+    );
+        // visionDriveCommand,
+        // new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)));
   }
 }

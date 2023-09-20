@@ -25,7 +25,6 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ElevatorCommand;
-import frc.robot.commands.OldVisionCommand;
 import frc.robot.commands.VisionCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -223,7 +222,7 @@ public class RobotContainer {
     //       ()-> robotState)));
 
     // Run vision command while held, then move arm for scoring or substation on release
-    driverController.leftBumper().onTrue(new VisionCommand(driveSubsystem));
+    driverController.leftBumper().onTrue(new RunCommand(() -> new VisionCommand(driveSubsystem)));
 
     // driverController.leftBumper().onFalse(new ParallelCommandGroup(new ArmCommand(armSubsystem), new ElevatorCommand(elevatorSubsystem), new WristCommand(wristSubsystem))
     //     .andThen(new SelectCommand(Map.ofEntries(

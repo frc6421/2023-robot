@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -43,6 +44,8 @@ public class VisionCommand extends SequentialCommandGroup {
   // private double currentYPose;
   // private double currentYawAngle;
 
+  private Pose2d currentPose;
+
   private double xOffset;
   private double yOffset;
 
@@ -52,6 +55,8 @@ public class VisionCommand extends SequentialCommandGroup {
   private double targetXPose;
   private double targetYPose;
   private double targetYawAngle;
+
+  private Pose2d targetPose;
 
   private Trajectory visionTrajectory;
 
@@ -239,10 +244,13 @@ public class VisionCommand extends SequentialCommandGroup {
     SmartDashboard.putNumber("Target X", targetXPose);
     SmartDashboard.putNumber("Target Y", targetYPose);
 
+    currentPose = driveSubsystem.getPose2d();
+    targetPose = new Pose2d(new Translation2d(targetXPose, targetYPose), new Rotation2d(targetYawAngle));
+
     if (!RobotContainer.robotState.equals(RobotStates.DRIVE) ||
         !RobotContainer.robotState.equals(RobotStates.INTAKE)) {
-      visionTrajectory = TrajectoryGenerator.generateTrajectory(List.of(driveSubsystem.getPose2d(),
-          new Pose2d(targetXPose, targetYPose, new Rotation2d(targetYawAngle))), reverseConfig);
+      visionTrajectory = TrajectoryGenerator.generateTrajectory(List.of(currentPose,
+          targetPose), reverseConfig);
     } else {
       visionTrajectory = null;
     }
@@ -268,12 +276,11 @@ public class VisionCommand extends SequentialCommandGroup {
         driveSubsystem);
 
     System.out.println(visionTrajectory.getStates());
+    
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-
-    );
-        // visionDriveCommand,
-        // new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)));
+        visionDriveCommand,
+        new InstantCommand(() -> driveSubsystem.autoDrive(0, 0, 0)));
   }
 }

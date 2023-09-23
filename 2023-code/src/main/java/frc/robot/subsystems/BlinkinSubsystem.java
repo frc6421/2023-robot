@@ -20,6 +20,9 @@ public class BlinkinSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+  public static void setVoltage(double volts){
+    blinkinLED.setVoltage(volts);
+  }
   public static void blinkinRainbowSet(){
     blinkinLED.set(BlinkinConstants.BLINKIN_RAINBOW);
   }

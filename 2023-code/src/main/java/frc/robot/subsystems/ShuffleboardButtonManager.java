@@ -83,12 +83,14 @@ public class ShuffleboardButtonManager extends SubsystemBase {
     }
 
     if(yellowButton.getBoolean(false) && ledState == LEDStates.PURPLE) {
+      BlinkinSubsystem.setVoltage(5);
       BlinkinSubsystem.blinkinYellowSet();
       purpleButton.setBoolean(false);
       ledState = LEDStates.YELLOW;
     }
     
     if(purpleButton.getBoolean(false) && ledState == LEDStates.YELLOW) {
+      BlinkinSubsystem.setVoltage(5);
       BlinkinSubsystem.blinkinVioletSet();
       yellowButton.setBoolean(false);
       ledState = LEDStates.PURPLE;

@@ -46,6 +46,10 @@ public class WristCommand extends CommandBase {
         wristGoal = new TrapezoidProfile.State(WristAngleConstants.WRIST_INTAKE_ANGLE, 0);
         break;
 
+      case AUTO_INTAKE:
+        wristGoal = new TrapezoidProfile.State(WristAngleConstants.WRIST_AUTO_INTAKE_ANGLE, 0);
+        break;
+
       case HYBRID_LEFT:
       case HYBRID_CENTER:
       case HYBRID_RIGHT:

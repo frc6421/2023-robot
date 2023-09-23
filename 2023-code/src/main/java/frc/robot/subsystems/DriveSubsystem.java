@@ -88,8 +88,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Sets up the sendable chooser on SmartDashboard to select control system
     controlSystem = new SendableChooser<>();
-    controlSystem.setDefaultOption("Left Trigger Controls", DriverControlSystem.LEFT_TRIGGER);
-    controlSystem.addOption("Joystick Controls", DriverControlSystem.JOYSTICK); // TODO Get these into an enum w/ switch
+    controlSystem.addOption("Left Trigger Controls", DriverControlSystem.LEFT_TRIGGER);
+    controlSystem.setDefaultOption("Joystick Controls", DriverControlSystem.JOYSTICK); // TODO Get these into an enum w/ switch
     controlSystem.addOption("RightTrigger", DriverControlSystem.RIGHT_TRIGGER);
     SmartDashboard.putData("Control system", controlSystem);
 

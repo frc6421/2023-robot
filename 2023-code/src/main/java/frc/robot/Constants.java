@@ -39,6 +39,7 @@ public final class Constants {
     HYBRID_RIGHT,
     DRIVE,
     INTAKE,
+    AUTO_INTAKE,
     LEFT_SUBSTATION,
     RIGHT_SUBSTATION,
     SINGLE_SUBSTATION
@@ -82,7 +83,7 @@ public final class Constants {
 
     public static final double FLOOR_MAX_INCH_DISTANCE = 20.6;
 
-    public static final boolean ARM_IS_INVERTED = false;
+    public static final boolean ARM_IS_INVERTED = true;
 
     public static final double ARM_SET_POS_CONVERSION_FACTOR = 1.6;
 
@@ -524,6 +525,8 @@ public final class Constants {
       public static final double WRIST_DRIVE_ANGLE = 108; // 3/28/23 111
 
       public static final double WRIST_INTAKE_ANGLE = -44.8;
+
+      public static final double WRIST_AUTO_INTAKE_ANGLE = -35;
 
       public static final double WRIST_HYBRID_ANGLE = 111; // 3/28/23
     }

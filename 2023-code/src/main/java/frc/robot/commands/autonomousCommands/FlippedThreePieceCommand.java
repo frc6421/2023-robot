@@ -40,15 +40,15 @@ import frc.robot.subsystems.WristSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ThreePieceCommand extends SequentialCommandGroup {
+public class FlippedThreePieceCommand extends SequentialCommandGroup {
   private DriveSubsystem driveSubsystem;
   private IntakeSubsystem intakeSubsystem;
   private WristSubsystem wristSubsystem;
   private ArmSubsystem armSubsystem;
   private ElevatorSubsystem elevatorSubsystem;
-  
-  /** Creates a new ThreePieceCommand. */
-  public ThreePieceCommand(DriveSubsystem drive, IntakeSubsystem intake, WristSubsystem wrist, ArmSubsystem arm, ElevatorSubsystem elevator) {
+
+  /** Creates a new FlippedThreePieceCommand. */
+  public FlippedThreePieceCommand(DriveSubsystem drive, IntakeSubsystem intake, WristSubsystem wrist, ArmSubsystem arm, ElevatorSubsystem elevator) {
     driveSubsystem = drive;
     intakeSubsystem = intake;
     wristSubsystem = wrist;
@@ -72,33 +72,33 @@ public class ThreePieceCommand extends SequentialCommandGroup {
 
     // Pick up cube
     Trajectory pickUpTrajectoryOne = TrajectoryGenerator.generateTrajectory(List.of(
-        new Pose2d(TrajectoryConstants.SECOND_CONE_NODE, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(0), 0)), new Rotation2d(0))
+        new Pose2d(TrajectoryConstants.FLIPPED_SECOND_CONE_NODE, new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(0), 0)), new Rotation2d(0))
       ), forwardConfig);
 
     // Score cube (high)
     Trajectory scoreTrajectoryOne = TrajectoryGenerator.generateTrajectory(List.of(
-        new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(0), 0)), new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.CUBE_NODE.plus(new Translation2d(0, Units.feetToMeters(.5))), new Rotation2d(0))
+        new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(0), 0)), new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE.plus(new Translation2d(0, -Units.feetToMeters(.5))), new Rotation2d(0))
     ), reverseConfig);
 
     // Pick up second cone
     Trajectory pickUpTrajectoryTwo = TrajectoryGenerator.generateTrajectory(List.of(
-        new Pose2d(TrajectoryConstants.CUBE_NODE.plus(new Translation2d(0, Units.feetToMeters(.5))), new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY.plus(new Translation2d(Units.feetToMeters(2), Units.feetToMeters(4.8))), new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.THIRD_GAME_PIECE.plus(new Translation2d(0, Units.feetToMeters(0.5))), new Rotation2d(0))
+        new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE.plus(new Translation2d(0, -Units.feetToMeters(.5))), new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY.plus(new Translation2d(Units.feetToMeters(2), -Units.feetToMeters(4.8))), new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE.plus(new Translation2d(0, -Units.feetToMeters(0.5))), new Rotation2d(0))
     ), forwardConfig);
 
     // Score third piece (cone)
     Trajectory scoreTrajectoryTwo = TrajectoryGenerator.generateTrajectory(List.of(
-        new Pose2d(TrajectoryConstants.THIRD_GAME_PIECE.plus(new Translation2d(0, Units.feetToMeters(0.5))), new Rotation2d(Units.degreesToRadians(0))),
-        new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(Units.degreesToRadians(0))),
-        new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.FIRST_CONE_NODE.plus(new Translation2d(0, Units.feetToMeters(1.5))), new Rotation2d(Units.degreesToRadians(0)))), 
+        new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE.plus(new Translation2d(0, -Units.feetToMeters(0.5))), new Rotation2d(Units.degreesToRadians(0))),
+        new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(Units.degreesToRadians(0))),
+        new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.FLIPPED_FIRST_CONE_NODE.plus(new Translation2d(0, -Units.feetToMeters(1.5))), new Rotation2d(Units.degreesToRadians(0)))), 
         reverseConfig);
 
     var thetaController = new ProfiledPIDController(

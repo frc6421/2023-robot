@@ -45,6 +45,7 @@ public class ArmCommand extends CommandBase {
         break;
 
       case INTAKE:
+      case AUTO_INTAKE:
         armGoal = new TrapezoidProfile.State(ArmAngleConstants.ARM_INTAKE_ANGLE, 0);
         break;
 

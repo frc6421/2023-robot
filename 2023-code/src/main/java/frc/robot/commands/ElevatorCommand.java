@@ -40,6 +40,7 @@ public class ElevatorCommand extends CommandBase {
     {
       case DRIVE:
       case INTAKE:
+      case AUTO_INTAKE:
       case HYBRID_LEFT:
       case HYBRID_CENTER:
       case HYBRID_RIGHT:

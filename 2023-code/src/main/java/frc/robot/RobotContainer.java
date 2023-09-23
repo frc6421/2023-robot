@@ -10,9 +10,11 @@ import frc.robot.Constants.RobotStates;
 import frc.robot.Constants.WristConstants.WristAngleConstants;
 import frc.robot.commands.autonomousCommands.FastFlippedTwoPieceCommand;
 import frc.robot.commands.autonomousCommands.FastTwoPieceCommand;
+import frc.robot.commands.autonomousCommands.FlippedThreePieceCommand;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceChargeCommand;
 import frc.robot.commands.autonomousCommands.FlippedTwoPieceCommand;
 import frc.robot.commands.autonomousCommands.OnePieceChargeCommand;
+import frc.robot.commands.autonomousCommands.ThreePieceCommand;
 import frc.robot.commands.autonomousCommands.TwoPieceChargeCommand;
 import frc.robot.commands.autonomousCommands.TwoPieceCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -90,6 +92,8 @@ public class RobotContainer {
   private FlippedTwoPieceChargeCommand flippedTwoPieceChargeCommand;
   private FastTwoPieceCommand fastTwoPieceCommand;
   private FastFlippedTwoPieceCommand fastFlippedTwoPieceCommand;
+  private ThreePieceCommand threePieceCommand;
+  private FlippedThreePieceCommand flippedThreePieceCommand;
 
   private static double driveNerf = 0.85;
   private static double steerNerf = 0.8;
@@ -127,6 +131,8 @@ public class RobotContainer {
     flippedTwoPieceChargeCommand = new FlippedTwoPieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
     fastTwoPieceCommand = new FastTwoPieceCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
     fastFlippedTwoPieceCommand = new FastFlippedTwoPieceCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
+    threePieceCommand = new ThreePieceCommand(driveSubsystem, intakeSubsystem, wristSubsystem, armSubsystem, elevatorSubsystem);
+    flippedThreePieceCommand = new FlippedThreePieceCommand(driveSubsystem, intakeSubsystem, wristSubsystem, armSubsystem, elevatorSubsystem);
 
   
     autoChooser = new SendableChooser<>();
@@ -167,6 +173,8 @@ public class RobotContainer {
     autoChooser.addOption("Right Start 2 Piece Charge", twoPieceChargeCommand);
     autoChooser.addOption("Left Start Not Bump 2.5 Piece", fastFlippedTwoPieceCommand);
     autoChooser.addOption("Right Start Not Bump 2.5 Piece", fastTwoPieceCommand);
+    autoChooser.addOption("Left Start 3 Piece", flippedThreePieceCommand);
+    autoChooser.addOption("Right Start 3 Piece", threePieceCommand);
     
     Shuffleboard.getTab("Competition").add("autoChooser", autoChooser)
     .withPosition(6, 2)

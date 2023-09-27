@@ -32,10 +32,10 @@ public class SwerveModule{
 
   /** Creates a new ModuleSubsystem. */
   public SwerveModule(int driveMotorID, int steerMotorID, int steerEncoderID, double angleOffset) {
-    driveMotor = new WPI_TalonFX(driveMotorID, ModuleConstants.CANIVORE_NAME);
-    steerMotor = new WPI_TalonFX(steerMotorID, ModuleConstants.CANIVORE_NAME);
+    driveMotor = new WPI_TalonFX(driveMotorID, ModuleConstants.RIO_NAME);
+    steerMotor = new WPI_TalonFX(steerMotorID, ModuleConstants.RIO_NAME);
 
-    steerEncoder = new WPI_CANCoder(steerEncoderID, ModuleConstants.CANIVORE_NAME);
+    steerEncoder = new WPI_CANCoder(steerEncoderID, ModuleConstants.RIO_NAME);
 
     feedforward = new SimpleMotorFeedforward(DriveConstants.S_VOLTS, DriveConstants.V_VOLT_SECONDS_PER_METER, DriveConstants.A_VOLT_SECONDS_SQUARED_PER_METER);
 

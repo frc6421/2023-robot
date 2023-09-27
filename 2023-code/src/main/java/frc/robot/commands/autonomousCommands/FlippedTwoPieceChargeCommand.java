@@ -64,7 +64,7 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
 
     TrajectoryConfig chargeConfig = new TrajectoryConfig(
       AutoConstants.AUTO_CHARGE_MAX_VELOCITY_METERS_PER_SECOND + 1,
-      AutoConstants.AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
+      AutoConstants.AUTO_CHARGE_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED + 1)
       .setKinematics(driveSubsystem.swerveKinematics);
 
     TrajectoryConfig reverseConfig = new TrajectoryConfig(
@@ -77,11 +77,11 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
     // Stage cube in far left game piece
     Trajectory firstPickUpTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
         new Pose2d(TrajectoryConstants.FLIPPED_SECOND_CONE_NODE, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE, new Rotation2d(0))), forwardConfig);
+        new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(0, -Units.feetToMeters(0))), new Rotation2d(0))), forwardConfig);
 
     // Return to score cube next to cone
     Trajectory firstScoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-        new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE, new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(0, -Units.feetToMeters(0))), new Rotation2d(0)),
         new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
         new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
         new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE, new Rotation2d(0))), reverseConfig);
@@ -90,7 +90,7 @@ public class FlippedTwoPieceChargeCommand extends SequentialCommandGroup {
     Trajectory chargeStationTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
         new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE, new Rotation2d(0)),
         new Pose2d(TrajectoryConstants.FLIPPED_COOPERTITION_CUBE_NODE.plus(new Translation2d(Units.inchesToMeters(48), 0)), new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.FLIPPED_CENTER_OF_CHARGE_STATION.plus(new Translation2d(0, Units.inchesToMeters(21.39))), new Rotation2d(0))), chargeConfig);
+        new Pose2d(TrajectoryConstants.FLIPPED_CENTER_OF_CHARGE_STATION.plus(new Translation2d(Units.feetToMeters(2), Units.inchesToMeters(21.39))), new Rotation2d(0))), chargeConfig);
 
     var thetaController = new ProfiledPIDController(
         AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,

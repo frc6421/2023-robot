@@ -22,7 +22,7 @@ public class GyroSubsystem extends SubsystemBase {
    */
   public GyroSubsystem() 
   {
-    pigeon = new WPI_Pigeon2(DriveConstants.GYRO_CAN_ID, ModuleConstants.CANIVORE_NAME);
+    pigeon = new WPI_Pigeon2(DriveConstants.GYRO_CAN_ID, ModuleConstants.RIO_NAME);
     pigeon.configFactoryDefault();
     zeroGyro();
   }

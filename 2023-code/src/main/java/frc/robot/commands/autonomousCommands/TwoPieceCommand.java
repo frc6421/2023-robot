@@ -101,17 +101,17 @@ public class TwoPieceCommand extends SequentialCommandGroup {
     ), reverseConfig);
 
     // Simulation
-    field = new Field2d();
+    // field = new Field2d();
 
-    if (RobotBase.isSimulation()) {
-      SmartDashboard.putData(field);
+    // if (RobotBase.isSimulation()) {
+    //   SmartDashboard.putData(field);
 
-      field.setRobotPose(firstPickUpTrajectory.getInitialPose());
+    //   field.setRobotPose(firstPickUpTrajectory.getInitialPose());
       
-      field.getObject("Pick Up Trajectory 1").setTrajectory(firstPickUpTrajectory);
-      field.getObject("Score Trajectory 1").setTrajectory(firstScoreTrajectory);
-      field.getObject("Out of Community Trajectory").setTrajectory(secondPickUpTrajectory);
-    }
+    //   field.getObject("Pick Up Trajectory 1").setTrajectory(firstPickUpTrajectory);
+    //   field.getObject("Score Trajectory 1").setTrajectory(firstScoreTrajectory);
+    //   field.getObject("Out of Community Trajectory").setTrajectory(secondPickUpTrajectory);
+    // }
 
 
     var thetaController = new ProfiledPIDController(

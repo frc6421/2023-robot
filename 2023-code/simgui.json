@@ -21,6 +21,11 @@
           "arrows": false,
           "style": ""
         },
+        "Robot": {
+          "length": 0.8255000114440918,
+          "style": "Box/Image",
+          "width": 0.7746999859809875
+        },
         "Score Trajectory 2": {
           "arrows": false,
           "style": ""
@@ -30,6 +35,7 @@
           "style": "",
           "weight": 0.0
         },
+        "image": "C:\\Users\\dmiro\\Downloads\\2023-field.png",
         "window": {
           "visible": true
         }

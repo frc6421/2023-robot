@@ -98,12 +98,12 @@ public class FlippedFourPieceCommand extends SequentialCommandGroup {
       if (RobotBase.isSimulation()) {
         SmartDashboard.putData(field);
   
-        field.getObject("Pick Up Trajectory 1").setTrajectory(pickUpTrajectoryOne);
-        field.getObject("Score Trajectory 1").setTrajectory(scoreTrajectoryOne);
-        field.getObject("Pick Up Trajectory 2").setTrajectory(pickUpTrajectoryTwo);
-        field.getObject("Score Trajectory 2").setTrajectory(scoreTrajectoryTwo);
-        field.getObject("Pick Up Trajectory 3").setTrajectory(pickUpTrajectoryThree);
-        field.getObject("Score Trajectory 3").setTrajectory(scoreTrajectoryThree);
+        // field.getObject("Pick Up Trajectory 1").setTrajectory(pickUpTrajectoryOne);
+        // field.getObject("Score Trajectory 1").setTrajectory(scoreTrajectoryOne);
+        // field.getObject("Pick Up Trajectory 2").setTrajectory(pickUpTrajectoryTwo);
+        // field.getObject("Score Trajectory 2").setTrajectory(scoreTrajectoryTwo);
+        // field.getObject("Pick Up Trajectory 3").setTrajectory(pickUpTrajectoryThree);
+        // field.getObject("Score Trajectory 3").setTrajectory(scoreTrajectoryThree);
       }
   
         var thetaController = new ProfiledPIDController(

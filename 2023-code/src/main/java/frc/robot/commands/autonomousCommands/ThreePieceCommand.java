@@ -19,6 +19,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -106,6 +107,7 @@ public class ThreePieceCommand extends SequentialCommandGroup {
         reverseConfig);
 
     field2d = new Field2d();
+    SmartDashboard.putData(field2d);
 
     if(RobotBase.isSimulation()) {
       field2d.setRobotPose(pickUpTrajectoryOne.getInitialPose());

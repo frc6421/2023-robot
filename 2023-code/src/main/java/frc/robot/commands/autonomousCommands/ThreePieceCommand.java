@@ -17,6 +17,8 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -46,6 +48,8 @@ public class ThreePieceCommand extends SequentialCommandGroup {
   private WristSubsystem wristSubsystem;
   private ArmSubsystem armSubsystem;
   private ElevatorSubsystem elevatorSubsystem;
+
+  private Field2d field2d;
   
   /** Creates a new ThreePieceCommand. */
   public ThreePieceCommand(DriveSubsystem drive, IntakeSubsystem intake, WristSubsystem wrist, ArmSubsystem arm, ElevatorSubsystem elevator) {
@@ -101,6 +105,16 @@ public class ThreePieceCommand extends SequentialCommandGroup {
         new Pose2d(TrajectoryConstants.FIRST_CONE_NODE.plus(new Translation2d(Units.feetToMeters(1), Units.feetToMeters(2))), new Rotation2d(Units.degreesToRadians(0)))), 
         reverseConfig);
 
+    field2d = new Field2d();
+
+    if(RobotBase.isSimulation()) {
+      field2d.setRobotPose(pickUpTrajectoryOne.getInitialPose());
+
+      field2d.getObject("Pick Up Trajectory 1").setTrajectory(pickUpTrajectoryOne);
+      field2d.getObject("Score Trajectory 1").setTrajectory(scoreTrajectoryOne);
+      field2d.getObject("Pick Up Trajectory 2").setTrajectory(pickUpTrajectoryTwo);
+      field2d.getObject("Score Trajectory 2").setTrajectory(scoreTrajectoryTwo);
+    }
     var thetaController = new ProfiledPIDController(
           AutoConstants.THETA_P, AutoConstants.THETA_I, AutoConstants.THETA_D,
           new TrapezoidProfile.Constraints(AutoConstants.AUTO_MAX_ANGULAR_VELOCITY_RAD_PER_SEC,

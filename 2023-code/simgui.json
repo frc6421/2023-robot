@@ -1,80 +1,33 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "CANCoder[11]": {
-        "header": {
-          "open": true
-        }
-      },
-      "CANCoder[13]": {
-        "header": {
-          "open": true
-        }
-      },
-      "CANCoder[15]": {
-        "header": {
-          "open": true
-        }
-      },
-      "CANCoder[17]": {
-        "header": {
-          "open": true
-        }
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/LiveWindow/ElevatorSubsystem": "Subsystem",
-      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
-      "/LiveWindow/Ungrouped/Pigeon 2 [30]": "Gyro",
-      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
-      "/LiveWindow/Ungrouped/Talon FX [10]": "Motor Controller",
-      "/LiveWindow/Ungrouped/Talon FX [11]": "Motor Controller",
-      "/LiveWindow/Ungrouped/Talon FX [12]": "Motor Controller",
-      "/LiveWindow/Ungrouped/Talon FX [13]": "Motor Controller",
-      "/LiveWindow/Ungrouped/Talon FX [14]": "Motor Controller",
-      "/LiveWindow/Ungrouped/Talon FX [15]": "Motor Controller",
-      "/LiveWindow/Ungrouped/Talon FX [16]": "Motor Controller",
-      "/LiveWindow/Ungrouped/Talon FX [17]": "Motor Controller",
       "/Shuffleboard/Competition/autoChooser": "String Chooser",
-      "/Shuffleboard/Elevator Tab/ElevatorSubsystem": "Subsystem",
       "/SmartDashboard/Control system": "String Chooser",
-      "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/autoChooser": "String Chooser",
-      "/SmartDashboard/drive": "Subsystem"
+      "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
+      "/Shuffleboard/Competition/autoChooser": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
-        "Pick Up Trajectory 1": {
-          "arrowSize": 33,
-          "arrows": false,
-          "style": "Hidden"
-        },
         "Pick Up Trajectory 2": {
           "arrows": false,
-          "style": "Hidden"
+          "style": ""
         },
         "Pick Up Trajectory 3": {
           "arrows": false,
-          "style": "Hidden"
-        },
-        "Score Trajectory 1": {
-          "arrows": false,
-          "style": "Hidden"
+          "style": ""
         },
         "Score Trajectory 2": {
           "arrows": false,
-          "style": "Line"
+          "style": ""
         },
         "Score Trajectory 3": {
           "arrows": false,
-          "style": "Line",
+          "style": "",
           "weight": 0.0
         },
         "window": {
@@ -87,15 +40,11 @@
     "transitory": {
       "SmartDashboard": {
         "Compressor": {
-          "open": true
-        },
-        "Field": {
-          "open": true
+          "open": false
         },
         "autoChooser": {
-          "open": true
-        },
-        "open": true
+          "open": false
+        }
       }
     }
   }

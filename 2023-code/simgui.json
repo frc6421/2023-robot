@@ -14,8 +14,7 @@
       },
       "/SmartDashboard/Field": {
         "Pick Up Trajectory 2": {
-          "arrows": false,
-          "style": ""
+          "arrows": false
         },
         "Pick Up Trajectory 3": {
           "arrows": false,
@@ -27,8 +26,7 @@
           "width": 0.7746999859809875
         },
         "Score Trajectory 2": {
-          "arrows": false,
-          "style": ""
+          "arrows": false
         },
         "Score Trajectory 3": {
           "arrows": false,

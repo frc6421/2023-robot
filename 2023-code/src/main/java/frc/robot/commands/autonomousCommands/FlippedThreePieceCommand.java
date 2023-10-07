@@ -58,13 +58,13 @@ public class FlippedThreePieceCommand extends SequentialCommandGroup {
     addRequirements(driveSubsystem, intakeSubsystem, wristSubsystem, armSubsystem, elevatorSubsystem);
 
     TrajectoryConfig forwardConfig = new TrajectoryConfig(
-        AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND + 0.5,
-        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
+        AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND - 1,
+        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED - 3)
         .setKinematics(driveSubsystem.swerveKinematics);
 
     TrajectoryConfig reverseConfig = new TrajectoryConfig(
-        AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND + 0.5,
-        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED + 1.5)
+        AutoConstants.AUTO_MAX_VELOCITY_METERS_PER_SECOND - 1,
+        AutoConstants.AUTO_MAX_ACCELERATION_METERS_PER_SECOND_SQUARED - 3)
         .setKinematics(driveSubsystem.swerveKinematics)
         .setReversed(true);
 
@@ -81,24 +81,24 @@ public class FlippedThreePieceCommand extends SequentialCommandGroup {
         new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(0), 0)), new Rotation2d(0)),
         new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
         new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE.plus(new Translation2d(Units.feetToMeters(1), -Units.feetToMeters(.5))), new Rotation2d(0))
+        new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE.plus(new Translation2d(Units.feetToMeters(1), Units.feetToMeters(0.25))), new Rotation2d(0))
     ), reverseConfig);
 
     // Pick up second cone
     Trajectory pickUpTrajectoryTwo = TrajectoryGenerator.generateTrajectory(List.of(
-        new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE.plus(new Translation2d(Units.feetToMeters(1), -Units.feetToMeters(.5))), new Rotation2d(0)),
+        new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE.plus(new Translation2d(Units.feetToMeters(1), Units.feetToMeters(0.25))), new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY.plus(new Translation2d(Units.feetToMeters(2), -Units.feetToMeters(4.8))), new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE.plus(new Translation2d(0, -Units.feetToMeters(0.5))), new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY.plus(new Translation2d(Units.feetToMeters(2), Units.feetToMeters(-3.55))), new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE.plus(new Translation2d(0,-Units.feetToMeters(1.25))), new Rotation2d(0))
     ), forwardConfig);
 
     // Score third piece (cone)
     Trajectory scoreTrajectoryTwo = TrajectoryGenerator.generateTrajectory(List.of(
-        new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE.plus(new Translation2d(0, -Units.feetToMeters(0.5))), new Rotation2d(Units.degreesToRadians(0))),
+        new Pose2d(TrajectoryConstants.FLIPPED_THIRD_GAME_PIECE.plus(new Translation2d(0, Units.feetToMeters(1.25))), new Rotation2d(Units.degreesToRadians(0))),
         new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(Units.degreesToRadians(0))),
         new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
-        new Pose2d(TrajectoryConstants.FLIPPED_FIRST_CONE_NODE.plus(new Translation2d(Units.feetToMeters(1), -Units.feetToMeters(2))), new Rotation2d(Units.degreesToRadians(0)))), 
+        new Pose2d(TrajectoryConstants.FLIPPED_FIRST_CONE_NODE.plus(new Translation2d(Units.feetToMeters(1), Units.feetToMeters(0))), new Rotation2d(Units.degreesToRadians(0)))), 
         reverseConfig);
 
     var thetaController = new ProfiledPIDController(

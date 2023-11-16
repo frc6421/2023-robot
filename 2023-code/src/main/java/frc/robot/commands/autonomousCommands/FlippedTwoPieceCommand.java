@@ -71,12 +71,12 @@ public class FlippedTwoPieceCommand extends SequentialCommandGroup {
     // Stage cube in far left game piece
     Trajectory firstPickUpTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
       new Pose2d(TrajectoryConstants.FLIPPED_SECOND_CONE_NODE, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), 0)), new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), Units.feetToMeters(-0.5))), new Rotation2d(0))
     ), forwardConfig);
 
     // Return to score cube next to cone
     Trajectory firstScoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-      new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), 0)), new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FLIPPED_FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), Units.feetToMeters(-0.5))), new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_AROUND_CHARGE_STATION, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FLIPPED_CUBE_NODE.plus(new Translation2d(0, Units.inchesToMeters(-6))), new Rotation2d(0))

@@ -76,12 +76,12 @@ public class TwoPieceCommand extends SequentialCommandGroup {
     // Stage cube in far right game piece
     Trajectory firstPickUpTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
       new Pose2d(TrajectoryConstants.SECOND_CONE_NODE, new Rotation2d(0)),
-      new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), 0)), new Rotation2d(0))
+      new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), Units.feetToMeters(-1))), new Rotation2d(0))
     ), forwardConfig);
 
     // Return to score cube next to cone
     Trajectory firstScoreTrajectory = TrajectoryGenerator.generateTrajectory(List.of(
-      new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), 0)), new Rotation2d(0)),
+      new Pose2d(TrajectoryConstants.FOURTH_GAME_PIECE.plus(new Translation2d(Units.feetToMeters(1), Units.feetToMeters(-1))), new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.FAR_EDGE_OF_COMMUNITY, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.AROUND_CHARGE_STATION, new Rotation2d(0)),
       new Pose2d(TrajectoryConstants.CUBE_NODE.plus(new Translation2d(0, Units.inchesToMeters(6))), new Rotation2d(0))

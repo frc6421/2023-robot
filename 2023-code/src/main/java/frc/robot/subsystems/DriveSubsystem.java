@@ -33,7 +33,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final SwerveDriveOdometry odometry;
 
   private final PIDController angleController;
-  private final PIDController driftCorrector;
+  // private final PIDController driftCorrector;
 
   // Creates a sendable chooser on smartdashboard to select the desired control
   // system
@@ -82,14 +82,17 @@ public class DriveSubsystem extends SubsystemBase {
     // PID controller for the rotation of the robot
     angleController = new PIDController(DriveConstants.ANGLE_CONTROLLER_KP, 0, 0);
     angleController.enableContinuousInput(-180, 180);
+    angleController.setTolerance(2);
 
-    driftCorrector = new PIDController(.001, 0, 0); // TODO implement Feed Forward for functionality
-    driftCorrector.enableContinuousInput(0, 360);
+    // driftCorrector = new PIDController(.001, 0, 0); // TODO implement Feed
+    // Forward for functionality
+    // driftCorrector.enableContinuousInput(0, 360);
 
     // Sets up the sendable chooser on SmartDashboard to select control system
     controlSystem = new SendableChooser<>();
     controlSystem.addOption("Left Trigger Controls", DriverControlSystem.LEFT_TRIGGER);
-    controlSystem.setDefaultOption("Joystick Controls", DriverControlSystem.JOYSTICK); // TODO Get these into an enum w/ switch
+    controlSystem.setDefaultOption("Joystick Controls", DriverControlSystem.JOYSTICK); // TODO Get these into an enum w/
+                                                                                       // switch
     controlSystem.addOption("RightTrigger", DriverControlSystem.RIGHT_TRIGGER);
     SmartDashboard.putData("Control system", controlSystem);
 
@@ -103,12 +106,11 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     odometry.update(GyroSubsystem.getYawAngle(), new SwerveModulePosition[] {
-      frontLeft.getModulePosition(),
-      frontRight.getModulePosition(),
-      backLeft.getModulePosition(),
-      backRight.getModulePosition()
-      }
-    );
+        frontLeft.getModulePosition(),
+        frontRight.getModulePosition(),
+        backLeft.getModulePosition(),
+        backRight.getModulePosition()
+    });
   }
 
   // ODOMETRY METHODS \\
@@ -185,19 +187,19 @@ public class DriveSubsystem extends SubsystemBase {
     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, GyroSubsystem.getYawAngle());
 
     // Sets field relative speeds
-    var swerveModuleStates = 
-      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, GyroSubsystem.getYawAngle()));
-      // Ensures all wheels obey max speed
-      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+    var swerveModuleStates = swerveKinematics
+        .toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(chassisSpeeds, GyroSubsystem.getYawAngle()));
+    // Ensures all wheels obey max speed
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
 
-      // Sets the swerve modules to their desired states using optimization method
-      frontLeft.setDesiredState(swerveModuleStates[0]);
-      frontRight.setDesiredState(swerveModuleStates[1]);
-      backLeft.setDesiredState(swerveModuleStates[2]);
-      backRight.setDesiredState(swerveModuleStates[3]);
+    // Sets the swerve modules to their desired states using optimization method
+    frontLeft.setDesiredState(swerveModuleStates[0]);
+    frontRight.setDesiredState(swerveModuleStates[1]);
+    backLeft.setDesiredState(swerveModuleStates[2]);
+    backRight.setDesiredState(swerveModuleStates[3]);
   }
 
-  //TODO not currently used
+  // TODO not currently used
   public void resetEncoders() {
     frontLeft.resetEncoders();
     frontRight.resetEncoders();
@@ -214,6 +216,24 @@ public class DriveSubsystem extends SubsystemBase {
     backLeft.setSteerMotorToAbsolute();
     backRight.setSteerMotorToAbsolute();
   }
+
+  // public void turnToAngle(double angle) {
+  //   double rotation = angleController.calculate(GyroSubsystem.getYawAngle().getDegrees(), angle);
+
+  //   ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0, 0, rotation,
+  //       GyroSubsystem.getYawAngle());
+
+  //   // Sets field relative speeds to the swerve module states
+  //   var swerveModuleStates = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
+
+  //   // Ensures all wheels obey max speed
+  //   SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
+  //   frontLeft.setDesiredState(swerveModuleStates[0]);
+  //   frontRight.setDesiredState(swerveModuleStates[1]);
+  //   backLeft.setDesiredState(swerveModuleStates[2]);
+  //   backRight.setDesiredState(swerveModuleStates[3]);
+  // }
 
   /**
    * Sets up the drive method
@@ -267,30 +287,34 @@ public class DriveSubsystem extends SubsystemBase {
         break;
     }
 
-    //Keeps the robot from moving with no joystick inputs
-    if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
-      ySpeed = 0;
-    }
-    if(Math.abs(xSpeedInput) < ModuleConstants.PERCENT_DEADBAND){
-      xSpeed = 0;
-    }
-    if(Math.abs(rotationInput) < ModuleConstants.PERCENT_DEADBAND){
-      rotationInput = 0;
-    }
+    // Keeps the robot from moving with no joystick inputs
+    // if(Math.abs(ySpeedInput) < ModuleConstants.PERCENT_DEADBAND){
+    // ySpeed = 0;
+    // }
+    // if(Math.abs(xSpeedInput) < ModuleConstants.PERCENT_DEADBAND){
+    // xSpeed = 0;
+    // }
+    // if(Math.abs(rotationInput) < ModuleConstants.PERCENT_DEADBAND){
+    // rotationInput = 0;
+    // }
 
     xSpeed = -1 * (xSpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     ySpeed = -1 * (ySpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    //double rotation = -1 * (rotationInput + Math.signum(rotationInput) * .095) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    // double rotation = -1 * (rotationInput + Math.signum(rotationInput) * .095) *
+    // DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     // Input squaring
-    //xSpeed = -1 * Math.signum(xSpeed) * (xSpeed * xSpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    //ySpeed = -1 * Math.signum(ySpeed) * (ySpeed * ySpeed) * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
-    double rotation = -1 * Math.signum(rotationInput) * (rotationInput * rotationInput) * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    // xSpeed = -1 * Math.signum(xSpeed) * (xSpeed * xSpeed) *
+    // DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    // ySpeed = -1 * Math.signum(ySpeed) * (ySpeed * ySpeed) *
+    // DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
+    double rotation = -1 * Math.signum(rotationInput) * (rotationInput * rotationInput)
+        * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     // Sets chassis speeds
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation,
         GyroSubsystem.getYawAngle());
-  
+
     // Sets field relative speeds to the swerve module states
     var swerveModuleStates = swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
@@ -300,14 +324,14 @@ public class DriveSubsystem extends SubsystemBase {
     // Turns all the wheels inward to prevent pushing and sets the speed of each
     // module to 0
     // if (driverController.povDown().getAsBoolean()) {
-    //   swerveModuleStates[0].angle = Rotation2d.fromDegrees(45);
-    //   swerveModuleStates[0].speedMetersPerSecond = 0;
-    //   swerveModuleStates[1].angle = Rotation2d.fromDegrees(-45);
-    //   swerveModuleStates[1].speedMetersPerSecond = 0;
-    //   swerveModuleStates[2].angle = Rotation2d.fromDegrees(-45);
-    //   swerveModuleStates[2].speedMetersPerSecond = 0;
-    //   swerveModuleStates[3].angle = Rotation2d.fromDegrees(45);
-    //   swerveModuleStates[3].speedMetersPerSecond = 0;
+    // swerveModuleStates[0].angle = Rotation2d.fromDegrees(45);
+    // swerveModuleStates[0].speedMetersPerSecond = 0;
+    // swerveModuleStates[1].angle = Rotation2d.fromDegrees(-45);
+    // swerveModuleStates[1].speedMetersPerSecond = 0;
+    // swerveModuleStates[2].angle = Rotation2d.fromDegrees(-45);
+    // swerveModuleStates[2].speedMetersPerSecond = 0;
+    // swerveModuleStates[3].angle = Rotation2d.fromDegrees(45);
+    // swerveModuleStates[3].speedMetersPerSecond = 0;
     // }
 
     // Sets the swerve modules to their desired states using optimization method
@@ -317,34 +341,36 @@ public class DriveSubsystem extends SubsystemBase {
     backRight.setDesiredState(swerveModuleStates[3]);
   }
 
-  /** Same as drive method, but without the trigger control inputs.
-   *  This allows it to be used for driving to targets based on vision.
+  /**
+   * Same as drive method, but without the trigger control inputs.
+   * This allows it to be used for driving to targets based on vision.
    * 
-   * @param xSpeedInput percent input from -1 to 1 (converts to meters per sec)
-   * @param ySpeedInput percent input from -1 to 1 (converts to meters per sec)
+   * @param xSpeedInput   percent input from -1 to 1 (converts to meters per sec)
+   * @param ySpeedInput   percent input from -1 to 1 (converts to meters per sec)
    * @param rotationInput percent input from -1 to 1 (converts to radians per sec)
    */
   public void autoDrive(double xSpeedInput, double ySpeedInput, double rotationInput) {
     // double xSpeed = xSpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
     // double ySpeed = ySpeedInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND;
 
-    // double rotation = rotationInput * DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
+    // double rotation = rotationInput *
+    // DriveConstants.MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND;
 
     double xSpeed = xSpeedInput * (DriveConstants.MAX_VELOCITY_METERS_PER_SECOND / 2) + Math.signum(xSpeedInput) * 0.18;
     double ySpeed = ySpeedInput * (DriveConstants.MAX_VELOCITY_METERS_PER_SECOND / 2) + Math.signum(ySpeedInput) * 0.18;
 
     double rotation = rotationInput * DriveConstants.MAX_VELOCITY_METERS_PER_SECOND + Math.signum(rotationInput) * 0.18;
-    
-    // Sets field relative speeds
-    var swerveModuleStates = 
-      swerveKinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle()));
-      // Ensures all wheels obey max speed
-      SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
 
-      // Sets the swerve modules to their desired states using optimization method
-      frontLeft.setDesiredState(swerveModuleStates[0]);
-      frontRight.setDesiredState(swerveModuleStates[1]);
-      backLeft.setDesiredState(swerveModuleStates[2]);
-      backRight.setDesiredState(swerveModuleStates[3]);
+    // Sets field relative speeds
+    var swerveModuleStates = swerveKinematics.toSwerveModuleStates(
+        ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rotation, GyroSubsystem.getYawAngle()));
+    // Ensures all wheels obey max speed
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
+    // Sets the swerve modules to their desired states using optimization method
+    frontLeft.setDesiredState(swerveModuleStates[0]);
+    frontRight.setDesiredState(swerveModuleStates[1]);
+    backLeft.setDesiredState(swerveModuleStates[2]);
+    backRight.setDesiredState(swerveModuleStates[3]);
   }
 }

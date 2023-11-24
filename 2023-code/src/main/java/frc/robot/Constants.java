@@ -293,7 +293,7 @@ public final class Constants {
 
     public static final double DRIVE_SLEW_RATE = 3; //2.5
 
-    public static final double ANGLE_CONTROLLER_KP = 0.0014;
+    public static final double ANGLE_CONTROLLER_KP = 0.09;
 
     public static final int GYRO_CAN_ID = 30;
 

@@ -33,6 +33,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.BalanceCommand;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.VisionCommand;
 import frc.robot.commands.WristCommand;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -282,12 +283,7 @@ public class RobotContainer {
     // driverController.povDown().onTrue(new InstantCommand(() -> WristAngleConstants.WRIST_SUBSTATION_ANGLE = WristAngleConstants.WRIST_SUBSTATION_ANGLE - 2)
     //   .andThen(new InstantCommand(() -> System.out.println(WristAngleConstants.WRIST_SUBSTATION_ANGLE))));
 
-    // Reset wrist encoder in case of skipping
-    testController.a().onTrue(new InstantCommand(() -> wristSubsystem.resetEncoderPosition()));
-
-    //testController.x().whileTrue(new RunCommand(() -> armSubsystem.setPercentArmPowerNoLimit(armFFTest.getDouble(0))));
-
-    testController.y().whileTrue(new BalanceCommand(driveSubsystem));
+    testController.a().onTrue(new TurnToAngleCommand((() -> -testController.getRightY()), (() -> -testController.getRightX()), driveSubsystem));
   }
 
   /**

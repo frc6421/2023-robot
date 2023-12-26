@@ -32,6 +32,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.commands.ArmCommand;
 import frc.robot.commands.BalanceCommand;
+import frc.robot.commands.DriveCommand;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.VisionCommand;
@@ -122,7 +123,6 @@ public class RobotContainer {
     // testTab = Shuffleboard.getTab("Test tab");
     // armFFTest = testTab.add("arm FF test", 0).getEntry();
 
-    
     //visionCommand = new VisionCommand(driveSubsystem);
 
     onePieceChargeCommand = new OnePieceChargeCommand(driveSubsystem, elevatorSubsystem, armSubsystem, intakeSubsystem, wristSubsystem);
@@ -147,15 +147,24 @@ public class RobotContainer {
 
     
 
-    driveSubsystem.setDefaultCommand(new RunCommand(() ->
-      driveSubsystem.drive(
-        MathUtil.clamp(driverController.getLeftY() * driveNerf, -1.0, 1.0),
-        MathUtil.clamp(driverController.getLeftX() * driveNerf, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightX() * steerNerf, -1.0, 1.0),
-        MathUtil.clamp(driverController.getLeftTriggerAxis() * driveNerf, -1.0, 1.0),
-        MathUtil.clamp(driverController.getRightTriggerAxis() * driveNerf, -1.0, 1.0)
-        ),
-        driveSubsystem));
+    // driveSubsystem.setDefaultCommand(new RunCommand(() ->
+    //   driveSubsystem.drive(
+    //     MathUtil.clamp(driverController.getLeftY() * driveNerf, -1.0, 1.0),
+    //     MathUtil.clamp(driverController.getLeftX() * driveNerf, -1.0, 1.0),
+    //     MathUtil.clamp(driverController.getRightX() * steerNerf, -1.0, 1.0),
+    //     MathUtil.clamp(driverController.getLeftTriggerAxis() * driveNerf, -1.0, 1.0),
+    //     MathUtil.clamp(driverController.getRightTriggerAxis() * driveNerf, -1.0, 1.0)
+    //     ),
+    //     driveSubsystem));
+
+    driveSubsystem.setDefaultCommand(new DriveCommand(driveSubsystem,
+        () -> driverController.getLeftY() * driveNerf,
+        () -> driverController.getLeftX() * driveNerf, 
+        () -> driverController.getRightX() * steerNerf, 
+        () -> driverController.a().getAsBoolean(),
+        () -> driverController.b().getAsBoolean(), 
+        () -> driverController.x().getAsBoolean(), 
+        () -> driverController.y().getAsBoolean()));
 
     wristSubsystem.setDefaultCommand(new RunCommand(() ->
       wristSubsystem.setPercentPosition(testController.getLeftY() * 0.0001), wristSubsystem)); 
@@ -283,7 +292,7 @@ public class RobotContainer {
     // driverController.povDown().onTrue(new InstantCommand(() -> WristAngleConstants.WRIST_SUBSTATION_ANGLE = WristAngleConstants.WRIST_SUBSTATION_ANGLE - 2)
     //   .andThen(new InstantCommand(() -> System.out.println(WristAngleConstants.WRIST_SUBSTATION_ANGLE))));
 
-    testController.a().onTrue(new TurnToAngleCommand((() -> -testController.getRightY()), (() -> -testController.getRightX()), driveSubsystem));
+    //testController.a().onTrue(new TurnToAngleCommand((() -> -testController.getRightY()), (() -> -testController.getRightX()), driveSubsystem));
   }
 
   /**

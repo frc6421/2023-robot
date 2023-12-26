@@ -178,7 +178,10 @@ public class SwerveModule{
     SwerveModuleState state = customOptimize(desiredState, new Rotation2d(Math.toRadians(getSteerMotorEncoderAngle())));
 
     // Calculate percent of max drive velocity
-    double driveOutput = (state.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+    //double driveOutput = (state.speedMetersPerSecond / DriveConstants.MAX_VELOCITY_METERS_PER_SECOND);
+
+    // Get drive motor output
+    double driveOutput = state.speedMetersPerSecond / DriveConstants.DISTANCE_PER_ENCODER_COUNT / 10;
 
     // Calculate steer motor output
     double steerPositionOutput = state.angle.getDegrees() * DriveConstants.STEER_MOTOR_ENCODER_COUNTS_PER_DEGREE;
@@ -188,7 +191,7 @@ public class SwerveModule{
     // }
 
     // Apply PID outputs
-    driveMotor.set(ControlMode.PercentOutput, driveOutput);
+    driveMotor.set(ControlMode.Velocity, driveOutput);
     steerMotor.set(ControlMode.Position, steerPositionOutput);
   }
 

@@ -158,8 +158,8 @@ public class RobotContainer {
     //     driveSubsystem));
 
     driveSubsystem.setDefaultCommand(new DriveCommand(driveSubsystem,
-        () -> driverController.getLeftY() * driveNerf,
-        () -> driverController.getLeftX() * driveNerf, 
+        () -> driverController.getLeftX() * driveNerf,
+        () -> driverController.getLeftY() * driveNerf, 
         () -> driverController.getRightX() * steerNerf, 
         () -> driverController.a().getAsBoolean(),
         () -> driverController.b().getAsBoolean(), 

@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 
@@ -73,6 +74,11 @@ public class SwerveModule{
 
     driveMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
     steerMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 25, 40, 0.1));
+
+    driveMotor.configVoltageCompSaturation(11);
+
+    driveMotor.enableVoltageCompensation(true);
+    steerMotor.enableVoltageCompensation(true);
 
     Timer.delay(1.0);
     setSteerMotorToAbsolute();
@@ -169,7 +175,7 @@ public class SwerveModule{
   }
 
   /**
-   * Optimizes the swerve module outputs and applies the drive percent output and steer position
+   * Optimizes the swerve module outputs and applies the drive velocity and steer position
    * 
    * @param desiredState
    */
@@ -196,7 +202,7 @@ public class SwerveModule{
   }
 
   /**
-   * Optimizes the swerve module outputs and applies the drive percent output and steer position
+   * Optimizes the swerve module outputs and applies the drive voltage and steer position
    * Closed loop output
    * 
    * @param desiredState
